@@ -709,4 +709,68 @@ a {
   border: none;
   font-size: 20px;
   font-weight: bold;
+  cursor: pointer;
+}
+
+.member-check:hover {
+  background-color: #b0b0b0;
+}
+
+/* memberLogin */
+.member-input-wrap {
+  width: 480px;
+  height: 40px;
+  line-height: 40px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.member-input-wrap p {
+  width: 140px;
+  float: left;
+  color: #a9a9a9;
+}
+
+.mem-id,
+.mem-pw,
+.mem-name,
+.mem-email {
+  width: 280px;
+  height: 40px;
+  border: 1px solid #797979;
+  float: right;
+  padding-left: 10px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.member-button-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 80px;
+}
+
+.mem-cancel:hover,
+.mem-ok:hover {
+  background-color: #b0b0b0;
+  cursor: pointer;
+}
+
+.mem-cancel,
+.mem-ok {
+  height: 50px;
+  background-color: #d9d9d9;
+  border: none;
+  display: block;
+  border-radius: 5px;
+}
+
+.mem-cancel {
+  margin-right: 15px;
+  width: 70px;
+}
+
+.mem-ok {
+  width: 120px;
 }

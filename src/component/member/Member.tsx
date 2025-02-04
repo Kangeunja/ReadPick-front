@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router-dom";
+
 const Member = () => {
+  const navigate = useNavigate();
   return (
     <>
       <div className="sub-img"></div>
@@ -42,7 +45,12 @@ const Member = () => {
             </p>
           </div>
         </div>
-        <button className="member-check">확인</button>
+        <button
+          className="member-check"
+          onClick={(e) => navigate("/member/login")}
+        >
+          확인
+        </button>
       </div>
     </>
   );

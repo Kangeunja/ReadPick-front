@@ -5,6 +5,7 @@ import Layout from "../layouts/nav";
 import Main from "../component/main/Main";
 import Login from "../component/login/Login";
 import Member from "../component/member/Member";
+import MemberLogin from "../component/member/MemberLogin";
 
 const BrowserRouterDom = () => {
   return (
@@ -31,6 +32,14 @@ const BrowserRouterDom = () => {
           element={
             <Layout>
               <Member />
+            </Layout>
+          }
+        ></Route>
+        <Route
+          path="/member/login"
+          element={
+            <Layout>
+              <MemberLogin />
             </Layout>
           }
         ></Route>
