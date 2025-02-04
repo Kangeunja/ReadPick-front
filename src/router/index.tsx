@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "../layouts/nav";
 import Main from "../component/main/Main";
 import Login from "../component/login/Login";
+import Member from "../component/member/Member";
 
 const BrowserRouterDom = () => {
   return (
@@ -22,6 +23,14 @@ const BrowserRouterDom = () => {
           element={
             <Layout>
               <Login />
+            </Layout>
+          }
+        ></Route>
+        <Route
+          path="/member"
+          element={
+            <Layout>
+              <Member />
             </Layout>
           }
         ></Route>
