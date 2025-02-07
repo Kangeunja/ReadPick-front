@@ -1,4 +1,9 @@
+import { useState } from "react";
+import MemberLoginPopup from "../popup/MemberLoginPopup";
+
 const MemberLogin = () => {
+  const [isShowPopup, setShowPopup] = useState(false);
+
   return (
     <>
       <div className="sub-img"></div>
@@ -52,9 +57,12 @@ const MemberLogin = () => {
         </div>
         <div className="member-button-wrap">
           <button className="mem-cancel">취소</button>
-          <button className="mem-ok">회원가입</button>
+          <button className="mem-ok" onClick={() => setShowPopup(true)}>
+            회원가입
+          </button>
         </div>
       </div>
+      {isShowPopup && <MemberLoginPopup onClose={() => setShowPopup(false)} />}
     </>
   );
 };

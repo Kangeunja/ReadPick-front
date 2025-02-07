@@ -774,3 +774,87 @@ a {
 .mem-ok {
   width: 120px;
 }
+
+/* popup */
+.popup-background {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.popup-box {
+  width: 650px;
+  height: 500px;
+  background-color: white;
+  position: fixed;
+  z-index: 100;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 40px 25px;
+  box-sizing: border-box;
+}
+
+.popup-container {
+  height: 350px;
+  overflow: auto;
+  margin-bottom: 10px;
+  scrollbar-width: thin;
+}
+
+.popup-title {
+  height: 30px;
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.popup-title p:nth-child(1) {
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 15px;
+}
+
+.popup-title p:nth-child(2) {
+  font-size: 12px;
+  color: #878787;
+  line-height: 30px;
+}
+
+.popup-sub-title {
+  font-size: 17px;
+  margin-bottom: 15px;
+}
+
+.popup-con {
+  width: 580px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.popup-con li {
+  width: 90px;
+  height: 30px;
+  background-color: #ebebeb;
+  border-radius: 30px;
+  font-size: 12px;
+  text-align: center;
+  line-height: 30px;
+}
+
+.button-pick {
+  width: 90px;
+  height: 40px;
+  background-color: #008314;
+  display: block;
+  border: none;
+  color: white;
+  float: right;
+}
