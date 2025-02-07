@@ -6,6 +6,7 @@ import Main from "../component/main/Main";
 import Login from "../component/login/Login";
 import Member from "../component/member/Member";
 import MemberLogin from "../component/member/MemberLogin";
+import MemberKeyword from "../component/memberKeyword/MemberKeyword";
 
 const BrowserRouterDom = () => {
   return (
@@ -40,6 +41,14 @@ const BrowserRouterDom = () => {
           element={
             <Layout>
               <MemberLogin />
+            </Layout>
+          }
+        ></Route>
+        <Route
+          path="/member/keyword"
+          element={
+            <Layout>
+              <MemberKeyword />
             </Layout>
           }
         ></Route>
