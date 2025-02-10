@@ -8,6 +8,7 @@ import Member from "../component/member/Member";
 import MemberLogin from "../component/member/MemberLogin";
 import MemberKeyword from "../component/memberKeyword/MemberKeyword";
 import MemberKeywordDetail from "../component/memberKeyword/MemberKeywordDetail";
+import MyPage from "../component/mypage/MyPage";
 
 const BrowserRouterDom = () => {
   return (
@@ -58,6 +59,14 @@ const BrowserRouterDom = () => {
           element={
             <Layout>
               <MemberKeywordDetail />
+            </Layout>
+          }
+        ></Route>
+        <Route
+          path="/mypage"
+          element={
+            <Layout>
+              <MyPage />
             </Layout>
           }
         ></Route>
