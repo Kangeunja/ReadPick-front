@@ -7,6 +7,7 @@ import Login from "../component/login/Login";
 import Member from "../component/member/Member";
 import MemberLogin from "../component/member/MemberLogin";
 import MemberKeyword from "../component/memberKeyword/MemberKeyword";
+import MemberKeywordDetail from "../component/memberKeyword/MemberKeywordDetail";
 
 const BrowserRouterDom = () => {
   return (
@@ -49,6 +50,14 @@ const BrowserRouterDom = () => {
           element={
             <Layout>
               <MemberKeyword />
+            </Layout>
+          }
+        ></Route>
+        <Route
+          path="/member/keyword/detail"
+          element={
+            <Layout>
+              <MemberKeywordDetail />
             </Layout>
           }
         ></Route>
