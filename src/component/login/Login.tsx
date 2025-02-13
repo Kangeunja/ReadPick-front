@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 const Login = () => {
+  const navigate = useNavigate();
+
   return (
     <>
       <div className="sub-img"></div>
@@ -26,7 +30,9 @@ const Login = () => {
             로그인
           </button>
           <div className="login-bottom">
-            <div className="log-in">회원가입</div>
+            <div className="log-in" onClick={() => navigate("/member")}>
+              회원가입
+            </div>
             <div className="find-id">아이디 찾기</div>
             <div className="find-pw">비밀번호 찾기</div>
           </div>
