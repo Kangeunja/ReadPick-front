@@ -46,7 +46,9 @@ const Member = () => {
       <div className="sub-img"></div>
 
       <div className="member-wrap">
-        <p className="number">1/2</p>
+        <div className="member-number-text">
+          <p className="number">1/2</p>
+        </div>
         <div className="member-title">회원가입약관동의</div>
         <div className="member-text-wrap">
           <input
