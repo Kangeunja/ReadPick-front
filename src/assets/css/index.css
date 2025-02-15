@@ -803,6 +803,29 @@ a {
   font-size: 12px;
 }
 
+.id-check-wrap,
+.password-wrap {
+  height: 60px;
+  position: relative;
+}
+
+.id-CheckMessage,
+.member-pwCheck {
+  font-size: 12px;
+  position: absolute;
+  bottom: -10px;
+}
+
+.id-CheckMessage.success,
+.member-pwCheck.success {
+  color: green;
+}
+
+.id-CheckMessage.error,
+.member-pwCheck.error {
+  color: red;
+}
+
 .id-check {
   width: 80px;
   margin-left: 20px;
@@ -813,6 +836,10 @@ a {
 .id-check:hover {
   background-color: #b0b0b0;
   cursor: pointer;
+}
+
+.member-pwCheck {
+  font-size: 12px;
 }
 
 .member-button-wrap {

@@ -12,31 +12,107 @@ const MemberLogin = () => {
     email: "",
   });
 
+  const [idCheckMessage, setIdCheckMessage] = useState(""); // 아이디 체크 메세지 추가
+  const [passwordCheckMessage, setPasswordCheckMessage] = useState(""); // 비밀번호 확인 메세지 추가
+  const [idValId, setIdValId] = useState(true); // 아이디 체크 메세지 색깔
+  const [pwValPw, setPwValPw] = useState(true); // 비밀번호 메세지 색깔
+
   const handleChange = (e: any) => {
-    console.log(e.target.value);
     const { name, value } = e.target;
     setUserInfo((state) => ({
       ...state,
       [name]: value,
     }));
+
+    if (name === "id") {
+      setIdCheckMessage(""); // 아이디 새로 입력시 메세지 초기화
+      setIdValId(true);
+    }
+
+    if (name === "pw") {
+      setPasswordCheckMessage(""); // 비밀번호 새로 입력시 메세지 초기화
+      setPwValPw(true);
+    }
   };
 
+  // 회원가입
   const handleLoginController = () => {
+    if (userInfo.id === "") {
+      alert("아이디를 입력해주세요");
+      return;
+    } else if (!idCheckMessage) {
+      alert("아이디 중복확인 해주세요");
+      return;
+    } else if (!idValId) {
+      alert("사용 불가능한 아이디입니다. 다시 입력 후 중복 확인을 해주세요.");
+      return;
+    } else if (userInfo.pw === "") {
+      alert("비밀번호를 입력해주세요");
+      return;
+    } else if (!passwordCheckMessage) {
+      alert("비밀번호확인을 입력해주세요");
+      return;
+    } else if (!pwValPw) {
+      alert("일치하지 않은 비밀번호입니다. 다시 입력해주세요");
+      return;
+    } else if (userInfo.userName === "") {
+      alert("이름을 입력해주세요");
+      return;
+    } else if (userInfo.nickName === "") {
+      alert("닉네임을 입력해주세요");
+      return;
+    } else if (userInfo.email === "") {
+      alert("이메일을 입력해주세요");
+      return;
+    }
     // setShowPopup(true);
     axiosInstance
-      .post("http://localhost:8080/userInsert", {
-        userName: userInfo.userName,
-        nickName: userInfo.nickName,
-        id: userInfo.id,
-        pw: userInfo.pw,
-        email: userInfo.email,
-      })
+      .post("/userInsert", userInfo)
       .then((res) => {
-        console.log(res);
+        console.log(res.data, "sucess");
       })
       .catch((error) => {
         console.log("Member Login failed", error);
       });
+  };
+
+  // 아이디 중복확인
+  const handleIdCheck = () => {
+    if (!userInfo.id.trim()) {
+      alert("아이디를 입력해주세요");
+      return;
+    }
+    axiosInstance
+      .post(`/checkId?id=${userInfo.id}`)
+      .then((res) => {
+        if (res.data.result === false) {
+          setIdCheckMessage("사용 불가능한 ID 입니다.");
+          setIdValId(false);
+        } else {
+          setIdCheckMessage("사용 가능한 ID 입니다.");
+          setIdValId(true);
+        }
+      })
+      .catch((error) => {
+        console.log("Member checkId failed", error);
+      });
+  };
+
+  // 비밀번호 확인
+  const handleOnChangePassword = (e: any) => {
+    const { name, value } = e.target;
+    setUserInfo((state) => ({
+      ...state,
+      [name]: value,
+    }));
+
+    if (value !== userInfo.pw) {
+      setPasswordCheckMessage("비밀번호가 일치하지 않습니다.");
+      setPwValPw(false);
+    } else if (value === userInfo.pw) {
+      setPasswordCheckMessage("비밀번호가 일치합니다.");
+      setPwValPw(true);
+    }
   };
 
   return (
@@ -55,16 +131,24 @@ const MemberLogin = () => {
             <p>아이디</p>
             <p>*</p>
           </div>
-          <input
-            name="id"
-            className="mem-id"
-            type="text"
-            placeholder="6자이상의 영문 혹은 영문과 숫자조합"
-            maxLength={15}
-            value={userInfo.id}
-            onChange={handleChange}
-          />
-          <button type="button" className="id-check">
+          <div className="id-check-wrap">
+            <input
+              name="id"
+              className="mem-id"
+              type="text"
+              placeholder="6자이상의 영문 혹은 영문과 숫자조합"
+              maxLength={15}
+              value={userInfo.id}
+              onChange={handleChange}
+            />
+            {idCheckMessage && (
+              <p className={`id-CheckMessage ${idValId ? "success" : "error"}`}>
+                {idCheckMessage}
+              </p>
+            )}
+          </div>
+
+          <button type="button" className="id-check" onClick={handleIdCheck}>
             중복확인
           </button>
         </div>
@@ -88,12 +172,21 @@ const MemberLogin = () => {
             <p>비밀번호확인</p>
             <p>*</p>
           </div>
-          <input
-            className="mem-pw"
-            type="password"
-            placeholder="비밀번호를 한번 더 입력해주세요"
-            maxLength={15}
-          />
+          <div className="password-wrap">
+            <input
+              name="pwConfirm"
+              className="mem-pw"
+              type="password"
+              placeholder="비밀번호를 한번 더 입력해주세요"
+              maxLength={15}
+              onChange={handleOnChangePassword}
+            />
+            {passwordCheckMessage && (
+              <p className={`member-pwCheck ${pwValPw ? "success" : "error"}`}>
+                {passwordCheckMessage}
+              </p>
+            )}
+          </div>
         </div>
         <div className="member-input-wrap">
           <div className="member-input-text">
