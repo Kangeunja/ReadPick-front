@@ -803,6 +803,14 @@ a {
   font-size: 12px;
 }
 
+.toggle-visibility {
+  width: 15px;
+  height: 15px;
+  position: relative;
+  left: -20px;
+  cursor: pointer;
+}
+
 .id-check-wrap,
 .password-wrap {
   height: 60px;

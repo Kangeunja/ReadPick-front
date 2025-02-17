@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import MemberLoginPopup from "../popup/MemberLoginPopup";
 import axiosInstance from "../../api/axiosInstance";
+import { useNavigate } from "react-router-dom";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 const MemberLogin = () => {
+  const navigate = useNavigate();
   const [isShowPopup, setShowPopup] = useState(false);
   const [userInfo, setUserInfo] = useState({
     userName: "",
@@ -17,12 +20,20 @@ const MemberLogin = () => {
   const [idValId, setIdValId] = useState(true); // 아이디 체크 메세지 색깔
   const [pwValPw, setPwValPw] = useState(true); // 비밀번호 메세지 색깔
 
+  const [isPasswordVisible, setPasswordVisible] = useState(false); // 비밀번호 보이기 상태
+  const [isPasswordConfirmVisible, setPasswordConfirmVisible] = useState(false); // 비밀번호 확인 보이기 상태
+
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setUserInfo((state) => ({
       ...state,
-      [name]: value,
+      [name]: newValue,
     }));
+
+    let newValue = value;
+    if (name !== "userName") {
+      newValue = value.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, "");
+    }
 
     if (name === "id") {
       setIdCheckMessage(""); // 아이디 새로 입력시 메세지 초기화
@@ -70,6 +81,8 @@ const MemberLogin = () => {
       .post("/userInsert", userInfo)
       .then((res) => {
         console.log(res.data, "sucess");
+        alert("회원가입이 완료되었습니다!");
+        navigate("/");
       })
       .catch((error) => {
         console.log("Member Login failed", error);
@@ -113,6 +126,16 @@ const MemberLogin = () => {
       setPasswordCheckMessage("비밀번호가 일치합니다.");
       setPwValPw(true);
     }
+  };
+
+  // 비밀번호 숨기기/보이기 토글 함수
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!isPasswordVisible);
+  };
+
+  // 비밀번호확인 숨기기/보이기 토글 함수
+  const togglePasswordCheckVisibility = () => {
+    setPasswordConfirmVisible(!isPasswordConfirmVisible);
   };
 
   return (
@@ -160,12 +183,22 @@ const MemberLogin = () => {
           <input
             name="pw"
             className="mem-pw"
-            type="password"
+            type={isPasswordVisible ? "text" : "password"}
             placeholder="비밀번호를 입력해주세요"
             maxLength={15}
             value={userInfo.pw}
             onChange={handleChange}
           />
+
+          {!isPasswordVisible ? (
+            <div className="toggle-visibility">
+              <AiFillEyeInvisible onClick={togglePasswordVisibility} />
+            </div>
+          ) : (
+            <div className="toggle-visibility">
+              <AiFillEye onClick={togglePasswordVisibility} />
+            </div>
+          )}
         </div>
         <div className="member-input-wrap">
           <div className="member-input-text">
@@ -176,7 +209,7 @@ const MemberLogin = () => {
             <input
               name="pwConfirm"
               className="mem-pw"
-              type="password"
+              type={isPasswordConfirmVisible ? "text" : "password"}
               placeholder="비밀번호를 한번 더 입력해주세요"
               maxLength={15}
               onChange={handleOnChangePassword}
@@ -187,6 +220,15 @@ const MemberLogin = () => {
               </p>
             )}
           </div>
+          {!isPasswordConfirmVisible ? (
+            <div className="toggle-visibility">
+              <AiFillEyeInvisible onClick={togglePasswordCheckVisibility} />
+            </div>
+          ) : (
+            <div className="toggle-visibility">
+              <AiFillEye onClick={togglePasswordCheckVisibility} />
+            </div>
+          )}
         </div>
         <div className="member-input-wrap">
           <div className="member-input-text">
