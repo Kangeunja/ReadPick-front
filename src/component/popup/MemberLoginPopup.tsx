@@ -72,8 +72,13 @@ const MemberLoginPopup = ({ onClose }: any) => {
   console.log(selectedItems);
 
   const handleSelectedItems = () => {
+    const formattedData = selectedItems.map((item) => [
+      item.bsIdx,
+      item.bssIdx,
+    ]);
+    console.log(formattedData);
     axiosInstance
-      .post("/userPickResult", selectedItems)
+      .post("/userPickResult", formattedData)
       .then((res) => {
         console.log(res);
         onClose();
