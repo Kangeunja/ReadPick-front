@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import MemberLoginPopup from "../popup/MemberLoginPopup";
 import axiosInstance from "../../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 const MemberLogin = () => {
   const navigate = useNavigate();
-  const [isShowPopup, setShowPopup] = useState(false);
   const [userInfo, setUserInfo] = useState({
     userName: "",
     nickName: "",
@@ -76,7 +74,6 @@ const MemberLogin = () => {
       alert("이메일을 입력해주세요");
       return;
     }
-    // setShowPopup(true);
     axiosInstance
       .post("/userInsert", userInfo)
       .then((res) => {
@@ -282,7 +279,7 @@ const MemberLogin = () => {
           </button>
         </div>
       </div>
-      {isShowPopup && <MemberLoginPopup onClose={() => setShowPopup(false)} />}
+      {/* {isShowPopup && <MemberLoginPopup onClose={() => setShowPopup(false)} />} */}
     </>
   );
 };

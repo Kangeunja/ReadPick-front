@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import axiosInstance from "../../api/axiosInstance";
+import MemberLoginPopup from "../popup/MemberLoginPopup";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ const Login = () => {
     pw: "",
   });
   const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const [isShowPopup, setShowPopup] = useState(false);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -47,7 +49,22 @@ const Login = () => {
         pw: userLogin.pw,
       })
       .then((res) => {
-        console.log(res);
+        // console.log(res.data);
+        if (res.data === "success") {
+          axiosInstance
+            .get("/firstAt")
+            .then((res) => {
+              // console.log(res.data);
+              if (res.data === "Y") {
+                setShowPopup(true);
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          alert("해당 회원은 존재하지 않습니다");
+        }
       })
       .catch((error) => {
         console.log("Member Login failed", error);
@@ -69,7 +86,7 @@ const Login = () => {
             name="id"
             className="id"
             type="text"
-            placeholder="아이디"
+            placeholder="아이디를 입력해주세요"
             maxLength={15}
             value={userLogin.id}
             onChange={handleChange}
@@ -78,7 +95,7 @@ const Login = () => {
             name="pw"
             className="pw"
             type={isPasswordVisible ? "text" : "password"}
-            placeholder="비밀번호"
+            placeholder="비밀번호를 입력해주세요"
             maxLength={15}
             value={userLogin.pw}
             onChange={handleChange}
@@ -105,6 +122,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+      {isShowPopup && <MemberLoginPopup onClose={() => setShowPopup(false)} />}
     </>
   );
 };

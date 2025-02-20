@@ -925,13 +925,25 @@ a {
   scrollbar-width: thin;
 }
 
-.popup-title {
+.popup-title-wrap {
   height: 30px;
   display: flex;
   margin-bottom: 10px;
 }
 
-.popup-title p:nth-child(1) {
+.popup-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 15px;
+}
+
+.popup-sub-p {
+  font-size: 12px;
+  color: #878787;
+  /* line-height: 30px; */
+}
+
+/* .popup-title p:nth-child(1) {
   font-size: 20px;
   font-weight: bold;
   margin-right: 15px;
@@ -941,7 +953,7 @@ a {
   font-size: 12px;
   color: #878787;
   line-height: 30px;
-}
+} */
 
 .popup-sub-title {
   font-size: 17px;
@@ -950,29 +962,50 @@ a {
 
 .popup-con {
   width: 580px;
-  display: flex;
-  justify-content: space-between;
   margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .popup-con li {
-  width: 90px;
-  height: 30px;
-  background-color: #ebebeb;
+  width: 135px;
+  height: 35px;
+  background-color: #dadada;
   border-radius: 30px;
-  font-size: 12px;
+  font-size: 11px;
   text-align: center;
-  line-height: 30px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.popup-con li:hover {
+  background-color: #9c9c9c;
+  color: white;
+}
+
+.popup-con li.selected {
+  background-color: #008314;
+  color: white;
 }
 
 .button-pick {
   width: 90px;
   height: 40px;
-  background-color: #008314;
+  background-color: #dadada;
   display: block;
   border: none;
-  color: white;
+  color: black;
   float: right;
+  cursor: pointer;
+}
+
+.button-pick.active {
+  color: white;
+  background-color: #008314;
 }
 
 /* memberKeyword */
