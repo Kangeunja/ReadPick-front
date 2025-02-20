@@ -17,7 +17,7 @@ interface SelectedItem {
   // bmIdx: string;
   bsIdx: string;
   bssIdx: string;
-  bssName: string;
+  // bssName: string;
 }
 
 const MemberLoginPopup = ({ onClose }: any) => {
@@ -106,7 +106,7 @@ const MemberLoginPopup = ({ onClose }: any) => {
                         // bmIdx: item.bmIdx,
                         bsIdx: item.bsIdx,
                         bssIdx: item.bssIdx,
-                        bssName: item.bssName,
+                        // bssName: item.bssName,
                       })
                     }
                     className={
