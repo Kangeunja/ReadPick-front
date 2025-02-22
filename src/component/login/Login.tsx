@@ -57,6 +57,8 @@ const Login = () => {
               // console.log(res.data);
               if (res.data === "Y") {
                 setShowPopup(true);
+              } else {
+                navigate("/");
               }
             })
             .catch((error) => {
@@ -110,6 +112,7 @@ const Login = () => {
               <AiFillEye onClick={togglePasswordVisibility} />
             </div>
           )}
+
           <button type="button" className="login-button" onClick={handleLogin}>
             로그인
           </button>

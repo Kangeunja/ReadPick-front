@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 interface BssItem {
   // bmIdx: string;
@@ -23,6 +24,7 @@ interface SelectedItem {
 const MemberLoginPopup = ({ onClose }: any) => {
   const [bsName, setBsName] = useState<BsItem[]>([]);
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axiosInstance
@@ -81,6 +83,9 @@ const MemberLoginPopup = ({ onClose }: any) => {
       .post("/userPickResult", formattedData)
       .then((res) => {
         console.log(res);
+        if (res.data === "success") {
+          navigate("/");
+        }
         onClose();
       })
       .catch((error) => {

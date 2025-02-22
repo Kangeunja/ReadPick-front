@@ -15,83 +15,89 @@ const axiosInstance = axios.create({
 });
 
 // 요청 인터셉터 설정
-axiosInstance.interceptors.request.use(
-  async (config: InternalAxiosRequestConfig) => {
-    const excludedUrls = ["/auth/tokens"];
-    if (excludedUrls.some((url) => config.url?.includes(url))) {
-      return config;
-    }
+// axiosInstance.interceptors.request.use(
+//   async (config: InternalAxiosRequestConfig) => {
+//     const excludedUrls = ["/auth/tokens"];
+//     if (excludedUrls.includes(config.url || "")) {
+//       return config;
+//     }
+//     // if (excludedUrls.some((url) => config.url?.includes(url))) {
+//     //   return config;
+//     // }
 
-    const accessToken = getCookie("accessToken");
-    if (accessToken) {
-      config.headers["Authorization"] = `Bearer ${accessToken}`;
-    }
+//     const accessToken = getCookie("accessToken");
+//     if (accessToken) {
+//       config.headers["Authorization"] = `Bearer ${accessToken}`;
+//     }
 
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+//     return config;
+//   },
+//   (error) => Promise.reject(error)
+// );
 
 // 리프레시 토큰 함수
-const refreshToken = async () => {
-  const refreshToken = getCookie("refreshToken");
+// const refreshToken = async () => {
+//   const refreshToken = getCookie("refreshToken");
 
-  if (!refreshToken) {
-    throw new Error("리프레시 토큰이 없습니다.");
-  }
+//   if (!refreshToken) {
+//     throw new Error("리프레시 토큰이 없습니다.");
+//   }
 
-  try {
-    const response = await axiosInstance.post(
-      "/auth/tokens",
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${refreshToken}`,
-        },
-      }
-    );
+//   try {
+//     const response = await axios.post(
+//       // "/auth/tokens",
+//       `${API_BASE_URL}/auth/tokens`,
+//       {},
+//       {
+//         headers: {
+//           Authorization: `Bearer ${refreshToken}`,
+//         },
+//         withCredentials: true, // 쿠키 전달을 위해 설정
+//       }
+//     );
 
-    const { accessToken, refreshToken: newRefreshToken } = response.data;
+//     const { accessToken, refreshToken: newRefreshToken } = response.data;
 
-    // 새로운 토큰 저장
-    setCookie("accessToken", accessToken);
-    setCookie("refreshToken", newRefreshToken);
+//     // 새로운 토큰 저장
+//     setCookie("accessToken", accessToken);
+//     setCookie("refreshToken", newRefreshToken);
 
-    axiosInstance.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${accessToken}`;
+//     // axiosInstance.defaults.headers.common[
+//     //   "Authorization"
+//     // ] = `Bearer ${accessToken}`;
 
-    return accessToken;
-  } catch (error) {
-    deleteCookie("accessToken");
-    deleteCookie("refreshToken");
-    if (typeof window !== "undefined") {
-      alert("다시 로그인해주세요.");
-    }
-    throw error;
-  }
-};
+//     return accessToken;
+//   } catch (error) {
+//     deleteCookie("accessToken");
+//     deleteCookie("refreshToken");
+//     if (typeof window !== "undefined") {
+//       alert("다시 로그인해주세요.");
+//     }
+//     throw error;
+//   }
+// };
 
 // 응답 인터셉터 설정
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  async (error: AxiosError) => {
-    const originalRequest = error.config as InternalAxiosRequestConfig;
+// axiosInstance.interceptors.response.use(
+//   (response) => response,
+//   async (error: AxiosError) => {
+//     const originalRequest = error.config as InternalAxiosRequestConfig;
 
-    if (error.response?.status === 401) {
-      try {
-        const accessToken = await refreshToken();
+//     if (error.response?.status === 401) {
+//       try {
+//         const accessToken = await refreshToken();
 
-        // 새로운 엑세스 토큰으로 헤더업데이트
-        originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
+//         // 새로운 엑세스 토큰으로 헤더업데이트
+//         originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
+//         originalRequest.withCredentials = true;
 
-        return axiosInstance(originalRequest);
-      } catch (error) {
-        return Promise.reject(error);
-      }
-    }
-    return Promise.reject(error);
-  }
-);
+//         return axiosInstance(originalRequest);
+//       } catch (error) {
+//         return Promise.reject(error);
+//       }
+//     }
+//     return Promise.reject(error);
+//   }
+// );
 
 export default axiosInstance;
