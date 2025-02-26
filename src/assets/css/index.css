@@ -95,12 +95,11 @@ a {
 }
 
 .side-menu {
-  /* width: 100px; */
+  width: 125px;
   height: 50px;
-  /* background-color: aqua; */
-  font-size: 12px;
   line-height: 50px;
   display: flex;
+  margin-top: 15px;
 }
 
 .side-menu button {
@@ -110,13 +109,59 @@ a {
   cursor: pointer;
 }
 
-.menu-logIn {
-  float: left;
-  margin-right: 10px;
+.menu-mypage,
+.menu-logout,
+.menu-logIn,
+.menu-membership {
+  width: 80px;
+  display: flex;
+  justify-items: center;
 }
 
-.menu-membership {
-  float: right;
+.menu-mypage,
+.menu-logIn {
+  margin-right: 15px;
+}
+
+.menu-mypage-img {
+  width: 30px;
+  height: 30px;
+  background-image: url("/src/assets/img/icon-mypage.png");
+}
+
+.menu-logout-img {
+  width: 30px;
+  height: 30px;
+  background-image: url("/src/assets/img/icon-logout.png");
+  background-size: cover;
+}
+
+.menu-login-img {
+  width: 30px;
+  height: 30px;
+  background-image: url("/src/assets/img/icon-login.png");
+  background-size: cover;
+}
+
+.menu-membership-img {
+  width: 30px;
+  height: 30px;
+  background-image: url("/src/assets/img/icon-membership.png");
+}
+
+.menu-mypage-text,
+.menu-logout-text,
+.menu-login-text,
+.menu-membership-text {
+  font-size: 11px;
+  opacity: 0;
+}
+
+.menu-mypage-img:hover + .menu-mypage-text,
+.menu-logout-img:hover + .menu-logout-text,
+.menu-login-img:hover + .menu-login-text,
+.menu-membership-img:hover + .menu-membership-text {
+  opacity: 1;
 }
 
 .main-img {

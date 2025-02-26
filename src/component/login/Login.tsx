@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import axiosInstance from "../../api/axiosInstance";
 import MemberLoginPopup from "../popup/MemberLoginPopup";
+import { useSetRecoilState } from "recoil";
+import { userState } from "../../recoil/atoms";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,6 +14,7 @@ const Login = () => {
   });
   const [isPasswordVisible, setPasswordVisible] = useState(false);
   const [isShowPopup, setShowPopup] = useState(false);
+  const setUser = useSetRecoilState(userState);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -44,13 +47,20 @@ const Login = () => {
       return;
     }
     axiosInstance
-      .post("/login", {
-        id: userLogin.id,
-        pw: userLogin.pw,
-      })
+      .post(
+        "/login",
+        {
+          id: userLogin.id,
+          pw: userLogin.pw,
+        },
+        {
+          withCredentials: true, // 로그인 요청에만 withCredentials 설정
+        }
+      )
       .then((res) => {
         // console.log(res.data);
         if (res.data === "success") {
+          setUser(res.data);
           axiosInstance
             .get("/firstAt")
             .then((res) => {
