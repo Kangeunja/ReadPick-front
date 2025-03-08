@@ -10,13 +10,7 @@ const MyPage = () => {
 
   useEffect(() => {
     axiosInstance
-      .post(
-        "/userInfo",
-        {},
-        {
-          withCredentials: true,
-        }
-      )
+      .post("/userInfo", {})
       .then((res) => {
         console.log("res", res.data);
         setUserInfo(res.data);
@@ -24,7 +18,7 @@ const MyPage = () => {
       .catch((error) => {
         console.log(error.response?.status);
       });
-  }, []);
+  }, [userInfo]);
 
   return (
     <>
@@ -96,6 +90,7 @@ const MyPage = () => {
       </div>
       {isShowPopup && (
         <MypageInfoPopup
+          setUserInfo={setUserInfo}
           userInfo={userInfo}
           onClose={() => setIsShowPopup(false)}
         />

@@ -47,16 +47,10 @@ const Login = () => {
       return;
     }
     axiosInstance
-      .post(
-        "/login",
-        {
-          id: userLogin.id,
-          pw: userLogin.pw,
-        },
-        {
-          withCredentials: true, // 로그인 요청에만 withCredentials 설정
-        }
-      )
+      .post("/login", {
+        id: userLogin.id,
+        pw: userLogin.pw,
+      })
       .then((res) => {
         // console.log(res.data);
         if (res.data === "success") {

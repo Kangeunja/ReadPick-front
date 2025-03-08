@@ -10,7 +10,7 @@ const Header = () => {
 
   useEffect(() => {
     axiosInstance
-      .post("/checkLogin", {}, { withCredentials: true })
+      .post("/checkLogin", {})
       .then((res) => {
         console.log(res);
         if (res.data === "success") {
@@ -26,7 +26,7 @@ const Header = () => {
 
   const handleLogout = () => {
     axiosInstance
-      .post("/logout", {}, { withCredentials: true })
+      .post("/logout", {})
       .then((res) => {
         console.log(res);
         if (res.data === "success") {

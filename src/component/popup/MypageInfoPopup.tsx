@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
-const MypageInfoPopup = ({ onClose, userInfo }: any) => {
+const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
   const [editableUserInfo, setEditableUserInfo] = useState({
     userName: userInfo.userName,
     nickName: userInfo.nickName,
@@ -26,6 +27,7 @@ const MypageInfoPopup = ({ onClose, userInfo }: any) => {
   const [isPasswordVisible, setPasswordVisible] = useState(false); // 비밀번호 보이기 상태
   const [isPasswordConfirmVisible, setPasswordConfirmVisible] = useState(false); // 비밀번호 확인 보이기 상태
   const [idCheck, setIdcheck] = useState(false); // 중복확인버튼 유무
+  const [isMessageCancel, setIsMessageCancel] = useState(false);
 
   const [pwCheck, setPwCheck] = useState(""); // 비밀번호확인용
 
@@ -76,6 +78,7 @@ const MypageInfoPopup = ({ onClose, userInfo }: any) => {
 
     if (field === "id") {
       setIdcheck(true);
+      setIsMessageCancel(false);
     }
 
     setTimeout(() => {
@@ -128,10 +131,20 @@ const MypageInfoPopup = ({ onClose, userInfo }: any) => {
       return;
     }
     axiosInstance
-      .post("/userInfoModify", { editableUserInfo })
+      .post("/userInfoModify", {
+        userName: editableUserInfo.userName,
+        nickName: editableUserInfo.nickName,
+        email: editableUserInfo.email,
+        id: editableUserInfo.id,
+        pw: editableUserInfo.pw,
+      })
       .then((res) => {
         console.log(res);
-        alert("수정완료되었습니다.");
+        if (res.data === "success") {
+          alert("수정완료되었습니다.");
+          setUserInfo(editableUserInfo);
+          onClose();
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -185,6 +198,16 @@ const MypageInfoPopup = ({ onClose, userInfo }: any) => {
   // 비밀번호확인 숨기기/보이기 토글 함수
   const togglePasswordCheckVisibility = () => {
     setPasswordConfirmVisible(!isPasswordConfirmVisible);
+  };
+
+  const handleMessageCancel = () => {
+    setIdCheckMessage("");
+    setIsMessageCancel(false);
+    setEditableUserInfo((prev) => ({
+      ...prev,
+      id: userInfo.id,
+    }));
+    setIdValId(true);
   };
 
   return (
@@ -271,15 +294,22 @@ const MypageInfoPopup = ({ onClose, userInfo }: any) => {
                   </button>
                 )}
               </div>
-              {idCheckMessage && (
-                <p
-                  className={`mypage-id-CheckMessage ${
-                    idValId ? "success" : "error"
-                  }`}
-                >
-                  {idCheckMessage}
-                </p>
-              )}
+              <div className="mypage-message-wrap">
+                {idCheckMessage && (
+                  <p
+                    className={`mypage-id-CheckMessage ${
+                      idValId ? "success" : "error"
+                    }`}
+                  >
+                    {idCheckMessage}
+                  </p>
+                )}
+                {idCheckMessage && (
+                  <button type="button" onClick={handleMessageCancel}>
+                    수정취소
+                  </button>
+                )}
+              </div>
             </div>
             <div className="mypage-popup-con-wrap">
               <div className="mypage-popup-con-title">비밀번호</div>
@@ -309,30 +339,32 @@ const MypageInfoPopup = ({ onClose, userInfo }: any) => {
 
             <div className="mypage-popup-con-wrap">
               <div className="mypage-popup-con-title">비밀번호확인</div>
-              <div>
-                <input
-                  type={isPasswordConfirmVisible ? "text" : "password"}
-                  ref={pwCheckRef}
-                  onPaste={(e) => e.preventDefault()}
-                  onCopy={(e) => e.preventDefault()}
-                  // placeholder={userInfo.pw}
-                  // value={editableUserInfo.pw}
-                  disabled={!editMode.pw}
-                  onChange={(e) => handleOnChangePassword(e.target.value)}
-                  // onChange={(e) => handleChange("pw", e.target.value)}
-                />
-                {!isPasswordConfirmVisible ? (
-                  <div className="mypage-toggle-visibility">
-                    <AiFillEyeInvisible
-                      onClick={togglePasswordCheckVisibility}
-                    />
-                  </div>
-                ) : (
-                  <div className="mypage-toggle-visibility">
-                    <AiFillEye onClick={togglePasswordCheckVisibility} />
-                  </div>
-                )}
-              </div>
+              <input
+                type={isPasswordConfirmVisible ? "text" : "password"}
+                ref={pwCheckRef}
+                onPaste={(e) => e.preventDefault()}
+                onCopy={(e) => e.preventDefault()}
+                // placeholder={userInfo.pw}
+                // value={editableUserInfo.pw}
+                // disabled={!editMode.pw}
+                onChange={(e) => handleOnChangePassword(e.target.value)}
+              />
+              {!isPasswordConfirmVisible ? (
+                <div className="mypage-toggle-visibility">
+                  <AiFillEyeInvisible onClick={togglePasswordCheckVisibility} />
+                </div>
+              ) : (
+                <div className="mypage-toggle-visibility">
+                  <AiFillEye onClick={togglePasswordCheckVisibility} />
+                </div>
+              )}
+
+              {/* <button
+                type="button"
+                onClick={() => handleEdit("pwCheck", pwCheckRef)}
+              >
+                수정
+              </button> */}
 
               {passwordCheckMessage && (
                 <p
@@ -343,13 +375,6 @@ const MypageInfoPopup = ({ onClose, userInfo }: any) => {
                   {passwordCheckMessage}
                 </p>
               )}
-
-              {/* <button
-                type="button"
-                onClick={() => handleEdit("pwCheck", pwCheckRef)}
-              >
-                수정
-              </button> */}
             </div>
           </div>
         </div>

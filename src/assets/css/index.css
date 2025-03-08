@@ -1442,6 +1442,7 @@ a {
   border: none;
   outline: none;
   position: relative;
+  margin-bottom: 5px;
 }
 
 .mypage-popup-con-wrap input::placeholder {
@@ -1464,10 +1465,17 @@ a {
   color: white;
 }
 
-.mypage-id-CheckMessage,
-.mypage-member-pwCheck {
+.mypage-id-CheckMessage {
+  width: 180px;
+  margin-right: 50px;
   font-size: 12px;
   margin-left: 120px;
+}
+
+.mypage-member-pwCheck {
+  width: 180px;
+  margin-left: 120px;
+  font-size: 12px;
 }
 
 .mypage-id-CheckMessage.success,
@@ -1491,6 +1499,11 @@ a {
 }
 
 .mypage-button-wrap {
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.mypage-message-wrap {
   display: flex;
 }
 
