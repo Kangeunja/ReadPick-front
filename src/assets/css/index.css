@@ -1306,10 +1306,16 @@ a {
   border: none;
 }
 
+.mypage-button:hover {
+  background-color: #7b7b7b;
+  color: white;
+  cursor: pointer;
+}
+
 .mypage-text-wrap {
   padding-top: 30px;
   box-sizing: border-box;
-  font-size: 18px;
+  font-size: 17px;
 }
 
 .mypage-text-wrap span {
@@ -1353,4 +1359,173 @@ a {
 .mypage-text p:nth-child(1) {
   font-weight: bold;
   font-size: 20px;
+}
+
+/* myPage popup */
+.mypage-popup {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.myPage-box {
+  width: 730px;
+  height: 460px;
+  background-color: white;
+  position: fixed;
+  z-index: 100;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 30px 40px;
+  /* padding: 40px 35px; */
+  box-sizing: border-box;
+}
+
+.mypage-popup-text {
+  font-size: 23px;
+  margin-bottom: 30px;
+}
+
+.mypage-popup-profile-wrap {
+  float: left;
+  height: 300px;
+  margin-right: 70px;
+}
+
+.mypage-popup-profile-box {
+  width: 100px;
+  height: 100px;
+  background-color: #e7e7e7;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mypage-popup-profile-img {
+  width: 50px;
+  height: 50px;
+  background-image: url("/src/assets/img/icon-profile.png");
+}
+
+.mypage-popup-con-text {
+  float: left;
+}
+
+.mypage-popup-con-wrap {
+  margin-bottom: 25px;
+  /* display: flex; */
+}
+
+.mypage-popup-con-title {
+  width: 100px;
+  font-weight: bold;
+  float: left;
+  margin-right: 20px;
+  position: relative;
+}
+
+.mypage-popup-con-wrap input {
+  width: 180px;
+  font-size: 14px;
+  margin-top: 5px;
+  float: left;
+  margin-right: 50px;
+  border: none;
+  outline: none;
+  position: relative;
+}
+
+.mypage-popup-con-wrap input::placeholder {
+  color: #353535;
+}
+
+.mypage-popup-con-wrap button {
+  width: 60px;
+  height: 25px;
+  border: none;
+  background-color: #d9d9d9;
+  font-size: 12px;
+  cursor: pointer;
+  display: block;
+  border-radius: 5px;
+}
+
+.mypage-popup-con-wrap button:hover {
+  background-color: #909090;
+  color: white;
+}
+
+.mypage-id-CheckMessage,
+.mypage-member-pwCheck {
+  font-size: 12px;
+  margin-left: 120px;
+}
+
+.mypage-id-CheckMessage.success,
+.mypage-member-pwCheck.success {
+  color: green;
+}
+
+.mypage-id-CheckMessage.error,
+.mypage-member-pwCheck.error {
+  color: red;
+}
+
+.mypage-toggle-visibility {
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  right: 200px;
+  /* position: relative;
+  left: -20px; */
+  cursor: pointer;
+}
+
+.mypage-button-wrap {
+  display: flex;
+}
+
+.mypage-button-wrap button:first-child {
+  margin-right: 10px;
+}
+
+.mypage-popup-save {
+  display: block;
+  width: 85px;
+  height: 30px;
+  background-color: #2a861e;
+  color: white;
+  border: none;
+  /* float: right; */
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.mypage-popup-save:hover {
+  background-color: #1e6514;
+}
+
+.mypage-popup-cancel {
+  width: 20px;
+  height: 20px;
+  background-image: url(../img/icon-cancel.png);
+  background-size: cover;
+  position: absolute;
+  top: 40px;
+  right: 50px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 }

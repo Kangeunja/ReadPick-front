@@ -1,31 +1,36 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
+import { useRecoilState } from "recoil";
+import { userState } from "../../recoil/atoms";
 
 const Header = () => {
   const navigate = useNavigate();
-  const [userInfo, setUserInfo] = useState(null);
+  const [user, setUser] = useRecoilState(userState);
 
   useEffect(() => {
     axiosInstance
-      .post("/userInfo")
+      .post("/checkLogin", {}, { withCredentials: true })
       .then((res) => {
         console.log(res);
-        setUserInfo(res.data);
+        if (res.data === "success") {
+          setUser(res.data);
+        } else {
+          setUser(null);
+        }
       })
       .catch((error) => {
-        console.log("User profile load failed", error);
-        setUserInfo(null); // 로그인 안된 상태
+        console.log(error);
       });
   }, []);
 
   const handleLogout = () => {
     axiosInstance
-      .post("/logout")
+      .post("/logout", {}, { withCredentials: true })
       .then((res) => {
         console.log(res);
         if (res.data === "success") {
-          setUserInfo(null);
+          setUser(null);
         }
       })
       .catch((error) => {
@@ -46,23 +51,32 @@ const Header = () => {
           />
         </div>
         <div className="side-menu">
-          {userInfo ? (
+          {user ? (
             <>
-              <button className="menu-logIn">마이페이지</button>
-              <button className="menu-membership" onClick={handleLogout}>
-                로그아웃
+              <button className="menu-mypage">
+                <div
+                  className="menu-mypage-img"
+                  onClick={() => navigate("/mypage")}
+                ></div>
+                <p className="menu-mypage-text">마이페이지</p>
+              </button>
+              <button className="menu-logout" onClick={handleLogout}>
+                <div className="menu-logout-img"></div>
+                <p className="menu-logout-text">로그아웃</p>
               </button>
             </>
           ) : (
             <>
               <button className="menu-logIn" onClick={() => navigate("/login")}>
-                로그인
+                <div className="menu-login-img"></div>
+                <p className="menu-login-text">로그인</p>
               </button>
               <button
                 className="menu-membership"
                 onClick={() => navigate("/member")}
               >
-                회원가입
+                <div className="menu-membership-img"></div>
+                <p className="menu-membership-text">회원가입</p>
               </button>
             </>
           )}

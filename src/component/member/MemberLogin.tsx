@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
@@ -29,7 +29,7 @@ const MemberLogin = () => {
     }));
 
     let newValue = value;
-    if (name !== "userName") {
+    if (name !== "userName" && name !== "nickName") {
       newValue = value.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, "");
     }
 
