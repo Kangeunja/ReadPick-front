@@ -1,17 +1,73 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import axiosInstance from "../../api/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 const Main = () => {
+  const navigate = useNavigate();
+  const [keyList, setKeyList] = useState([
+    {
+      bsIdx: 0,
+      bsName: "",
+    },
+  ]);
+
+  const handleKeyWordIdx = (bsIdx: number) => {
+    navigate(`/member/keyword?bsIdx=${bsIdx}`);
+  };
+  // const handleKeyWord = (bsIdx: any) => {
+  //   axiosInstance
+  //     .get("/bssListByBsIdx", {
+  //       params: { bsIdx: bsIdx },
+  //     })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       // navigate("/member/keyword");
+  //       navigate(`/member/keyword?bsIdx=${bsIdx}`);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
+
+  // 메인페이지 keywordList
+  useEffect(() => {
+    axiosInstance
+      .get("/bsList")
+      .then((res) => {
+        // console.log(res.data);
+        setKeyList(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   return (
     <>
       <div className="main-img"></div>
       <div className="top-content">
-        <div className="content-wrap">
+        <div className="top-text-wrap">
+          <p>키워드별로 찾아볼수 있습니다.</p>
+          <p>KEYWORD</p>
+        </div>
+        <div className="top_con-wrap">
+          {keyList.map((item) => (
+            <div
+              key={item.bsIdx}
+              className="top-con-box"
+              onClick={() => handleKeyWordIdx(item.bsIdx)}
+            >
+              {item.bsName}
+            </div>
+          ))}
+        </div>
+        {/* <div className="content-wrap">
           <div className="keyword">키워드</div>
           <div className="text-wrap">
             <p>키워드별로 찾아볼수 있습니다.</p>
             <p>#디자인</p>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="book-content">
         <div className="today-wrap">

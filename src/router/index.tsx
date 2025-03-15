@@ -55,7 +55,8 @@ const BrowserRouterDom = () => {
           }
         ></Route>
         <Route
-          path="/member/keyword/detail"
+          // path="/member/keyword/detail"
+          path="/member/keyword/detail/:bookIdx"
           element={
             <Layout>
               <MemberKeywordDetail />
