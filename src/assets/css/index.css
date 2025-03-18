@@ -1271,20 +1271,20 @@ a {
   height: 150px;
 }
 
-.detail-box-wrap p:nth-child(1) {
+.detail-bookDetail-wrap p:nth-child(1) {
   font-size: 25px;
   font-weight: bold;
   margin-bottom: 15px;
   color: #282828;
 }
 
-.detail-box-wrap p:nth-child(2) {
+.detail-bookDetail-wrap p:nth-child(2) {
   font-size: 15px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   color: #323232;
 }
 
-.detail-box-wrap p:nth-child(3) {
+.detail-bookDetail-wrap p:nth-child(3) {
   font-size: 15px;
   color: #282828;
 }
@@ -1310,23 +1310,39 @@ a {
 }
 
 .detail-review-wrap {
-  width: 500px;
-  /* border: 1px solid #bebebe; */
+  width: 600px;
   background-color: #e9e9e9;
-  border-radius: 15px;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+.detail-top-wrap {
+  display: flex;
+  position: relative;
+}
+
+.detail-review-box {
+  width: 430px;
+  height: 160px;
+  background-color: white;
   padding: 20px;
   box-sizing: border-box;
+  margin-bottom: 50px;
+  border-radius: 10px;
+  float: left;
+  box-shadow: 3px 2px 9.6px 0.5px rgba(116, 116, 116, 0.25);
+}
+
+.detail-review-button-wrap {
   display: flex;
-  justify-content: center;
-  /* align-items: center; */
+  justify-content: flex-start;
 }
 
 .detail-review-insert-wrap {
-  width: 350px;
-  /* height: 30px; */
-  min-height: 30px;
+  width: 500px;
+  min-height: 50px;
   max-height: 100px;
-  height: auto;
+  /* height: auto; */
   border: none;
   display: block;
   outline: none;
@@ -1340,7 +1356,6 @@ a {
   white-space: pre-wrap;
   resize: none;
   overflow-y: hidden;
-  /* border: 1px solid #787676; */
 }
 
 .detail-review-button {
@@ -1351,31 +1366,19 @@ a {
   color: white;
   cursor: pointer;
   font-size: 13px;
-  border-radius: 5px;
+  /* border-radius: 5px; */
 }
 
 .detail-review-button:hover {
   background-color: #46aa46;
 }
 
-.detail-review-box {
-  width: 800px;
-  height: 160px;
-  background-color: white;
-  border: 1px solid #d9d9d9;
-  border-radius: 20px;
-  box-shadow: 3px 2px 10.3px 5px rgba(0, 0, 0, 0.25);
-  padding: 20px;
-  box-sizing: border-box;
-  margin-bottom: 50px;
-}
-
 .detail-review-img {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   background-color: #d9d9d9;
   border-radius: 50px;
-  margin-right: 25px;
+  margin-right: 15px;
   float: left;
 }
 
@@ -1384,14 +1387,53 @@ a {
 }
 
 .detail-text-wrap p:nth-child(1) {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: bold;
   margin-bottom: 5px;
 }
 
+.detail-text-wrap p:nth-child(2) {
+  margin-bottom: 20px;
+}
+
 .detail-text-wrap p:nth-child(2),
 .detail-text-wrap p:nth-child(3) {
-  font-size: 13px;
+  font-size: 12px;
+}
+
+.detail-text-wrap input {
+  width: 300px;
+  border: none;
+  outline: none;
+}
+
+.detail-button-wrap {
+  height: 30px;
+  position: absolute;
+  bottom: 45px;
+  right: 30px;
+}
+
+.detail-button-wrap button {
+  border: none;
+  width: 30px;
+  height: 25px;
+  background-color: transparent;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.detail-button-wrap button:hover {
+  color: #5a5a5a;
+}
+
+.detail-button-wrap button:nth-child(1) {
+  margin-right: 5px;
+}
+
+.detail-review-no {
+  font-size: 14px;
+  margin-bottom: 20px;
 }
 
 /* mypage */
@@ -1697,6 +1739,78 @@ a {
   position: absolute;
   top: 40px;
   right: 50px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+/* MemberKeywordDetailPopup */
+
+.detail-popup {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.detail-popup-wrap {
+  width: 600px;
+  height: 350px;
+  background-color: white;
+  position: fixed;
+  z-index: 100;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 25px 35px;
+  box-sizing: border-box;
+}
+
+.detail-popup-wrap h3 {
+  margin-bottom: 20px;
+  color: #2e2e2e;
+}
+
+.detail-popup-review-box {
+  width: 530px;
+  height: 200px;
+  background-color: white;
+  padding: 20px;
+  box-sizing: border-box;
+  margin-bottom: 50px;
+  border-radius: 10px;
+  float: left;
+  box-shadow: 3px 2px 9.6px 0.5px rgba(116, 116, 116, 0.25);
+}
+
+.detail-popup-save {
+  width: 80px;
+  height: 30px;
+  border: none;
+  background-color: #1e821e;
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+  border: none;
+  position: absolute;
+  bottom: 20px;
+  right: 30px;
+}
+
+.detail-popup-cancel {
+  width: 20px;
+  height: 20px;
+  background-image: url(../img/icon-cancel.png);
+  background-size: cover;
+  position: absolute;
+  top: 20px;
+  right: 20px;
   border: none;
   background-color: transparent;
   cursor: pointer;
