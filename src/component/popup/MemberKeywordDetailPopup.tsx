@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 
 const MemberKeywordDetailPopup = ({ onClose, review }: any) => {
-  console.log(review);
   const [editedReview, setEditedReview] = useState(review);
 
   useEffect(() => {
@@ -14,42 +13,47 @@ const MemberKeywordDetailPopup = ({ onClose, review }: any) => {
     };
   }, []);
 
-  const handleDetailPopup = (e: any, rvIdx: number) => {
-    const updateReview = [...editedReview];
-    const reviewIndex = updateReview.findIndex((item) => item.rvIdx === rvIdx);
-    updateReview[reviewIndex].content = e.target.value;
-    setEditedReview(updateReview);
+  const handleDetailPopup = (e: any) => {
+    setEditedReview((prev: any) => ({
+      ...prev,
+      content: e.target.value,
+    }));
+    // const updateReview = [...editedReview];
+    // const reviewIndex = updateReview.findIndex((item) => item.rvIdx === rvIdx);
+
+    // setEditedReview(updateReview);
     // const value = e.target.value;
     // setEditedReview([...editedReview, { content: value }]);
   };
 
   // 저장버튼
   const handleDetailPopupSave = () => {
-    const updatedReviews = editedReview
-      .filter(
-        (item: any) => item.bookIdx !== undefined && item.bookIdx !== null
-      ) // bookIdx가 undefined 또는 null이 아닌 경우만 포함
-      .map((item: any) => ({
-        bookIdx: item.bookIdx,
-        content: item.content,
-      }));
+    // const updatedReviews = editedReview
+    //   .filter(
+    //     (item: any) => item.bookIdx !== undefined && item.bookIdx !== null
+    //   )
+    //   .map((item: any) => ({
+    //     bookIdx: item.bookIdx,
+    //     content: item.content,
+    //   }));
 
     // if (bookIdxNumber && bookIdxNumber > 0) {
-    if (updatedReviews.length > 0) {
-      axiosInstance
-        .post("/reviewUpdate", {
-          updatedReviews,
-        })
-        .then((res) => {
-          console.log(res);
-          if (res.data === "success") {
-            onClose();
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+
+    axiosInstance
+      .post("/reviewUpdate", {
+        bookIdx: editedReview.bookIdx,
+        content: editedReview.content,
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.data === "success") {
+          alert("수정되었습니다.");
+          onClose();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -57,7 +61,20 @@ const MemberKeywordDetailPopup = ({ onClose, review }: any) => {
       <div className="detail-popup-wrap">
         <h3>리뷰 수정</h3>
         <div className="detail-popup-top-wrap">
-          {review.map((item: any, index: number) => (
+          <div key={editedReview.rvIdx} className="detail-popup-review-box">
+            <div className="detail-review-img"></div>
+            <div className="detail-text-wrap">
+              <p>{editedReview.nickName}</p>
+              <p>#메이플</p>
+              <input
+                type="text"
+                value={editedReview.content}
+                onChange={(e) => handleDetailPopup(e)}
+              />
+            </div>
+          </div>
+
+          {/* {review.map((item: any) => (
             <div key={item.rvIdx} className="detail-popup-review-box">
               <div className="detail-review-img"></div>
               <div className="detail-text-wrap">
@@ -70,7 +87,7 @@ const MemberKeywordDetailPopup = ({ onClose, review }: any) => {
                 />
               </div>
             </div>
-          ))}
+          ))} */}
         </div>
         <button
           type="button"

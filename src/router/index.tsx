@@ -9,70 +9,73 @@ import MemberLogin from "../component/member/MemberLogin";
 import MemberKeyword from "../component/memberKeyword/MemberKeyword";
 import MemberKeywordDetail from "../component/memberKeyword/MemberKeywordDetail";
 import MyPage from "../component/mypage/MyPage";
+import { RecoilRoot } from "recoil";
 
 const BrowserRouterDom = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Layout>
-              <Main />
-            </Layout>
-          }
-        ></Route>
-        <Route
-          path="/login"
-          element={
-            <Layout>
-              <Login />
-            </Layout>
-          }
-        ></Route>
-        <Route
-          path="/member"
-          element={
-            <Layout>
-              <Member />
-            </Layout>
-          }
-        ></Route>
-        <Route
-          path="/member/login"
-          element={
-            <Layout>
-              <MemberLogin />
-            </Layout>
-          }
-        ></Route>
-        <Route
-          path="/member/keyword"
-          element={
-            <Layout>
-              <MemberKeyword />
-            </Layout>
-          }
-        ></Route>
-        <Route
-          // path="/member/keyword/detail"
-          path="/member/keyword/detail/:bookIdx"
-          element={
-            <Layout>
-              <MemberKeywordDetail />
-            </Layout>
-          }
-        ></Route>
-        <Route
-          path="/mypage"
-          element={
-            <Layout>
-              <MyPage />
-            </Layout>
-          }
-        ></Route>
-      </Routes>
-    </BrowserRouter>
+    <RecoilRoot>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Layout>
+                <Main />
+              </Layout>
+            }
+          ></Route>
+          <Route
+            path="/login"
+            element={
+              <Layout>
+                <Login />
+              </Layout>
+            }
+          ></Route>
+          <Route
+            path="/member"
+            element={
+              <Layout>
+                <Member />
+              </Layout>
+            }
+          ></Route>
+          <Route
+            path="/member/login"
+            element={
+              <Layout>
+                <MemberLogin />
+              </Layout>
+            }
+          ></Route>
+          <Route
+            path="/member/keyword"
+            element={
+              <Layout>
+                <MemberKeyword />
+              </Layout>
+            }
+          ></Route>
+          <Route
+            // path="/member/keyword/detail"
+            path="/member/keyword/detail/:bookIdx"
+            element={
+              <Layout>
+                <MemberKeywordDetail />
+              </Layout>
+            }
+          ></Route>
+          <Route
+            path="/mypage"
+            element={
+              <Layout>
+                <MyPage />
+              </Layout>
+            }
+          ></Route>
+        </Routes>
+      </BrowserRouter>
+    </RecoilRoot>
   );
 };
 

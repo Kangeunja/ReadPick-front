@@ -2,27 +2,27 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import { useRecoilState } from "recoil";
-import { userState } from "../../recoil/atoms";
+import { userInfoState } from "../../recoil/userInfoState";
 
 const Header = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useRecoilState(userState);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
 
-  useEffect(() => {
-    axiosInstance
-      .post("/checkLogin", {})
-      .then((res) => {
-        console.log(res);
-        if (res.data === "success") {
-          setUser(res.data);
-        } else {
-          setUser(null);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   axiosInstance
+  //     .post("/checkLogin", {})
+  //     .then((res) => {
+  //       console.log(res);
+  //       if (res.data === "success") {
+  //         setUserInfo(true);
+  //       } else {
+  //         setUserInfo(null);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, [setUserInfo]);
 
   const handleLogout = () => {
     axiosInstance
@@ -30,7 +30,8 @@ const Header = () => {
       .then((res) => {
         console.log(res);
         if (res.data === "success") {
-          setUser(null);
+          setUserInfo(null);
+          sessionStorage.removeItem("recoil-persist");
         }
       })
       .catch((error) => {
@@ -51,7 +52,7 @@ const Header = () => {
           />
         </div>
         <div className="side-menu">
-          {user ? (
+          {userInfo ? (
             <>
               <button className="menu-mypage">
                 <div

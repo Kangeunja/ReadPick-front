@@ -4,7 +4,7 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import axiosInstance from "../../api/axiosInstance";
 import MemberLoginPopup from "../popup/MemberLoginPopup";
 import { useSetRecoilState } from "recoil";
-import { userState } from "../../recoil/atoms";
+import { userInfoState } from "../../recoil/userInfoState";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ const Login = () => {
   });
   const [isPasswordVisible, setPasswordVisible] = useState(false);
   const [isShowPopup, setShowPopup] = useState(false);
-  const setUser = useSetRecoilState(userState);
+  const setUserInfo = useSetRecoilState(userInfoState);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -52,9 +52,9 @@ const Login = () => {
         pw: userLogin.pw,
       })
       .then((res) => {
-        // console.log(res.data);
-        if (res.data === "success") {
-          setUser(res.data);
+        console.log(res.data);
+        if (res.data) {
+          setUserInfo(res.data);
           axiosInstance
             .get("/firstAt")
             .then((res) => {

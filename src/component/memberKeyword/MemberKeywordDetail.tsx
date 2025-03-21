@@ -2,9 +2,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
-import { userState } from "../../recoil/atoms";
 import MemberKeywordDetailPopup from "../popup/MemberKeywordDetailPopup";
-// import { userInfoState } from "../../recoil/userInfo";
+import { userInfoState } from "../../recoil/userInfoState";
 
 interface BookDetail {
   author: string;
@@ -19,6 +18,7 @@ interface Review {
   regDate: string;
   nickName: string;
   bookIdx: number;
+  rvIdx: number;
 }
 
 const MemberKeywordDetail = () => {
@@ -30,13 +30,17 @@ const MemberKeywordDetail = () => {
   });
   const [isContent, setIsContent] = useState(false);
   const [text, setText] = useState("");
-  const [user] = useRecoilState(userState);
+  const [user] = useRecoilState(userInfoState);
   const navigate = useNavigate();
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-  const [review, setReview] = useState<Review[]>([]);
+  const [review, setReview] = useState<Review[]>([]); // 리뷰 데이터
   const [reviewMessage, setReviewMessage] = useState(false);
-  // const userInfo = useRecoilValue(userInfoState);
   const [isPopup, setIsPopup] = useState(false);
+  const [selectedReview, setSelectedReview] = useState<Review | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [lastRvIdx, setLastRvIdx] = useState(null);
+  const [more, setMore] = useState(true);
+  const loadRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (bookIdxNumber !== null) {
@@ -94,7 +98,7 @@ const MemberKeywordDetail = () => {
     // setHeight(`${scrollHeight}px`);
   };
 
-  // 작성하기
+  // 작성하기 버튼
   const handleInsertReview = () => {
     if (user) {
       if (text !== "") {
@@ -110,6 +114,9 @@ const MemberKeywordDetail = () => {
               return;
             } else {
               alert("리뷰가 작성완료되었습니다.");
+              reviewList(bookDetail?.bookIdx!);
+              setText("");
+              textAreaRef.current?.focus();
             }
           })
           .catch((error) => {
@@ -125,6 +132,7 @@ const MemberKeywordDetail = () => {
     }
   };
 
+  // 리뷰리스트
   const reviewList = (bookIdx: number) => {
     axiosInstance
       .get("/reviewList", {
@@ -134,20 +142,116 @@ const MemberKeywordDetail = () => {
       })
       .then((res) => {
         console.log(res.data);
-        setReview(res.data);
-        if (res.data.length === 0) {
-          setReviewMessage(true);
+        // fetchData(res.data);
+        if (res.data.length > 0) {
+          setReview(res.data);
+          setLastRvIdx(res.data[res.data.length - 1].rvIdx);
+          setMore(true);
         } else {
-          setReviewMessage(false);
+          setReviewMessage(true);
+          setMore(false);
         }
+        // if (res.data.length === 0) {
+        // } else {
+        //   setReviewMessage(false);
+        // }
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  const handleReviewUpdate = (e: any) => {
+  // 리뷰수정버튼
+  const handleReviewUpdate = (rvIdx: number) => {
+    const reviewNumber = review.find((item) => item.rvIdx === rvIdx) || null;
+    setSelectedReview(reviewNumber);
     setIsPopup(true);
+  };
+
+  // 리뷰삭제버튼
+  const handleReviewDelete = () => {
+    if (window.confirm("정말로 해당 리뷰를 삭제하시겠습니까?")) {
+      axiosInstance
+        .get("/reviewDelete", {
+          params: {
+            bookIdx: bookDetail?.bookIdx,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          if (res.data === "success") {
+            alert("해당 리뷰가 삭제되었습니다.");
+            reviewList(bookDetail?.bookIdx!);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  // const handleScroll = () => {
+  //   if (loadRef.current && !loading) {
+  //     const { scrollTop, scrollHeight, clientHeight } = loadRef.current;
+  //     if (scrollHeight - scrollTop <= clientHeight + 1) {
+  //       fetchData();
+  //     }
+  //   }
+  // };
+
+  useEffect(() => {
+    const server = new IntersectionObserver(
+      (ent) => {
+        if (ent[0].isIntersecting && more && !loading) {
+          fetchData();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (loadRef.current) {
+      server.observe(loadRef.current);
+    }
+
+    return () => {
+      if (loadRef.current) {
+        server.unobserve(loadRef.current);
+      }
+    };
+  }, [lastRvIdx, more, loading]);
+
+  const fetchData = async () => {
+    if (!more || loading || !lastRvIdx) return;
+    setLoading(true);
+
+    try {
+      const res = await axiosInstance.get("/reviewMore", {
+        params: {
+          rvIdx: lastRvIdx,
+        },
+      });
+      if (res.data.length > 0) {
+        // setReview((prev) => [...prev, ...res.data]);
+        // setLastRvIdx(res.data[res.data[res.data.length - 1].rvIdx]);
+        setLastRvIdx(res.data[res.data.length - 1].rvIdx);
+      } else {
+        setMore(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    // axiosInstance
+    //   .get("/reviewMore", {
+    //     params: {
+    //       rvIdx: lastRvIdx,
+    //     },
+    //   })
+    //   .then((res) => {
+    //     console.log(res.data);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
   };
 
   return (
@@ -180,27 +284,35 @@ const MemberKeywordDetail = () => {
           <button className="detail-button">이 책 사고 싶어요!</button>
           <div className="detail-review">이 책을 읽은 사람들의 리뷰</div>
           <div className="detail-review-wrap">
-            <div className="detail-top-wrap">
+            <div className="detail-scroll-wrap" ref={loadRef}>
               {!reviewMessage ? (
                 <>
                   {review.map((item, index) => (
-                    <div key={index} className="detail-review-box">
-                      <div className="detail-review-img"></div>
-                      <div className="detail-text-wrap">
-                        <p>{item.nickName}</p>
-                        <p>#메이플</p>
-                        <input type="text" value={item.content} readOnly />
+                    <div className="detail-top-button-wrap" key={index}>
+                      <div className="detail-review-box">
+                        <div className="detail-review-img"></div>
+                        <div className="detail-text-wrap">
+                          <p>{item.nickName}</p>
+                          {/* <p>#메이플</p> */}
+                          <input type="text" value={item.content} readOnly />
+                        </div>
                       </div>
+                      {user?.nickName === item.nickName && (
+                        <div className="detail-button-wrap">
+                          <button
+                            onClick={() => handleReviewUpdate(item.rvIdx)}
+                          >
+                            수정
+                          </button>
+                          <button onClick={handleReviewDelete}>삭제</button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </>
               ) : (
                 <p className="detail-review-no">아직 리뷰가 없습니다.</p>
               )}
-              <div className="detail-button-wrap">
-                <button onClick={handleReviewUpdate}>수정</button>
-                <button>삭제</button>
-              </div>
             </div>
 
             <div className="detail-review-button-wrap">
@@ -222,12 +334,16 @@ const MemberKeywordDetail = () => {
           </div>
         </div>
       </div>
-      {isPopup && bookIdxNumber !== null && bookIdxNumber > 0 && (
+      {isPopup && selectedReview && (
         <MemberKeywordDetailPopup
           // userInfo={userInfo}
           reviewList={reviewList}
-          review={review}
-          onClose={() => setIsPopup(false)}
+          review={selectedReview}
+          // onClose={() => setIsPopup(false)}
+          onClose={() => {
+            setIsPopup(false);
+            reviewList(bookDetail?.bookIdx!); // 팝업 닫힐 때 리스트 다시 불러오기
+          }}
         />
       )}
     </>
