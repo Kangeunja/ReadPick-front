@@ -11,6 +11,7 @@ interface BookDetail {
   bcontent: string;
   content: string;
   bookIdx: number;
+  link: string;
 }
 
 interface Review {
@@ -37,10 +38,11 @@ const MemberKeywordDetail = () => {
   const [reviewMessage, setReviewMessage] = useState(false);
   const [isPopup, setIsPopup] = useState(false);
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
+
   const [loading, setLoading] = useState(false);
   const [lastRvIdx, setLastRvIdx] = useState(null);
   const [more, setMore] = useState(true);
-  const loadRef = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (bookIdxNumber !== null) {
@@ -142,16 +144,14 @@ const MemberKeywordDetail = () => {
       })
       .then((res) => {
         console.log(res.data);
+        setReview(res.data);
         // fetchData(res.data);
         if (res.data.length > 0) {
-          setReview(res.data);
-          setLastRvIdx(res.data[res.data.length - 1].rvIdx);
-          setMore(true);
-        } else {
-          setReviewMessage(true);
-          setMore(false);
+          setLastRvIdx(res.data[res.data.length - 1].rvIdx); // 마지막 리뷰의 rvIdx 저장
         }
+        setReviewMessage(res.data.length === 0);
         // if (res.data.length === 0) {
+        //   setReviewMessage(true);
         // } else {
         //   setReviewMessage(false);
         // }
@@ -190,38 +190,32 @@ const MemberKeywordDetail = () => {
     }
   };
 
-  // const handleScroll = () => {
-  //   if (loadRef.current && !loading) {
-  //     const { scrollTop, scrollHeight, clientHeight } = loadRef.current;
-  //     if (scrollHeight - scrollTop <= clientHeight + 1) {
-  //       fetchData();
-  //     }
-  //   }
-  // };
-
+  // 무한스크롤
   useEffect(() => {
-    const server = new IntersectionObserver(
-      (ent) => {
-        if (ent[0].isIntersecting && more && !loading) {
-          fetchData();
-        }
-      },
-      { threshold: 0.5 }
-    );
+    const handleScroll = () => {
+      if (!scrollRef.current && loading && !more) return;
 
-    if (loadRef.current) {
-      server.observe(loadRef.current);
+      const scrollContainer = scrollRef.current as HTMLDivElement;
+      const { scrollTop, clientHeight, scrollHeight } = scrollContainer;
+
+      if (scrollTop + clientHeight >= scrollHeight - 10) {
+        fetchMoreReview();
+      }
+    };
+
+    if (scrollRef.current) {
+      scrollRef.current.addEventListener("scroll", handleScroll);
     }
 
     return () => {
-      if (loadRef.current) {
-        server.unobserve(loadRef.current);
+      if (scrollRef.current) {
+        scrollRef.current.removeEventListener("scroll", handleScroll);
       }
     };
-  }, [lastRvIdx, more, loading]);
+  }, [more, loading, lastRvIdx]);
 
-  const fetchData = async () => {
-    if (!more || loading || !lastRvIdx) return;
+  const fetchMoreReview = async () => {
+    if (!more || loading || lastRvIdx === null) return;
     setLoading(true);
 
     try {
@@ -230,29 +224,58 @@ const MemberKeywordDetail = () => {
           rvIdx: lastRvIdx,
         },
       });
+
       if (res.data.length > 0) {
-        // setReview((prev) => [...prev, ...res.data]);
-        // setLastRvIdx(res.data[res.data[res.data.length - 1].rvIdx]);
-        setLastRvIdx(res.data[res.data.length - 1].rvIdx);
+        setReview((prev) => [...prev, ...res.data]);
+        // setLastRvIdx(res.data[res.data.length - 1].rvIdx);
       } else {
         setMore(false);
       }
     } catch (error) {
       console.log(error);
     }
-    // axiosInstance
-    //   .get("/reviewMore", {
-    //     params: {
-    //       rvIdx: lastRvIdx,
-    //     },
-    //   })
-    //   .then((res) => {
-    //     console.log(res.data);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
   };
+
+  // 북마크 추가
+  const handleBookMark = (bookIdx: number | null) => {
+    if (user) {
+      axiosInstance
+        .post("/bookmark", {
+          bookIdx: bookIdx,
+        })
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      alert("로그인이 필요한 서비스입니다.");
+      navigate("/login");
+    }
+  };
+
+  // const fetchData = async () => {
+  //   if (!more || loading || !lastRvIdx) return;
+  //   setLoading(true);
+
+  //   try {
+  //     const res = await axiosInstance.get("/reviewMore", {
+  //       params: {
+  //         rvIdx: lastRvIdx,
+  //       },
+  //     });
+  //     if (res.data.length > 0) {
+  //       // setReview((prev) => [...prev, ...res.data]);
+  //       // setLastRvIdx(res.data[res.data[res.data.length - 1].rvIdx]);
+  //       setLastRvIdx(res.data[res.data.length - 1].rvIdx);
+  //     } else {
+  //       setMore(false);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <>
@@ -266,25 +289,41 @@ const MemberKeywordDetail = () => {
               />
             )}
           </div>
-          <div className="detail-icon"></div>
+
+          <div
+            className="detail-icon"
+            onClick={() => handleBookMark(bookIdxNumber)}
+          ></div>
         </div>
         <div className="detail-box-wrap">
           {bookDetail && (
-            <div className="detail-bookDetail-wrap">
-              <p>{bookDetail.bookName}</p>
-              <p>{bookDetail.author}</p>
-              {isContent ? (
-                <p>줄거리가 없습니다.</p>
-              ) : (
-                <p>{bookDetail.content}</p>
-              )}
-            </div>
+            <>
+              <div className="detail-bookDetail-wrap">
+                <p>{bookDetail.bookName}</p>
+                <p>{bookDetail.author}</p>
+                {isContent ? (
+                  <p>줄거리가 없습니다.</p>
+                ) : (
+                  <p>{bookDetail.content}</p>
+                )}
+              </div>
+
+              <button
+                className="detail-button"
+                onClick={() => (window.location.href = `${bookDetail.link}`)}
+              >
+                이 책 사고 싶어요!
+              </button>
+            </>
           )}
 
-          <button className="detail-button">이 책 사고 싶어요!</button>
           <div className="detail-review">이 책을 읽은 사람들의 리뷰</div>
           <div className="detail-review-wrap">
-            <div className="detail-scroll-wrap" ref={loadRef}>
+            <div
+              className="detail-scroll-wrap"
+              ref={scrollRef}
+              style={{ minHeight: reviewMessage ? "100px" : "auto" }}
+            >
               {!reviewMessage ? (
                 <>
                   {review.map((item, index) => (
