@@ -7,8 +7,25 @@ const MyPage = () => {
     userName: "",
   });
   const [isShowPopup, setIsShowPopup] = useState(false);
+  const [userPick, setUserPick] = useState([
+    {
+      bookName: "",
+      author: "",
+    },
+  ]);
+  const [userBookImg, setUserBookImg] = useState([
+    {
+      fileName: "",
+    },
+  ]);
 
   useEffect(() => {
+    userInfos();
+    userPickBook();
+    userPickBookImg();
+  }, []);
+
+  const userInfos = () => {
     axiosInstance
       .post("/userInfo", {})
       .then((res) => {
@@ -18,7 +35,31 @@ const MyPage = () => {
       .catch((error) => {
         console.log(error.response?.status);
       });
-  }, [userInfo]);
+  };
+
+  const userPickBook = () => {
+    axiosInstance
+      .post("/userPickBookList", {})
+      .then((res) => {
+        console.log(res.data);
+        setUserPick(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const userPickBookImg = () => {
+    axiosInstance
+      .post("/bookmarkImageList", {})
+      .then((res) => {
+        console.log(res.data);
+        setUserBookImg(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <>
@@ -49,43 +90,66 @@ const MyPage = () => {
         </div>
         <div className="mypage-list">
           <div className="mypage-list-title">찜목록</div>
-          <div className="mypage-box-wrap">
+          <div className="mypage-list-wrap">
             <div className="mypage-box">
-              <div className="mypage-list-img"></div>
-              <div className="mypage-text">
-                <p>책제목</p>
-                <p>저자</p>
-              </div>
-            </div>
-            <div className="mypage-box">
-              <div className="mypage-list-img"></div>
-              <div className="mypage-text">
-                <p>책제목</p>
-                <p>저자</p>
-              </div>
-            </div>
-            <div className="mypage-box">
-              <div className="mypage-list-img"></div>
-              <div className="mypage-text">
-                <p>책제목</p>
-                <p>저자</p>
-              </div>
-            </div>
-            <div className="mypage-box">
-              <div className="mypage-list-img"></div>
-              <div className="mypage-text">
-                <p>책제목</p>
-                <p>저자</p>
-              </div>
-            </div>
-            <div className="mypage-box">
-              <div className="mypage-list-img"></div>
-              <div className="mypage-text">
-                <p>책제목</p>
-                <p>저자</p>
-              </div>
+              {userPick.map((item, index) => (
+                <div className="mypage-box-wrap">
+                  <div className="mypage-list-img">
+                    {userBookImg[index] && (
+                      <img
+                        src={userBookImg[index]?.fileName.replace(
+                          "coversum",
+                          "cover500"
+                        )}
+                        alt="책 이미지"
+                      />
+                    )}
+                  </div>
+                  <div className="mypage-text">
+                    <p>{item.bookName}</p>
+                    <p>{item.author}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
+
+          {/* {userPick.map((item, index) => (
+            <div className="mypage-box">
+              <div className="mypage-list-img">
+                {userBookImg[index] && (
+                  <img
+                    src={userBookImg[index]?.fileName.replace(
+                      "coversum",
+                      "cover500"
+                    )}
+                    alt="책 이미지"
+                  />
+                )}
+              </div>
+              <div className="mypage-text">
+                <p>{item.bookName}</p>
+                <p>{item.author}</p>
+              </div>
+            </div>
+          ))} */}
+
+          {/* <div className="mypage-box">
+              <div className="mypage-list-img">
+                {userBookImg.map((item) => (
+                  <img
+                    src={item?.fileName.replace("coversum", "cover500")}
+                    alt="책 이미지"
+                  />
+                ))}
+              </div>
+              {userPick.map((item, index) => (
+                <div key={index} className="mypage-text">
+                  <p>{item.bookName}</p>
+                  <p>{item.author}</p>
+                </div>
+              ))}
+            </div> */}
         </div>
       </div>
       {isShowPopup && (

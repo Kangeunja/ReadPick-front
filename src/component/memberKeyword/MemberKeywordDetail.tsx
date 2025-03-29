@@ -1,9 +1,11 @@
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import { useEffect, useRef, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import MemberKeywordDetailPopup from "../popup/MemberKeywordDetailPopup";
 import { userInfoState } from "../../recoil/userInfoState";
+import { bookmarkState } from "../../recoil/bookmarkState";
+import { isGoodState } from "../../recoil/isGoodState";
 
 interface BookDetail {
   author: string;
@@ -44,11 +46,21 @@ const MemberKeywordDetail = () => {
   const [more, setMore] = useState(true);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
+  const [isBookMark, setIsBookMark] = useRecoilState(bookmarkState);
+  const [isGood, setIsGood] = useRecoilState(isGoodState);
+  // const [isGood, setIsGood] = useState(false);
+  const [checkCount, setCheckCount] = useState(0);
+
   useEffect(() => {
     if (bookIdxNumber !== null) {
       handleBookDetail(bookIdxNumber);
       bookDetailImg(bookIdxNumber);
       reviewList(bookIdxNumber);
+      handleCheckGood();
+    }
+    if (user) {
+      bookMarkCheck();
+      goodCheck();
     }
   }, [bookIdxNumber]);
 
@@ -237,22 +249,117 @@ const MemberKeywordDetail = () => {
   };
 
   // 북마크 추가
-  const handleBookMark = (bookIdx: number | null) => {
-    if (user) {
+  const handleBookMark = () => {
+    if (!user) {
+      alert("로그인이 필요한 서비스입니다.");
+      navigate("/login");
+      return;
+    }
+
+    const bookIdx = bookDetail?.bookIdx;
+    console.log(bookIdx);
+    console.log(isBookMark);
+    if (bookIdx && bookIdx > 0) {
       axiosInstance
-        .post("/bookmark", {
-          bookIdx: bookIdx,
-        })
+        // .post("/bookmark", { bookIdx: bookIdx })
+        .post(`/bookmark?bookIdx=${bookIdx}`)
         .then((res) => {
           console.log(res.data);
+          if (res.data.message === "로그인필요.") {
+            alert("로그인이 필요한 서비스입니다.");
+            navigate("/login");
+          } else if (res.data.message === "북마크추가완료") {
+            alert("찜목록에 추가되었습니다.");
+            setIsBookMark(true);
+            if (window.confirm("찜목록으로 이동하시겠습니까?")) {
+              navigate("/mypage");
+            }
+          } else {
+            alert("찜목록에 해제되었습니다.");
+            setIsBookMark(false);
+          }
         })
         .catch((error) => {
           console.log(error);
         });
-    } else {
-      alert("로그인이 필요한 서비스입니다.");
-      navigate("/login");
     }
+  };
+
+  const bookMarkCheck = () => {
+    axiosInstance
+      .get("/isBookmark", {
+        params: { bookIdx: bookIdx },
+      })
+      .then((res) => {
+        console.log(res.data);
+        if (res.data === "Y") {
+          setIsBookMark(true);
+        } else {
+          setIsBookMark(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // 책추천 api
+  const handleIsGood = () => {
+    axiosInstance
+      .post(`/recommend?bookIdx=${bookIdx}`)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.message === "로그인필요.") {
+          alert("로그인이 필요한 서비스입니다.");
+          navigate("/login");
+        }
+        if (res.data.message === "추천완료") {
+          setIsGood(true);
+        } else {
+          setIsGood(false);
+        }
+        handleCheckGood();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // 책 추천수 api
+  const handleCheckGood = () => {
+    if (!bookIdxNumber) return;
+    axiosInstance
+      .get("/recCount", {
+        params: {
+          bookIdx: bookIdxNumber,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setCheckCount(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // 추천확인 api
+  const goodCheck = () => {
+    axiosInstance
+      .get("/isRec", {
+        params: { bookIdx: bookIdx },
+      })
+      .then((res) => {
+        console.log(res.data);
+        if (res.data === "Y") {
+          setIsGood(true);
+        } else {
+          setIsGood(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   // const fetchData = async () => {
@@ -291,9 +398,19 @@ const MemberKeywordDetail = () => {
           </div>
 
           <div
-            className="detail-icon"
-            onClick={() => handleBookMark(bookIdxNumber)}
+            className={isBookMark ? `detail-icon add` : "detail-icon"}
+            onClick={handleBookMark}
           ></div>
+          <div className="detail-bottom-icon-wrap">
+            <div
+              className="detail-good-message"
+              onClick={handleCheckGood}
+            >{`추천해요${checkCount}`}</div>
+            <div
+              className={isGood ? `detail-icon-good add` : "detail-icon-good"}
+              onClick={handleIsGood}
+            ></div>
+          </div>
         </div>
         <div className="detail-box-wrap">
           {bookDetail && (
