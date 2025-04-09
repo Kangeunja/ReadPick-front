@@ -140,6 +140,7 @@ const MemberKeyword = () => {
 
   // 책 상세정보
   const handleBookDetailClick = (bookIdx: number) => {
+    // if (bookIdx === null || bookIdx === undefined) return;
     navigate(`/member/keyword/detail/${bookIdx}`);
   };
 

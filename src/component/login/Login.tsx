@@ -53,7 +53,7 @@ const Login = () => {
       })
       .then((res) => {
         console.log(res.data);
-        if (res.data) {
+        if (res.data !== "fail") {
           setUserInfo(res.data);
           axiosInstance
             .get("/firstAt")

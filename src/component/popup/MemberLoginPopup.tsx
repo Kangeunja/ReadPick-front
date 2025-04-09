@@ -74,11 +74,16 @@ const MemberLoginPopup = ({ onClose }: any) => {
   console.log(selectedItems);
 
   const handleSelectedItems = () => {
+    if (selectedItems.length === 0) {
+      alert("관심사를 하나 이상 선택해 주세요.");
+      return;
+    }
     const formattedData = selectedItems.map((item) => [
       item.bsIdx,
       item.bssIdx,
     ]);
     console.log(formattedData);
+
     axiosInstance
       .post("/userPickResult", formattedData)
       .then((res) => {

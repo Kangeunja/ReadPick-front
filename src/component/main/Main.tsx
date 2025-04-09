@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
+import "../../assets/css/mainPage.css";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -10,10 +11,18 @@ const Main = () => {
       bsName: "",
     },
   ]);
+  const [todayBookData, setTodayBookData] = useState({
+    content: "",
+    bookName: "",
+    author: "",
+    bookImageName: "",
+    bookIdx: 0,
+  });
 
   const handleKeyWordIdx = (bsIdx: number) => {
     navigate(`/member/keyword?bsIdx=${bsIdx}`);
   };
+
   // const handleKeyWord = (bsIdx: any) => {
   //   axiosInstance
   //     .get("/bssListByBsIdx", {
@@ -31,20 +40,76 @@ const Main = () => {
 
   // 메인페이지 keywordList
   useEffect(() => {
+    keywordList();
+    todayBook();
+  }, []);
+
+  const keywordList = () => {
     axiosInstance
       .get("/bsList")
       .then((res) => {
-        // console.log(res.data);
         setKeyList(res.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  };
+
+  // 오늘의 도서 api
+  const todayBook = () => {
+    axiosInstance
+      .get("/todayBook")
+      .then((res) => {
+        console.log(res.data);
+        setTodayBookData(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // 오늘의 책 보러가기
+  const handleTodayBook = (bookIdx: number) => {
+    navigate(`/member/keyword/detail/${bookIdx}`);
+  };
 
   return (
     <>
-      <div className="main-img"></div>
+      <div className="main-content">
+        <div className="main-container">
+          <div className="main-left-con">
+            <div className="main-text-wrap">
+              <p>
+                <span>READPICK</span>이 추천하는
+              </p>
+              <p>오늘의 도서</p>
+              <p>{todayBookData.content}</p>
+            </div>
+            <button
+              type="button"
+              className="main-button"
+              onClick={() => handleTodayBook(todayBookData.bookIdx)}
+            >
+              오늘의 책 보러가기
+            </button>
+          </div>
+          <div className="main-right-con">
+            <div className="main-right-img">
+              <img
+                src={todayBookData.bookImageName.replace(
+                  "coversum",
+                  "cover500"
+                )}
+                alt="책 이미지"
+              />
+            </div>
+            <div className="main-right-text">
+              <p>{todayBookData.bookName}</p>
+              <p>{todayBookData.author}</p>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="top-content">
         <div className="top-text-wrap">
           <p>키워드별로 찾아볼수 있습니다.</p>
@@ -61,94 +126,47 @@ const Main = () => {
             </div>
           ))}
         </div>
-        {/* <div className="content-wrap">
-          <div className="keyword">키워드</div>
-          <div className="text-wrap">
-            <p>키워드별로 찾아볼수 있습니다.</p>
-            <p>#디자인</p>
-          </div>
-        </div> */}
       </div>
+
       <div className="book-content">
-        <div className="today-wrap">
-          <div className="book-icon"></div>
-          <p className="book-text">오늘의 책</p>
+        <div className="book-text-wrap">
+          <p>추천도서</p>
+          <p>
+            <span>READ PICK</span>에서 유저가 선택한 관심사 기반으로 도서를
+            추천합니다.
+          </p>
         </div>
-        <div className="sub-text">
-          <span>Read Pick</span> 이 추천하는 오늘의 책을 만나보세요!
+        <div className="book-more-wrap">
+          <button className="book-more-button"></button>
+          <div className="book-more-text">more</div>
         </div>
-        <div className="book-img"></div>
+
+        <div className="book-con-wrap">
+          <div className="">
+            <div className="book-con-box"></div>
+            <div className="book-title-wrap">
+              <p>책제목</p>
+              <p>저자</p>
+            </div>
+            <div className="book-con-right"></div>
+          </div>
+        </div>
       </div>
-      <div className="center-content">
-        <div className="center-wrap">
-          <div className="center-text">
+
+      <div className="center-wrap">
+        <div className="center-text">
+          <p>
             차별화된 도서 리뷰 시스템, <br />
             지금 바로 만나보세요!
-          </div>
+          </p>
           <p>책의 간단한 줄거리와 리뷰를 통해 취향껏 만나볼수 있습니다.</p>
         </div>
-        <div className="center-sub-content">
-          <div className="center-left-wrap">
-            <div className="center-book"></div>
-            <div className="center-title-wrap">
-              <p className="center-title">책제목</p>
-              <div className="center-icon-wrap">
-                <div className="bottom-icons icon-good"></div>
-                <div className="bottom-icons icon-like"></div>
-              </div>
-            </div>
-            <p>저자</p>
-          </div>
-          <div className="center-right-wrap">
-            <p>
-              책의 간단한 줄거리 책의 간단한 줄거리책의 간단한 줄거리책의 간단한
-              줄거리 책의 간단한 줄거리 <br />
-              책의 간단한 줄거리 책의 간단한 줄거리책의 간단한 줄거리책의 간단한
-              줄거리 책의 간단한 줄거리 <br />
-              책의 간단한 줄거리 책의 간단한 줄거리책의 간단한 줄거리책의 간단한
-              줄거리 책의 간단한 줄거리 <br />
-              책의 간단한 줄거리 책의 간단한 줄거리책의 간단한 줄거리책의 간단한
-              줄거리 책의 간단한 줄거리 <br />
-            </p>
-            <div className="center-right-title">이 책을 읽은 사람들의 리뷰</div>
-            <div className="center-right-box">
-              <div className="center-right-p"></div>
-              <div className="center-right-text">
-                <p>아이디</p>
-                <p>#직종 #학생</p>
-                <p>
-                  리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰
-                  <br />
-                  리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰
-                  <br />
-                  리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰
-                  <br />
-                </p>
-              </div>
-            </div>
-
-            <div className="center-right-box">
-              <div className="center-right-p"></div>
-              <div className="center-right-text">
-                <p>아이디</p>
-                <p>#직종 #학생</p>
-                <p>
-                  리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰
-                  <br />
-                  리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰
-                  <br />
-                  리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰
-                  <br />
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
+
       <div className="bottom-content">
-        <div className="bottom-sub-content">
+        <div>
           <div className="bottom-left-wrap">
-            <div className="bottom-title-wrap">
+            <div className="bottom-icon-wrap">
               <div className="bottom-left-icon"></div>
               <div className="bottom-left-title">찜기능</div>
             </div>
@@ -160,42 +178,44 @@ const Main = () => {
           </div>
           <div className="bottom-right-wrap">
             <div className="bottom-book"></div>
-            <div className="bottom-book-wrap">
-              <p className="bottom-title">책제목</p>
+            <div className="bottom-title-wrap">
+              <p>책제목</p>
               <p>저자</p>
             </div>
-            <div className="icon-like-color"></div>
-            <div className="icon-pointer"></div>
+            <div className="bottom-right-icons">
+              <div className="icon-good"></div>
+              <div className="icon-like-hover"></div>
+              <div className="icon-pointer"></div>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="user-content">
-        <div className="user-title">유저가 선택한 추천책 목록</div>
-        <div className="user-book-wrap">
-          <div className="user-sub-content">
-            <div className="user-book"></div>
-            <div className="user-sub-title">책제목</div>
-            <p>저자</p>
+
+        <div className="bottom-wrap">
+          <div className="bottom-left-box">
+            <div className="bottom-book"></div>
+            <div className="bottom-title-wrap">
+              <p>책제목</p>
+              <p>저자</p>
+            </div>
+            <div className="bottom-right-icons">
+              <div className="icon-good-hover"></div>
+              <div className="icon-like"></div>
+              <div className="icon-pointer-hover"></div>
+            </div>
           </div>
-          <div className="user-sub-content">
-            <div className="user-book"></div>
-            <div className="user-sub-title">책제목</div>
-            <p>저자</p>
-          </div>
-          <div className="user-sub-content">
-            <div className="user-book"></div>
-            <div className="user-sub-title">책제목</div>
-            <p>저자</p>
-          </div>
-          <div className="user-sub-content">
-            <div className="user-book"></div>
-            <div className="user-sub-title">책제목</div>
-            <p>저자</p>
+
+          <div className="bottom-right-box">
+            <div className="bottom-icon-wrap">
+              <div className="bottom-left-icon"></div>
+              <div className="bottom-left-title">추천기능</div>
+            </div>
+            <div className="bottom-left-text">
+              다른사람에게 책을 추천하고 싶을때 <br />
+              해당 기능을 통해 추천할수 있습니다.
+            </div>
           </div>
         </div>
-        <button type="button" className="add-button">
-          추천책 더 보러 가기
-        </button>
+        <div className="bottom-icon-book"></div>
       </div>
     </>
   );

@@ -1,0 +1,381 @@
+/* Main */
+.main-content {
+  width: 100%;
+  height: 350px;
+  background-color: #d3f6e7;
+  display: flex;
+  justify-content: center;
+}
+
+.main-container {
+  width: 1000px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-left-con {
+  width: 450px;
+  margin-right: 260px;
+}
+
+.main-text-wrap {
+  margin-bottom: 50px;
+}
+
+.main-text-wrap span {
+  color: #009532;
+}
+
+.main-text-wrap p:nth-child(1) {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.main-text-wrap p:nth-child(2) {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.main-text-wrap p:nth-child(3) {
+  font-size: 13px;
+}
+
+.main-button {
+  width: 150px;
+  height: 35px;
+  border: none;
+  background-color: black;
+  color: white;
+  border-radius: 50px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.main-button:hover {
+  background-color: #009532;
+}
+
+.main-right-img {
+  width: 180px;
+  height: 230px;
+  background-color: white;
+  margin-bottom: 10px;
+}
+
+.main-right-img img {
+  width: 180px;
+  height: 230px;
+}
+
+.main-right-text p:nth-child(1) {
+  font-size: 14px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.main-right-text p:nth-child(2) {
+  font-size: 11px;
+}
+
+/* top-content */
+.top-content {
+  width: 1250px;
+  margin: 100px auto 70px auto;
+}
+
+.top-text-wrap {
+  margin-bottom: 20px;
+}
+
+.top-text-wrap p:nth-child(1) {
+  font-size: 12px;
+}
+
+.top-text-wrap p:nth-child(2) {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.top_con-wrap {
+  width: 1250px;
+  background-color: #b8e2b6;
+  border-radius: 15px;
+  padding: 40px;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+  gap: 5px;
+  display: flex;
+}
+
+.top-con-box {
+  width: 136px;
+  height: 45px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  border: 3px solid #009532;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.top-con-box:hover {
+  background-color: #009532;
+  color: white;
+  cursor: pointer;
+}
+
+/* book-content */
+.book-content {
+  width: 1250px;
+  margin: 30px auto 100px auto;
+}
+
+.book-text-wrap {
+  margin-bottom: 20px;
+}
+
+.book-text-wrap p:nth-child(1) {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.book-text-wrap span {
+  color: #009532;
+  font-weight: bold;
+}
+
+.book-text-wrap p:nth-child(2) {
+  font-size: 12px;
+}
+
+.book-more-wrap {
+  float: right;
+}
+
+.book-more-button {
+  width: 65px;
+  height: 16px;
+  background-image: url("/src/assets/img/icon-more-button.png");
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+}
+
+.book-more-text {
+  width: 65px;
+  margin-top: -5px;
+  text-align: right;
+}
+
+.book-con-wrap {
+  margin-top: 35px;
+  display: flex;
+}
+
+.book-con-box {
+  width: 200px;
+  height: 250px;
+  background-color: white;
+  box-shadow: 3px 2px 20.4px 1px rgba(0, 0, 0, 0.15);
+  margin-bottom: 15px;
+}
+
+.book-title-wrap {
+  float: left;
+}
+
+.book-title-wrap p:nth-child(1) {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.book-title-wrap p:nth-child(2) {
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.book-con-right {
+  width: 50px;
+  height: 25px;
+  background-color: #616161;
+  border-radius: 5px;
+  float: right;
+  font-weight: bold;
+  color: white;
+}
+
+/* center-content */
+.center-wrap {
+  width: 100%;
+  background-color: rgba(0, 149, 50, 0.4);
+  align-items: center;
+}
+
+.center-text {
+  text-align: center;
+  margin: 50px auto;
+}
+
+.center-text p:nth-child(1) {
+  font-weight: bold;
+  font-size: 25px;
+  margin-bottom: 10px;
+}
+
+/* bottom-content */
+.bottom-content {
+  width: 1000px;
+  margin: 150px auto 140px auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.bottom-left-wrap {
+  float: left;
+}
+
+.bottom-icon-wrap {
+  width: 100%;
+  float: left;
+  margin-bottom: 20px;
+}
+
+.bottom-left-icon {
+  width: 80px;
+  height: 80px;
+  background-image: url("/src/assets/img/icon-search-like.png");
+  margin-right: 20px;
+  float: left;
+  background-size: cover;
+}
+
+.bottom-left-title {
+  font-size: 40px;
+  font-weight: bold;
+  line-height: 80px;
+}
+
+.bottom-left-text {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.bottom-right-wrap {
+  float: right;
+  position: relative;
+}
+
+.bottom-book {
+  width: 250px;
+  height: 300px;
+  background-color: white;
+  border: 1px solid #d9d9d9;
+  border-radius: 20px;
+  box-shadow: 3px 2px 10.3px 1px rgba(0, 0, 0, 1);
+  margin-bottom: 20px;
+}
+
+.bottom-title-wrap {
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  float: left;
+}
+
+.bottom-title-wrap p:nth-child(1) {
+  font-size: 20px;
+  font-weight: bold;
+  float: left;
+}
+
+.bottom-title-wrap p:nth-child(2) {
+  font-size: 15px;
+}
+
+.bottom-right-icons {
+  float: right;
+}
+
+.icon-good {
+  width: 27px;
+  height: 25px;
+  background-image: url("/src/assets/img/icon-good-line.png");
+  margin-right: 10px;
+  background-size: cover;
+  float: left;
+}
+
+.icon-like-hover {
+  background-image: url("/src/assets/img/icon-bottom-like.png");
+  width: 28px;
+  height: 26px;
+  background-size: cover;
+  float: left;
+}
+
+.icon-pointer {
+  width: 35px;
+  height: 35px;
+  background-image: url("/src/assets/img/icon-pointer.png");
+  position: absolute;
+  background-size: cover;
+  right: -10px;
+  bottom: -10px;
+}
+
+.bottom-wrap {
+  margin-top: 150px;
+}
+
+.bottom-left-box {
+  width: 250px;
+  position: relative;
+  float: left;
+}
+
+.icon-good-hover {
+  width: 27px;
+  height: 25px;
+  background-image: url("/src/assets/img/icon-good-line-hover.png");
+  background-size: cover;
+  float: left;
+  margin-right: 10px;
+}
+
+.icon-like {
+  background-image: url("/src/assets/img/icon-like-line.png");
+  width: 28px;
+  height: 26px;
+  background-size: cover;
+  float: left;
+}
+
+.icon-pointer-hover {
+  width: 35px;
+  height: 35px;
+  background-image: url("/src/assets/img/icon-pointer.png");
+  position: absolute;
+  background-size: cover;
+  right: 20px;
+  bottom: -10px;
+}
+
+.bottom-right-box {
+  float: right;
+}
+
+.bottom-icon-book {
+  width: 180px;
+  height: 180px;
+  background-size: cover;
+  position: absolute;
+  right: -100px;
+  bottom: -140px;
+  background-image: url("/src/assets/img/icon-bottom-book.png");
+}

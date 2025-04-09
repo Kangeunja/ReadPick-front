@@ -14,6 +14,17 @@ const axiosInstance = axios.create({
   withCredentials: true, // Refresh Token을 httpOnly 쿠키로 저장할 경우
 });
 
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
 // 요청 인터셉터 설정
 // axiosInstance.interceptors.request.use(
 //   async (config: InternalAxiosRequestConfig) => {

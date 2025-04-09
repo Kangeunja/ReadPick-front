@@ -29,8 +29,20 @@ const Header = () => {
       .then((res) => {
         console.log(res);
         if (res.data === "success") {
-          setUserInfo(null);
-          sessionStorage.removeItem("recoil-persist");
+          if (window.confirm("로그아웃하시겠습니까?")) {
+            // setUserInfo(null);
+            alert("로그아웃되었습니다.");
+            setUserInfo({
+              userIdx: null,
+              nickName: "",
+              userName: "",
+              email: "",
+              adminAt: "",
+              firstAt: "",
+              id: "",
+            });
+            sessionStorage.removeItem("recoil-persist");
+          }
         }
       })
       .catch((error) => {
@@ -51,7 +63,7 @@ const Header = () => {
           />
         </div>
         <div className="side-menu">
-          {userInfo ? (
+          {userInfo.userIdx ? (
             <>
               <button className="menu-mypage">
                 <div
