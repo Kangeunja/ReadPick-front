@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import MypageInfoPopup from "../popup/MypageInfoPopup";
+import { useNavigate } from "react-router-dom";
 
 const MyPage = () => {
   const [userInfo, setUserInfo] = useState({
@@ -11,6 +12,7 @@ const MyPage = () => {
     {
       bookName: "",
       author: "",
+      bookIdx: 0,
     },
   ]);
   const [userBookImg, setUserBookImg] = useState([
@@ -18,6 +20,7 @@ const MyPage = () => {
       fileName: "",
     },
   ]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     userInfos();
@@ -61,6 +64,10 @@ const MyPage = () => {
       });
   };
 
+  const handleBookList = (bookIdx: number) => {
+    navigate(`/member/keyword/detail/${bookIdx}`);
+  };
+
   return (
     <>
       <div className="mypage-wrap">
@@ -92,25 +99,33 @@ const MyPage = () => {
           <div className="mypage-list-title">찜목록</div>
           <div className="mypage-list-wrap">
             <div className="mypage-box">
-              {userPick.map((item, index) => (
-                <div className="mypage-box-wrap">
-                  <div className="mypage-list-img">
-                    {userBookImg[index] && (
-                      <img
-                        src={userBookImg[index]?.fileName.replace(
-                          "coversum",
-                          "cover500"
-                        )}
-                        alt="책 이미지"
-                      />
-                    )}
+              {userPick.length > 0 ? (
+                userPick.map((item, index) => (
+                  <div
+                    key={index}
+                    className="mypage-box-wrap"
+                    onClick={() => handleBookList(item.bookIdx)}
+                  >
+                    <div className="mypage-list-img">
+                      {userBookImg[index] && (
+                        <img
+                          src={userBookImg[index]?.fileName.replace(
+                            "coversum",
+                            "cover500"
+                          )}
+                          alt="책 이미지"
+                        />
+                      )}
+                    </div>
+                    <div className="mypage-text">
+                      <p>{item.bookName}</p>
+                      <p>{item.author}</p>
+                    </div>
                   </div>
-                  <div className="mypage-text">
-                    <p>{item.bookName}</p>
-                    <p>{item.author}</p>
-                  </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div>유저가 찜한 도서가 없습니다.</div>
+              )}
             </div>
           </div>
 

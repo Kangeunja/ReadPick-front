@@ -75,7 +75,10 @@ const MemberLoginPopup = ({ onClose }: any) => {
 
   const handleSelectedItems = () => {
     if (selectedItems.length === 0) {
-      alert("관심사를 하나 이상 선택해 주세요.");
+      alert("관심사를 선택해주세요.");
+      return;
+    } else if (selectedItems.length < 4) {
+      alert("관심사를 최대 4개까지 선택해주세요.");
       return;
     }
     const formattedData = selectedItems.map((item) => [
@@ -143,7 +146,9 @@ const MemberLoginPopup = ({ onClose }: any) => {
           ))}
         </div>
         <button
-          className={`button-pick ${selectedItems.length > 0 ? "active" : ""}`}
+          className={`button-pick ${
+            selectedItems.length === 4 ? "active" : ""
+          }`}
           onClick={handleSelectedItems}
         >
           선택완료

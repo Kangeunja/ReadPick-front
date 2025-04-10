@@ -52,6 +52,7 @@ const MemberKeywordDetail = () => {
   const [checkCount, setCheckCount] = useState(0);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (bookIdxNumber !== null) {
       handleBookDetail(bookIdxNumber);
       bookDetailImg(bookIdxNumber);

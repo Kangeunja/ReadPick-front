@@ -19,6 +19,15 @@ const Main = () => {
     bookIdx: 0,
   });
 
+  const [genreBook, setGenreBook] = useState([
+    {
+      bookName: "",
+      author: "",
+      bookImageName: "",
+      bookIdx: 0,
+    },
+  ]);
+
   const handleKeyWordIdx = (bsIdx: number) => {
     navigate(`/member/keyword?bsIdx=${bsIdx}`);
   };
@@ -40,8 +49,10 @@ const Main = () => {
 
   // 메인페이지 keywordList
   useEffect(() => {
+    window.scrollTo(0, 0);
     keywordList();
     todayBook();
+    userGenreBookList();
   }, []);
 
   const keywordList = () => {
@@ -70,6 +81,23 @@ const Main = () => {
 
   // 오늘의 책 보러가기
   const handleTodayBook = (bookIdx: number) => {
+    navigate(`/member/keyword/detail/${bookIdx}`);
+  };
+
+  // 유저 장르 별 책 추천
+  const userGenreBookList = () => {
+    axiosInstance
+      .get("/userGenreBook")
+      .then((res) => {
+        console.log(res.data);
+        setGenreBook(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleBookDetail = (bookIdx: number) => {
     navigate(`/member/keyword/detail/${bookIdx}`);
   };
 
@@ -136,20 +164,34 @@ const Main = () => {
             추천합니다.
           </p>
         </div>
-        <div className="book-more-wrap">
-          <button className="book-more-button"></button>
-          <div className="book-more-text">more</div>
-        </div>
 
         <div className="book-con-wrap">
-          <div className="">
-            <div className="book-con-box"></div>
-            <div className="book-title-wrap">
-              <p>책제목</p>
-              <p>저자</p>
-            </div>
-            <div className="book-con-right"></div>
-          </div>
+          {genreBook.length > 0 ? (
+            genreBook.map((item, index) => (
+              <>
+                <div key={index} onClick={() => handleBookDetail(item.bookIdx)}>
+                  <div className="book-con-box">
+                    <img
+                      src={item.bookImageName.replace("coversum", "cover500")}
+                      alt="책 이미지"
+                    />
+                  </div>
+                  <div className="book-title-wrap">
+                    <p>{item.bookName}</p>
+                    <p>{item.author}</p>
+                  </div>
+                </div>
+                {/* {index === genreBook.length - 1 && (
+                  <div className="book-more-wrap">
+                    <button className="book-more-button"></button>
+                    <div className="book-more-text">more</div>
+                  </div>
+                )} */}
+              </>
+            ))
+          ) : (
+            <div>유저가 선택한 추천 도서가 없습니다.</div>
+          )}
         </div>
       </div>
 

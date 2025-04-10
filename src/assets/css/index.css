@@ -1357,6 +1357,7 @@ a {
 
 .mypage-box-wrap {
   height: 340px;
+  cursor: pointer;
 }
 
 .mypage-list-img {
