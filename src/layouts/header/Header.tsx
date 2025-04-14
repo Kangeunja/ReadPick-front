@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import { useRecoilState } from "recoil";
 import { userInfoState } from "../../recoil/userInfoState";
+import "../../assets/css/header.css";
 
 const Header = () => {
   const navigate = useNavigate();
