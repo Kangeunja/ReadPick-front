@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import "../../assets/css/mypagePopup.css";
 
 const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
   const [editableUserInfo, setEditableUserInfo] = useState({
