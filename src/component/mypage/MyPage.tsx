@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import MypageInfoPopup from "../popup/MypageInfoPopup";
 import { useNavigate } from "react-router-dom";
+import "../../assets/css/myPage.css";
 
 const MyPage = () => {
   const [userInfo, setUserInfo] = useState({

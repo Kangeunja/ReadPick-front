@@ -1,0 +1,146 @@
+/* mypage */
+.mypage-wrap {
+  width: 1300px;
+  height: 1000px;
+  margin: 0 auto;
+}
+
+.mypage-title {
+  padding-top: 50px;
+  box-sizing: border-box;
+  margin-bottom: 30px;
+}
+
+.mypage-title p:nth-child(1) {
+  font-size: 13px;
+  color: #888888;
+}
+
+.mypage-title p:nth-child(2) {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.mypage-info {
+  width: 600px;
+  height: 240px;
+  border-radius: 33px;
+  box-shadow: 3px 2px 9.6px 1px rgba(0, 0, 0, 0.25);
+  margin-bottom: 70px;
+}
+
+.mypage-profile-wrap {
+  width: 200px;
+  height: 100%;
+  /* background-color: #004f14; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  float: left;
+}
+
+.mypage-img-wrap {
+  width: 97px;
+  height: 93px;
+  background-color: #e7e7e7;
+  border-radius: 20px;
+  margin: 0 auto;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mypage-img {
+  width: 50px;
+  height: 50px;
+  background-image: url("/src/assets/img/icon-profile.png");
+}
+
+.mypage-button {
+  width: 150px;
+  height: 47px;
+  background-color: #f3f3f3;
+  display: block;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 18px;
+  border: none;
+}
+
+.mypage-button:hover {
+  background-color: #7b7b7b;
+  color: white;
+  cursor: pointer;
+}
+
+.mypage-text-wrap {
+  padding-top: 30px;
+  box-sizing: border-box;
+  font-size: 17px;
+}
+
+.mypage-text-wrap span {
+  font-weight: bold;
+}
+
+.mypage-list {
+  width: 1400px;
+  /* height: 430px; */
+  border-radius: 33px;
+  background-color: white;
+  box-shadow: 3px 2px 9.6px 1px rgba(0, 0, 0, 0.25);
+  padding: 40px 50px;
+  box-sizing: border-box;
+}
+
+.mypage-list-title {
+  margin-bottom: 40px;
+}
+
+.mypage-list-wrap {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* .mypage-box {
+  overflow-y: hidden;
+} */
+
+.mypage-box-wrap {
+  vertical-align: top;
+  display: inline-block;
+  height: 350px;
+  cursor: pointer;
+}
+
+.mypage-list-img {
+  width: 180px;
+  height: 230px;
+  background-color: white;
+  border: 1px solid #d9d9d9;
+  box-shadow: 3px 2px 9.6px 1px rgba(193, 193, 193, 1);
+  margin-right: 40px;
+}
+
+.mypage-list-img img {
+  width: 180px;
+  height: 230px;
+}
+
+.mypage-text {
+  width: 180px;
+  margin-top: 20px;
+  white-space: normal;
+}
+
+.mypage-text p:nth-child(1) {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.mypage-text p:nth-child(2) {
+  font-size: 11px;
+}

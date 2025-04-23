@@ -250,7 +250,7 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
 
   return (
     <div className="mypage-popup">
-      <div className="myPage-box">
+      <div className="mypage-popup-box">
         <div className="mypage-popup-text">회원정보수정</div>
         <div className="mypage-popup-wrap">
           <div className="mypage-popup-profile-wrap">
