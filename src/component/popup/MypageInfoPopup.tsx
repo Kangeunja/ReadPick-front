@@ -3,6 +3,8 @@ import axiosInstance from "../../api/axiosInstance";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import "../../assets/css/mypagePopup.css";
 
+import profileDefaultImg from "../../assets/img/icon-profile.png";
+
 const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
   const [editableUserInfo, setEditableUserInfo] = useState({
     userName: userInfo.userName,
@@ -37,6 +39,8 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
   const idRef = useRef<HTMLInputElement>(null);
   const pwRef = useRef<HTMLInputElement>(null);
   const pwCheckRef = useRef<HTMLInputElement>(null);
+
+  const imgRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     // 팝업이 열릴 때 body의 스크롤 막기
@@ -210,6 +214,40 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
     setIdValId(true);
   };
 
+  // const handleImgCorrection = () => {
+  //   axiosInstance
+  //     .post("/userImageInsert")
+  //     .then((res) => {
+  //       console.log(res.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
+
+  const handleProfileImage = (e: any) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    console.log("선택된 파일:", file);
+
+    axiosInstance
+      .post("/userImageInsert", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <div className="mypage-popup">
       <div className="myPage-box">
@@ -217,7 +255,33 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
         <div className="mypage-popup-wrap">
           <div className="mypage-popup-profile-wrap">
             <div className="mypage-popup-profile-box">
-              <div className="mypage-popup-profile-img"></div>
+              <div className="mypage-popup-profile-img">
+                <img src={profileDefaultImg} alt="기본이미지" />
+                <div
+                  className="mypage-popup-set-box"
+                  onClick={() => imgRef.current?.click()}
+                >
+                  <div className="mypage-popup-set-img"></div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={imgRef}
+                    style={{ display: "none" }}
+                    onChange={handleProfileImage}
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              className="myPage-popup-img-correction"
+              // onClick={handleImgCorrection}
+            >
+              {/* <input type="file" id="input-file" className="file-input" /> */}
+              {/* {profileDefaultImg ? (
+                <button type="button">사진 추가하기</button>
+              ) : (
+                <button type="button">사진 수정하기</button>
+              )} */}
             </div>
           </div>
           <div className="mypage-popup-con-text">

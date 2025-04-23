@@ -30,7 +30,7 @@ const MyPage = () => {
 
   const userInfos = () => {
     axiosInstance
-      .post("/userInfo", {})
+      .post("/myPage/userInfo", {})
       .then((res) => {
         console.log("res", res.data);
         setUserInfo(res.data);
@@ -42,7 +42,7 @@ const MyPage = () => {
 
   const userPickBook = () => {
     axiosInstance
-      .post("/userPickBookList", {})
+      .post("/myPage/userPickBookList", {})
       .then((res) => {
         console.log(res.data);
         setUserPick(res.data);
@@ -54,7 +54,7 @@ const MyPage = () => {
 
   const userPickBookImg = () => {
     axiosInstance
-      .post("/bookmarkImageList", {})
+      .post("/myPage/bookmarkImageList", {})
       .then((res) => {
         console.log(res.data);
         setUserBookImg(res.data);

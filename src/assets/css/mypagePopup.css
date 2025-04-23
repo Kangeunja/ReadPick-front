@@ -40,16 +40,64 @@
   width: 100px;
   height: 100px;
   background-color: #e7e7e7;
-  border-radius: 20px;
+  border-radius: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 10px;
+  position: relative;
 }
 
 .mypage-popup-profile-img {
   width: 50px;
   height: 50px;
-  background-image: url("/src/assets/img/icon-profile.png");
+  /* background-image: url("/src/assets/img/icon-profile.png"); */
+}
+
+.mypage-popup-set-box {
+  width: 35px;
+  height: 35px;
+  background-color: #000000;
+  position: absolute;
+  border-radius: 50%;
+  right: -10px;
+  bottom: -5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mypage-popup-set-box:hover {
+  background-color: #585858;
+  cursor: pointer;
+}
+
+.mypage-popup-set-img {
+  width: 16px;
+  height: 14px;
+  background-image: url("/src/assets/img/icon-camera.png");
+  background-size: cover;
+}
+
+.file-input {
+  display: none;
+}
+
+.myPage-popup-img-correction button {
+  width: 97px;
+  height: 30px;
+  background-color: #d9d9d9;
+  border-radius: 5px;
+  font-size: 13px;
+  text-align: center;
+  line-height: 30px;
+  cursor: pointer;
+  border: none;
+}
+
+.myPage-popup-img-correction button:hover {
+  background-color: #a0a0a0;
+  color: white;
 }
 
 .mypage-popup-con-text {
