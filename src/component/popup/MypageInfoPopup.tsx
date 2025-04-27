@@ -33,6 +33,8 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
 
   const [pwCheck, setPwCheck] = useState(""); // 비밀번호확인용
 
+  const [image, setImage] = useState(profileDefaultImg);
+
   const userNameRef = useRef<HTMLInputElement>(null);
   const nickNameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -242,6 +244,7 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
       })
       .then((res) => {
         console.log(res.data);
+        setImage(res.data);
       })
       .catch((error) => {
         console.log(error);
@@ -256,7 +259,8 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
           <div className="mypage-popup-profile-wrap">
             <div className="mypage-popup-profile-box">
               <div className="mypage-popup-profile-img">
-                <img src={profileDefaultImg} alt="기본이미지" />
+                {/* <img src={profileDefaultImg} alt="기본이미지" /> */}
+                <img src={image} alt="프로필이미지" />
                 <div
                   className="mypage-popup-set-box"
                   onClick={() => imgRef.current?.click()}
