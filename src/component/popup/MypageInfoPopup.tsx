@@ -4,6 +4,7 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import "../../assets/css/mypagePopup.css";
 
 import profileDefaultImg from "../../assets/img/icon-profile.png";
+import TrashImg from "../../assets/img/icon-trash.png";
 
 const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
   const [editableUserInfo, setEditableUserInfo] = useState({
@@ -12,6 +13,7 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
     email: userInfo.email,
     id: userInfo.id,
     pw: userInfo.pw,
+    fileName: userInfo.fileName,
   });
 
   const [editMode, setEditMode] = useState({
@@ -47,6 +49,13 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
   useEffect(() => {
     // 팝업이 열릴 때 body의 스크롤 막기
     document.body.style.overflow = "hidden";
+
+    // 프로필 이미지 초기화
+    if (userInfo.fileName && userInfo.fileName !== "default") {
+      setImage(editableUserInfo.fileName);
+    } else {
+      setImage(profileDefaultImg);
+    }
     return () => {
       // 팝업이 닫힐 때 스크롤 복구
       document.body.style.overflow = "auto";
@@ -93,6 +102,18 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
   };
 
   const handleSave = () => {
+    const isModified =
+      editableUserInfo.userName !== userInfo.userName ||
+      editableUserInfo.nickName !== userInfo.nickName ||
+      editableUserInfo.email !== userInfo.email ||
+      editableUserInfo.id !== userInfo.id ||
+      editableUserInfo.pw !== userInfo.pw;
+
+    if (!isModified) {
+      alert("수정된 내용이 없습니다.");
+      return;
+    }
+
     if (editableUserInfo.userName === "") {
       alert("이름을 입력해주세요");
       userNameRef.current?.focus();
@@ -137,7 +158,7 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
       return;
     }
     axiosInstance
-      .post("/userInfoModify", {
+      .post("/myPage/userInfoModify", {
         userName: editableUserInfo.userName,
         nickName: editableUserInfo.nickName,
         email: editableUserInfo.email,
@@ -216,17 +237,7 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
     setIdValId(true);
   };
 
-  // const handleImgCorrection = () => {
-  //   axiosInstance
-  //     .post("/userImageInsert")
-  //     .then((res) => {
-  //       console.log(res.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
-
+  // 사진 추가하기
   const handleProfileImage = (e: any) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -245,10 +256,94 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
       .then((res) => {
         console.log(res.data);
         setImage(res.data);
+        // editableUserInfo.fileName 업데이트
+        setEditableUserInfo((prev) => ({
+          ...prev,
+          fileName: res.data,
+        }));
+
+        // 부모 컴포넌트의 userInfo도 업데이트
+        // setUserInfo((prev: any) => ({
+        //   ...prev,
+        //   fileName: res.data,
+        // }));
+        alert("사진이 추가되었습니다.");
       })
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  // 사진 수정하기
+  const handleEditProfileImg = (e: any) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    axiosInstance
+      .post("/userImageUpdate", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setImage(res.data);
+        // editableUserInfo.fileName 업데이트
+        setEditableUserInfo((prev) => ({
+          ...prev,
+          fileName: res.data,
+        }));
+
+        // onClose();
+
+        // 부모 컴포넌트의 userInfo도 업데이트
+        // setUserInfo((prev: any) => ({
+        //   ...prev,
+        //   fileName: res.data,
+        // }));
+        alert("사진이 수정되었습니다.");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  //사진 삭제하기
+  const handleDeleteProfileImg = () => {
+    if (window.confirm("사진을 정말로 삭제하시겠습니까?")) {
+      axiosInstance
+        .post("/userImageDelete")
+        .then((res) => {
+          console.log(res.data);
+          if (res.data === "success") {
+            setImage(profileDefaultImg);
+
+            setEditableUserInfo((prev) => ({
+              ...prev,
+              fileName: "default",
+            }));
+
+            // setUserInfo((prev: any) => ({
+            //   ...prev,
+            //   fileName: "default",
+            // }));
+            alert("사진이 삭제되었습니다.");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      return;
+    }
+  };
+
+  const handleClose = () => {
+    setUserInfo(editableUserInfo);
+    onClose();
   };
 
   return (
@@ -257,10 +352,13 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
         <div className="mypage-popup-text">회원정보수정</div>
         <div className="mypage-popup-wrap">
           <div className="mypage-popup-profile-wrap">
-            <div className="mypage-popup-profile-box">
-              <div className="mypage-popup-profile-img">
-                {/* <img src={profileDefaultImg} alt="기본이미지" /> */}
-                <img src={image} alt="프로필이미지" />
+            {editableUserInfo.fileName === "default" ? (
+              <div className="mypage-popup-profile-box">
+                <img
+                  src={image}
+                  alt="기본 이미지"
+                  className="myPage-default-img"
+                />
                 <div
                   className="mypage-popup-set-box"
                   onClick={() => imgRef.current?.click()}
@@ -275,7 +373,37 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
                   />
                 </div>
               </div>
-            </div>
+            ) : (
+              <>
+                <img
+                  src={editableUserInfo.fileName}
+                  alt="프로필 이미지"
+                  className="myPage-uploaded-img"
+                />
+                <div className="myPage-popup-img-correction">
+                  <div onClick={() => imgRef.current?.click()}>
+                    <button type="button" className="myPage-popup-edit-profile">
+                      사진 수정
+                    </button>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={imgRef}
+                      style={{ display: "none" }}
+                      onChange={handleEditProfileImg}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    className="myPage-profile-delete"
+                    onClick={handleDeleteProfileImg}
+                  >
+                    <img src={TrashImg} alt="쓰레기통" />
+                  </button>
+                </div>
+              </>
+            )}
+
             <div
               className="myPage-popup-img-correction"
               // onClick={handleImgCorrection}
@@ -456,7 +584,8 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
         <button
           type="button"
           className="mypage-popup-cancel"
-          onClick={() => onClose()}
+          onClick={handleClose}
+          // onClick={() => onClose()}
         ></button>
       </div>
     </div>

@@ -3,10 +3,12 @@ import axiosInstance from "../../api/axiosInstance";
 import MypageInfoPopup from "../popup/MypageInfoPopup";
 import { useNavigate } from "react-router-dom";
 import "../../assets/css/myPage.css";
+import profileDefaultImg from "../../assets/img/icon-profile.png";
 
 const MyPage = () => {
   const [userInfo, setUserInfo] = useState({
     userName: "",
+    fileName: "",
   });
   const [isShowPopup, setIsShowPopup] = useState(false);
   const [userPick, setUserPick] = useState([
@@ -79,7 +81,20 @@ const MyPage = () => {
         <div className="mypage-info">
           <div className="mypage-profile-wrap">
             <div className="mypage-img-wrap">
-              <div className="mypage-img"></div>
+              <img
+                src={
+                  userInfo.fileName === "default"
+                    ? profileDefaultImg
+                    : userInfo.fileName
+                }
+                className={
+                  userInfo.fileName === "default"
+                    ? "mypage-default-img"
+                    : "mypage-img"
+                }
+                alt="이미지"
+              />
+              {/* <div className="mypage-img"></div> */}
             </div>
             <button
               className="mypage-button"

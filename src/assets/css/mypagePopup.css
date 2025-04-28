@@ -48,11 +48,17 @@
   position: relative;
 }
 
-.mypage-popup-profile-img {
+.myPage-uploaded-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 25px;
+}
+
+/* .mypage-popup-profile-img {
   width: 50px;
   height: 50px;
-  /* background-image: url("/src/assets/img/icon-profile.png"); */
-}
+  background-image: url("/src/assets/img/icon-profile.png");
+} */
 
 .mypage-popup-set-box {
   width: 35px;
@@ -83,20 +89,41 @@
   display: none;
 }
 
+.myPage-popup-img-correction {
+  display: flex;
+}
+
 .myPage-popup-img-correction button {
-  width: 97px;
   height: 30px;
-  background-color: #d9d9d9;
-  border-radius: 5px;
-  font-size: 13px;
+  background-color: #a0a0a0;
+  border-radius: 10px;
+  font-size: 12px;
   text-align: center;
   line-height: 30px;
   cursor: pointer;
   border: none;
+  margin-top: 5px;
+  color: white;
+}
+
+.myPage-popup-edit-profile {
+  width: 65px;
+  margin-right: 5px;
+}
+
+.myPage-profile-delete {
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.myPage-profile-delete img {
+  width: 15px;
 }
 
 .myPage-popup-img-correction button:hover {
-  background-color: #a0a0a0;
+  background-color: #618d70;
   color: white;
 }
 
