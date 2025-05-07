@@ -6,6 +6,7 @@ import MemberKeywordDetailPopup from "../popup/MemberKeywordDetailPopup";
 import { userInfoState } from "../../recoil/userInfoState";
 import { bookmarkState } from "../../recoil/bookmarkState";
 import { isGoodState } from "../../recoil/isGoodState";
+import "../../assets/css/memberKeywordDetail.css";
 
 interface BookDetail {
   author: string;
@@ -208,6 +209,8 @@ const MemberKeywordDetail = () => {
     const handleScroll = () => {
       if (!scrollRef.current && loading && !more) return;
 
+      // if (!scrollRef.current || loading || !more) return;
+
       const scrollContainer = scrollRef.current as HTMLDivElement;
       const { scrollTop, clientHeight, scrollHeight } = scrollContainer;
 
@@ -238,14 +241,19 @@ const MemberKeywordDetail = () => {
         },
       });
 
+      // setTimeout(() => {
       if (res.data.length > 0) {
+        await new Promise((resolve) => setTimeout(resolve, 900)); // 다음 틱으로 넘기기
         setReview((prev) => [...prev, ...res.data]);
-        // setLastRvIdx(res.data[res.data.length - 1].rvIdx);
+        setLastRvIdx(res.data[res.data.length - 1].rvIdx);
       } else {
         setMore(false);
       }
+      setLoading(false);
+      // }, 1500);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -466,6 +474,9 @@ const MemberKeywordDetail = () => {
                       )}
                     </div>
                   ))}
+                  {loading && more && review.length > 0 && (
+                    <div className="loading-spinner">로딩중</div>
+                  )}
                 </>
               ) : (
                 <p className="detail-review-no">아직 리뷰가 없습니다.</p>
