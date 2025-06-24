@@ -1,43 +1,64 @@
-/* keywordDetail */
-.detail-wrap {
+.keyword-detail-wrap {
   width: 1200px;
-  height: 1200px;
   margin: 0 auto;
-  padding-top: 50px;
-  box-sizing: border-box;
+  margin-top: 50px;
 }
 
-.detail-img-wrap {
-  width: 250px;
+.keyword-detail-img-wrap {
   float: left;
 }
 
-.detail-img {
+.keyword-detail-img {
   width: 250px;
   height: 330px;
-  background-color: white;
   box-shadow: 3px 2px 15.6px 1px rgba(193, 193, 193, 1);
   border-radius: 20px;
   margin-bottom: 10px;
 }
 
-.detail-img img {
+.keyword-detail-img img {
   width: 100%;
   height: 100%;
 }
 
-.detail-bottom-icon-wrap {
+.keyword-detail-icon-wrap {
+  width: 250px;
+}
+
+.keyword-detail-save.add {
+  background-image: url("/src/assets/img/icon-like-line-hover.png");
+}
+
+.keyword-detail-save {
+  width: 25px;
+  height: 25px;
+  background-image: url("/src/assets/img/icon-like-line.png");
+  background-size: cover;
+  cursor: pointer;
+  float: left;
+}
+
+.keyword-detail-save:hover {
+  background-image: url("/src/assets/img/icon-like-line-hover.png");
+}
+
+.keyword-detail-good-wrap {
   display: flex;
   float: right;
 }
 
-.detail-good-message {
+.keyword-detail-good-text {
   font-size: 13px;
-  margin-right: 5px;
+  margin-right: 15px;
   line-height: 25px;
+  color: #343434;
 }
 
-.detail-icon-good {
+.keyword-detail-good.add {
+  background-image: url("/src/assets/img/icon-good-line-hover.png");
+}
+
+.keyword-detail-good {
   width: 20px;
   height: 20px;
   background-image: url("/src/assets/img/icon-good-line.png");
@@ -46,126 +67,210 @@
   cursor: pointer;
 }
 
-.detail-icon-good:hover {
+.keyword-detail-good:hover {
   background-image: url("/src/assets/img/icon-good-line-hover.png");
 }
 
-.detail-icon-good.add {
-  background-image: url("/src/assets/img/icon-good-line-hover.png");
-}
-
-.detail-icon {
-  width: 25px;
-  height: 25px;
-  background-image: url("/src/assets/img/icon-like-line.png");
-  background-size: cover;
-  float: left;
-  cursor: pointer;
-}
-
-.detail-icon.add {
-  background-image: url("/src/assets/img/icon-like-line-hover.png");
-}
-
-.detail-icon:hover {
-  background-image: url("/src/assets/img/icon-like-line-hover.png");
-}
-
-.detail-box-wrap {
+.keyword-detail-right-con-wrap {
+  width: 750px;
   float: right;
 }
 
-.detail-bookDetail-wrap {
-  width: 800px;
-  height: 150px;
-}
-
-.detail-bookDetail-wrap p:nth-child(1) {
-  font-size: 25px;
-  font-weight: bold;
-  margin-bottom: 15px;
+.keyword-detail-right-text p:nth-child(1) {
+  font-size: 35px;
+  margin-bottom: 5px;
   color: #282828;
 }
 
-.detail-bookDetail-wrap p:nth-child(2) {
+.keyword-detail-right-text p:nth-child(2) {
   font-size: 15px;
-  margin-bottom: 20px;
-  color: #323232;
+  margin-bottom: 50px;
+  color: #343434;
 }
 
-.detail-bookDetail-wrap p:nth-child(3) {
-  font-size: 15px;
-  color: #282828;
+.keyword-detail-right-text p:nth-child(3) {
+  font-size: 18px;
+  color: #343434;
+  margin-bottom: 50px;
 }
 
-.detail-button {
-  width: 180px;
-  height: 50px;
-  background-color: #2a861e;
-  border-radius: 50px;
+.keyword-detail-buy-button {
+  width: 120px;
+  height: 40px;
+  line-height: 40px;
+  background-color: #3a7c6e;
+  font-family: "Jua", sans-serif;
+  border-radius: 5px;
   display: block;
   color: white;
   border: none;
-  margin-top: 100px;
-  font-weight: bold;
-  font-size: 15px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-bottom: 100px;
 }
 
-.detail-button:hover {
+.keyword-detail-buy-button:hover {
   background-color: #3ab62a;
+}
+
+.keyword-detail-review-wrap {
+  font-family: "Gowun Dodum", sans-serif;
+  font-size: 20px;
+  color: #343434;
+}
+
+.keyword-detail-review-text {
+  margin-bottom: 30px;
+}
+
+.keyword-detail-review-text p {
+  float: left;
+  margin-right: 20px;
+}
+
+.keyword-detail-review-text button {
+  outline: none;
+  cursor: pointer;
+  background: #878787;
+  border: none;
+  display: block;
+  width: 75px;
+  height: 25px;
+  color: white;
+  font-size: 10px;
+}
+
+.keyword-detail-review-text button:hover {
+  background-color: #009532;
+  color: white;
+}
+
+.keyword-detail-scroll-container {
+  padding: 30px;
+  box-sizing: border-box;
+  box-shadow: 3px 2px 5px 1px rgba(193, 193, 193, 1);
+  margin-bottom: 50px;
+  float: left;
+}
+
+.keyword-detail-scroll-wrap {
+  max-height: 500px;
+  margin-bottom: 50px;
+  scrollbar-width: thin;
+  overflow-y: auto;
+}
+
+.keyword-detail-scroll-wrap::-webkit-scrollbar {
+  display: none;
+}
+
+.keyword-detail-scroll-wrap.no-review {
+  width: 560px;
+  height: 50px;
+  overflow-y: hidden;
+}
+
+/* .keyword-detail-scroll-wrap:has(.detail-review-no) {
+  height: auto;
+} */
+
+.keyword-detail-box-wrap {
+  width: 550px;
+  height: 150px;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  margin-right: 30px;
+  /* box-shadow: 3px 2px 5px 1px rgba(193, 193, 193, 1); */
+  position: relative;
+  border: 1px solid #ababab;
+  margin-top: 50px;
+}
+
+.keyword-detail-declaration-button {
+  font-size: 12px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  display: block;
+  position: absolute;
+  right: 10px;
+  top: -25px;
+}
+
+.keyword-detail-review-img {
+  width: 40px;
+  height: 40px;
+  background-color: #d9d9d9;
+  border-radius: 50px;
+  margin-right: 15px;
+  float: left;
+}
+
+.keyword-detail-text-wrap {
+  float: left;
+}
+
+.keyword-detail-text-wrap p:nth-child(1) {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.keyword-detail-text-wrap input {
+  width: 300px;
+  border: none;
+  outline: none;
+  color: #343434;
+}
+
+.keyword-detail-button-wrap {
+  position: absolute;
+  right: 10px;
+  top: -35px;
+}
+
+.keyword-detail-button-wrap button {
+  border: none;
+  width: 30px;
+  height: 25px;
+  background-color: transparent;
+  font-size: 12px;
   cursor: pointer;
 }
 
-.detail-review {
-  font-size: 20px;
-  font-weight: bold;
-  margin: 50px 0 20px 0;
-  color: #323232;
+.keyword-detail-button-wrap button:hover {
+  color: #5a5a5a;
 }
 
-.detail-review-wrap {
-  width: 800px;
-  background-color: #e9e9e9;
-  padding: 40px;
-  box-sizing: border-box;
+.keyword-detail-button-wrap button:nth-child(1) {
+  margin-right: 5px;
 }
 
-.detail-scroll-wrap {
-  overflow-y: auto;
-  scrollbar-width: thin;
-  height: 500px;
-  margin-bottom: 20px;
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  padding: 10px;
+  color: #555;
 }
 
-.detail-scroll-wrap:has(.detail-review-no) {
-  height: auto;
+.keyword-detail-review-no {
+  font-size: 14px;
+  /* margin-bottom: 20px; */
+  /* width: 560px; */
+  /* height: 50px; */
 }
 
-.detail-top-button-wrap {
-  position: relative;
-}
-
-.detail-review-box {
-  width: 600px;
-  height: 160px;
-  background-color: white;
-  padding: 20px;
-  box-sizing: border-box;
-  margin-bottom: 50px;
-  border-radius: 10px;
-  box-shadow: 3px 2px 9.6px 0.5px rgba(116, 116, 116, 0.25);
-}
-
-.detail-review-button-wrap {
+/* .detail-review-button-wrap {
   display: flex;
   justify-content: flex-start;
-}
+} */
 
-.detail-review-insert-wrap {
+/* .detail-review-insert-wrap {
   width: 600px;
   min-height: 50px;
   max-height: 100px;
-  /* height: auto; */
   border: none;
   display: block;
   outline: none;
@@ -179,9 +284,9 @@
   white-space: pre-wrap;
   resize: none;
   overflow-y: hidden;
-}
+} */
 
-.detail-review-button {
+/* .detail-review-button {
   width: 80px;
   height: 30px;
   border: none;
@@ -189,80 +294,8 @@
   color: white;
   cursor: pointer;
   font-size: 13px;
-  /* border-radius: 5px; */
-}
+} */
 
-.detail-review-button:hover {
+/* .detail-review-button:hover {
   background-color: #3ab62a;
-}
-
-.detail-review-img {
-  width: 40px;
-  height: 40px;
-  background-color: #d9d9d9;
-  border-radius: 50px;
-  margin-right: 15px;
-  float: left;
-}
-
-.detail-text-wrap {
-  float: left;
-}
-
-.detail-text-wrap p:nth-child(1) {
-  font-size: 15px;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.detail-text-wrap p:nth-child(2) {
-  margin-bottom: 20px;
-}
-
-.detail-text-wrap p:nth-child(2),
-.detail-text-wrap p:nth-child(3) {
-  font-size: 12px;
-}
-
-.detail-text-wrap input {
-  width: 300px;
-  border: none;
-  outline: none;
-}
-
-.detail-button-wrap {
-  height: 30px;
-  position: absolute;
-  bottom: -5px;
-  right: 30px;
-}
-
-.detail-button-wrap button {
-  border: none;
-  width: 30px;
-  height: 25px;
-  background-color: transparent;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.detail-button-wrap button:hover {
-  color: #5a5a5a;
-}
-
-.detail-button-wrap button:nth-child(1) {
-  margin-right: 5px;
-}
-
-.detail-review-no {
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-
-.loading-spinner {
-  width: 50px;
-  height: 50px;
-  text-align: center;
-  padding: 10px;
-  color: #555;
-}
+} */

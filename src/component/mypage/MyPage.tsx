@@ -6,11 +6,18 @@ import "../../assets/css/myPage.css";
 import profileDefaultImg from "../../assets/img/icon-profile.png";
 
 const MyPage = () => {
+  const navigate = useNavigate();
+
+  // 회원정보
   const [userInfo, setUserInfo] = useState({
     userName: "",
     fileName: "",
   });
+
+  // 회원정보 수정 팝업
   const [isShowPopup, setIsShowPopup] = useState(false);
+
+  // 회원이 선택한 찜 리스트
   const [userPick, setUserPick] = useState([
     {
       bookName: "",
@@ -18,12 +25,13 @@ const MyPage = () => {
       bookIdx: 0,
     },
   ]);
+
+  // 찜 리스트들의 책 이미지
   const [userBookImg, setUserBookImg] = useState([
     {
       fileName: "",
     },
   ]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     userInfos();
@@ -31,6 +39,7 @@ const MyPage = () => {
     userPickBookImg();
   }, []);
 
+  // 회원정보 api
   const userInfos = () => {
     axiosInstance
       .post("/myPage/userInfo", {})
@@ -43,6 +52,7 @@ const MyPage = () => {
       });
   };
 
+  // 유저가 선택한 찜 리스트 api
   const userPickBook = () => {
     axiosInstance
       .post("/myPage/userPickBookList", {})
@@ -55,6 +65,7 @@ const MyPage = () => {
       });
   };
 
+  // 회원이 선택한 찜 리스트들의 책 이미지 api
   const userPickBookImg = () => {
     axiosInstance
       .post("/myPage/bookmarkImageList", {})
@@ -67,20 +78,20 @@ const MyPage = () => {
       });
   };
 
+  // 찜 목록중에 선택한 책 상세정보 이동
   const handleBookList = (bookIdx: number) => {
     navigate(`/member/keyword/detail/${bookIdx}`);
   };
 
   return (
     <>
-      <div className="mypage-wrap">
+      <div className="mypage-con-wrap">
         <div className="mypage-title">
-          <p>마이페이지설명마이페이지설명</p>
-          <p>마이페이지 PICK</p>
+          <p>마이페이지</p>
         </div>
-        <div className="mypage-info">
-          <div className="mypage-profile-wrap">
-            <div className="mypage-img-wrap">
+        <div className="mypage-info-wrap">
+          <div className="mypage-info-top-wrap">
+            <div className="mypage-info-img-box">
               <img
                 src={
                   userInfo.fileName === "default"
@@ -94,93 +105,55 @@ const MyPage = () => {
                 }
                 alt="이미지"
               />
-              {/* <div className="mypage-img"></div> */}
             </div>
-            <button
-              className="mypage-button"
-              onClick={() => setIsShowPopup(true)}
-            >
-              회원정보수정
-            </button>
+
+            <div className="mypage-text-wrap">
+              <p>
+                <span>{userInfo.userName}</span>님,
+                <br />
+                마이페이지에 오신걸 환영합니다!
+              </p>
+            </div>
           </div>
-          <div className="mypage-text-wrap">
-            <p>
-              <span>{userInfo.userName}</span>님,
-              <br />
-              마이페이지에 오신걸 환영합니다!
-            </p>
-          </div>
+
+          <button
+            className="mypage-button"
+            onClick={() => setIsShowPopup(true)}
+          >
+            회원정보수정
+          </button>
         </div>
-        <div className="mypage-list">
+        <div className="mypage-list-wrap">
           <div className="mypage-list-title">찜목록</div>
-          <div className="mypage-list-wrap">
-            <div className="mypage-box">
-              {userPick.length > 0 ? (
-                userPick.map((item, index) => (
-                  <div
-                    key={index}
-                    className="mypage-box-wrap"
-                    onClick={() => handleBookList(item.bookIdx)}
-                  >
-                    <div className="mypage-list-img">
-                      {userBookImg[index] && (
-                        <img
-                          src={userBookImg[index]?.fileName.replace(
-                            "coversum",
-                            "cover500"
-                          )}
-                          alt="책 이미지"
-                        />
-                      )}
-                    </div>
-                    <div className="mypage-text">
-                      <p>{item.bookName}</p>
-                      <p>{item.author}</p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div>유저가 찜한 도서가 없습니다.</div>
-              )}
-            </div>
-          </div>
-
-          {/* {userPick.map((item, index) => (
-            <div className="mypage-box">
-              <div className="mypage-list-img">
-                {userBookImg[index] && (
-                  <img
-                    src={userBookImg[index]?.fileName.replace(
-                      "coversum",
-                      "cover500"
+          <div className="mypage-list-box">
+            {userPick.length > 0 ? (
+              userPick.map((item, index) => (
+                <div
+                  key={index}
+                  className="mypage-box-wrap"
+                  onClick={() => handleBookList(item.bookIdx)}
+                >
+                  <div className="mypage-list-img">
+                    {userBookImg[index] && (
+                      <img
+                        src={userBookImg[index]?.fileName.replace(
+                          "coversum",
+                          "cover500"
+                        )}
+                        alt="책 이미지"
+                      />
                     )}
-                    alt="책 이미지"
-                  />
-                )}
-              </div>
-              <div className="mypage-text">
-                <p>{item.bookName}</p>
-                <p>{item.author}</p>
-              </div>
-            </div>
-          ))} */}
-
-          {/* <div className="mypage-box">
-              <div className="mypage-list-img">
-                {userBookImg.map((item) => (
-                  <img
-                    src={item?.fileName.replace("coversum", "cover500")}
-                    alt="책 이미지"
-                  />
-                ))}
-              </div>
-              {userPick.map((item, index) => (
-                <div key={index} className="mypage-text">
-                  <p>{item.bookName}</p>
-                  <p>{item.author}</p>
+                  </div>
+                  <div className="mypage-text">
+                    <p>{item.bookName}</p>
+                    <p>{item.author}</p>
+                  </div>
                 </div>
-              ))}
-            </div> */}
+              ))
+            ) : (
+              <div>유저가 찜한 도서가 없습니다.</div>
+            )}
+          </div>
         </div>
       </div>
       {isShowPopup && (

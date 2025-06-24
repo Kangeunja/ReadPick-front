@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import Layout from "../layouts/nav";
+import Layout from "../layouts";
 import Main from "../component/main/Main";
 import Login from "../component/login/Login";
 import Member from "../component/member/Member";
@@ -10,69 +10,30 @@ import MemberKeyword from "../component/memberKeyword/MemberKeyword";
 import MemberKeywordDetail from "../component/memberKeyword/MemberKeywordDetail";
 import MyPage from "../component/mypage/MyPage";
 import { RecoilRoot } from "recoil";
+import Admin from "../component/admin/Admin";
+import AdminMain from "../component/admin/AdminMain";
 
 const BrowserRouterDom = () => {
   return (
     <RecoilRoot>
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <Layout>
-                <Main />
-              </Layout>
-            }
-          ></Route>
-          <Route
-            path="/login"
-            element={
-              <Layout>
-                <Login />
-              </Layout>
-            }
-          ></Route>
-          <Route
-            path="/member"
-            element={
-              <Layout>
-                <Member />
-              </Layout>
-            }
-          ></Route>
-          <Route
-            path="/member/login"
-            element={
-              <Layout>
-                <MemberLogin />
-              </Layout>
-            }
-          ></Route>
-          <Route
-            path="/member/keyword"
-            element={
-              <Layout>
-                <MemberKeyword />
-              </Layout>
-            }
-          ></Route>
-          <Route
-            // path="/member/keyword/detail"
-            path="/member/keyword/detail/:bookIdx"
-            element={
-              <Layout>
-                <MemberKeywordDetail />
-              </Layout>
-            }
-          ></Route>
-          <Route
-            path="/mypage"
-            element={
-              <Layout>
-                <MyPage />
-              </Layout>
-            }
-          ></Route>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Main />}></Route>
+            <Route path="/login" element={<Login />}></Route>
+            <Route path="/member" element={<Member />}></Route>
+            <Route path="/member/login" element={<MemberLogin />}></Route>
+            <Route path="/member/keyword" element={<MemberKeyword />}></Route>
+            <Route
+              // path="/member/keyword/detail"
+              path="/member/keyword/detail/:bookIdx"
+              element={<MemberKeywordDetail />}
+            ></Route>
+            <Route path="/mypage" element={<MyPage />}></Route>
+          </Route>
+
+          <Route path="/admin" element={<Admin />}></Route>
+          <Route path="/admin/main" element={<AdminMain />}></Route>
         </Routes>
       </BrowserRouter>
     </RecoilRoot>
