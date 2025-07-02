@@ -38,13 +38,18 @@
 .mypageInfo-popup-img-box {
   width: 100px;
   height: 100px;
-  background-color: #e7e7e7;
-  border-radius: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin-bottom: 10px;
   position: relative;
+  /* background-color: #e7e7e7; */
+  /* display: flex;
+  align-items: center;
+  justify-content: center; */
+}
+
+.mypageInfo-popup-img-box img {
+  width: 100px;
+  height: 100px;
+  border-radius: 25px;
 }
 
 .mypageInfo-popup-bottom-box {
@@ -163,15 +168,46 @@
   position: relative;
 }
 
-.mypageInfo-button-wrap {
+.mypageInfo-popup-button-wrap {
   display: flex;
   margin-bottom: 5px;
 }
 
-.mypage-message-wrap {
+.mypageInfo-popup-button-wrap button:first-child {
+  margin-right: 10px;
+}
+
+.mypageInfo-popup-message {
   display: flex;
 }
 
-.mypageInfo-message button:first-child {
-  margin-right: 10px;
+.mypageInfo-popup-id-CheckMessage {
+  width: 180px;
+  margin-right: 50px;
+  font-size: 12px;
+  margin-left: 120px;
+}
+
+.mypageInfo-popup-member-pwCheck {
+  width: 180px;
+  margin-left: 120px;
+  font-size: 12px;
+}
+
+.mypageInfo-popup-id-CheckMessage.success,
+.mypageInfo-popup-member-pwCheck.success {
+  color: green;
+}
+
+.mypageInfo-popup-id-CheckMessage.error,
+.mypageInfo-popup-member-pwCheck.error {
+  color: red;
+}
+
+.mypageInfo-popup-toggle-visibility {
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  right: 200px;
+  cursor: pointer;
 }

@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
+import "../../assets/css/memberkeywordDetailPopup.css";
 
-const MemberKeywordDetailPopup = ({ onClose, review }: any) => {
-  const [editedReview, setEditedReview] = useState(review);
+const MemberKeywordDetailPopup = ({ onClose, selectedReview }: any) => {
+  const [editedReview, setEditedReview] = useState(selectedReview);
+  // 리뷰내용 포커싱
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     // 팝업이 열릴 때 body의 스크롤 막기
@@ -28,16 +31,18 @@ const MemberKeywordDetailPopup = ({ onClose, review }: any) => {
 
   // 저장버튼
   const handleDetailPopupSave = () => {
-    // const updatedReviews = editedReview
-    //   .filter(
-    //     (item: any) => item.bookIdx !== undefined && item.bookIdx !== null
-    //   )
-    //   .map((item: any) => ({
-    //     bookIdx: item.bookIdx,
-    //     content: item.content,
-    //   }));
-
-    // if (bookIdxNumber && bookIdxNumber > 0) {
+    // 입력이 비었을 경우
+    if (editedReview.content.trim() === "") {
+      alert("내용을 입력해주세요.");
+      inputRef.current?.focus();
+      return;
+    }
+    // 바뀐 내용이 없을 경우
+    if (editedReview.content === selectedReview.content) {
+      alert("기존 내용과 동일합니다.");
+      inputRef.current?.focus();
+      return;
+    }
 
     axiosInstance
       .post("/reviewUpdate", {
@@ -48,7 +53,7 @@ const MemberKeywordDetailPopup = ({ onClose, review }: any) => {
         console.log(res);
         if (res.data === "success") {
           alert("수정되었습니다.");
-          onClose();
+          onClose(editedReview);
         }
       })
       .catch((error) => {
@@ -57,50 +62,41 @@ const MemberKeywordDetailPopup = ({ onClose, review }: any) => {
   };
 
   return (
-    <div className="detail-popup">
-      <div className="detail-popup-wrap">
-        <h3>리뷰 수정</h3>
-        <div className="detail-popup-top-wrap">
-          <div key={editedReview.rvIdx} className="detail-popup-review-box">
-            <div className="detail-review-img"></div>
-            <div className="detail-text-wrap">
+    <div className="keyword-detail-popup-wrap">
+      <div className="keyword-detail-popup-box">
+        <div className="keyword-detail-popup-btn-wrap">
+          <p>리뷰 수정</p>
+          <button
+            type="button"
+            className="keyword-detail-popup-cancel"
+            onClick={() => onClose()}
+          ></button>
+        </div>
+        <div
+          key={editedReview.rvIdx}
+          className="keyword-detail-popup-review-box"
+        >
+          <div className="keyword-detail-popup-review-img">
+            <img src={editedReview.fileName} alt="이미지" />
+
+            <div className="keyword-detail-popup-text-wrap">
               <p>{editedReview.nickName}</p>
-              <p>#메이플</p>
               <input
+                ref={inputRef}
                 type="text"
                 value={editedReview.content}
                 onChange={(e) => handleDetailPopup(e)}
               />
             </div>
           </div>
-
-          {/* {review.map((item: any) => (
-            <div key={item.rvIdx} className="detail-popup-review-box">
-              <div className="detail-review-img"></div>
-              <div className="detail-text-wrap">
-                <p>{item.nickName}</p>
-                <p>#메이플</p>
-                <input
-                  type="text"
-                  value={item.content}
-                  onChange={(e) => handleDetailPopup(e, item.rvIdx)}
-                />
-              </div>
-            </div>
-          ))} */}
         </div>
         <button
           type="button"
-          className="detail-popup-save"
+          className="keyword-detail-popup-save"
           onClick={handleDetailPopupSave}
         >
           저장하기
         </button>
-        <button
-          type="button"
-          className="detail-popup-cancel"
-          onClick={() => onClose()}
-        ></button>
       </div>
     </div>
   );

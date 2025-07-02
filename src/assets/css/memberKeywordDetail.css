@@ -113,7 +113,7 @@
   background-color: #3ab62a;
 }
 
-.keyword-detail-review-wrap {
+.keyword-detail-review-text p {
   font-family: "Gowun Dodum", sans-serif;
   font-size: 20px;
   color: #343434;
@@ -198,6 +198,10 @@
   top: -25px;
 }
 
+.keyword-detail-declaration-button:hover {
+  color: #5a5a5a;
+}
+
 .keyword-detail-review-img {
   width: 40px;
   height: 40px;
@@ -205,6 +209,23 @@
   border-radius: 50px;
   margin-right: 15px;
   float: left;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.keyword-detail-review-default-img {
+  width: 25px;
+  height: 25px;
+  border-radius: 50px;
+  margin: 0 auto;
+}
+
+.keyword-detail-review-set-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50px;
 }
 
 .keyword-detail-text-wrap {
@@ -214,7 +235,7 @@
 .keyword-detail-text-wrap p:nth-child(1) {
   font-size: 15px;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
 }
 
 .keyword-detail-text-wrap input {

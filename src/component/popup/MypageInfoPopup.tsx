@@ -3,8 +3,9 @@ import axiosInstance from "../../api/axiosInstance";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import "../../assets/css/mypagePopup.css";
 
-import profileDefaultImg from "../../assets/img/icon-profile.png";
+import profileDefaultImg from "../../assets/img/icon-profile-2.png";
 import TrashImg from "../../assets/img/icon-trash.png";
+import { error } from "console";
 
 const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
   // 회원 상세 정보
@@ -17,6 +18,36 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
     fileName: userInfo.fileName,
   });
 
+  // 회원 정보 기본 프로필 이미지
+  const [image, setImage] = useState(profileDefaultImg);
+
+  // 프로필 사진 임시 상태
+  const [tempImageFile, setTempImageFile] = useState<File | null>(null);
+
+  // 프로필 이미지가 수정되었는지 여부
+  const [isImageUpdated, setIsImageUpdated] = useState(false);
+
+  // 프로필 이미지가 삭제되었는지 여부
+  const [isImageDeleted, setIsImageDeleted] = useState(false);
+
+  // 회원 정보 기본 프로필 이미지 포커싱
+  const imgRef = useRef<HTMLInputElement | null>(null);
+  // 회원 정보 프로필 수정 이미지 포커싱
+  const editImgRef = useRef<HTMLInputElement | null>(null);
+  // 회원 정보 이름 포커싱
+  const userNameRef = useRef<HTMLInputElement>(null);
+  // 회원 정보 닉네임 포커싱
+  const nickNameRef = useRef<HTMLInputElement>(null);
+  // 회원 정보 이메일 포커싱
+  const emailRef = useRef<HTMLInputElement>(null);
+  // 회원 정보 아이디 포커싱
+  const idRef = useRef<HTMLInputElement>(null);
+  // 회원 정보 비밀번호 포커싱
+  const pwRef = useRef<HTMLInputElement>(null);
+  // 회원 정보 비밀번호 확인 포커싱
+  const pwCheckRef = useRef<HTMLInputElement>(null);
+
+  // 회원 정보 수정
   const [editMode, setEditMode] = useState({
     userName: false,
     nickName: false,
@@ -24,29 +55,27 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
     id: false,
     pw: false,
   });
-  const [idCheckMessage, setIdCheckMessage] = useState(""); // 아이디 체크 메세지 추가
-  const [passwordCheckMessage, setPasswordCheckMessage] = useState(""); // 비밀번호 확인 메세지 추가
-  const [idValId, setIdValId] = useState(true); // 아이디 체크 메세지 색깔
-  const [pwValPw, setPwValPw] = useState(true); // 비밀번호 메세지 색깔
 
-  const [isPasswordVisible, setPasswordVisible] = useState(false); // 비밀번호 보이기 상태
-  const [isPasswordConfirmVisible, setPasswordConfirmVisible] = useState(false); // 비밀번호 확인 보이기 상태
-  const [idCheck, setIdcheck] = useState(false); // 중복확인버튼 유무
-  const [isMessageCancel, setIsMessageCancel] = useState(false);
+  // 아이디 중복 확인 버튼 유무
+  const [idCheck, setIdcheck] = useState(false);
 
-  const [pwCheck, setPwCheck] = useState(""); // 비밀번호확인용
+  // 아이디 체크 메세지 추가
+  const [idCheckMessage, setIdCheckMessage] = useState("");
 
-  const [image, setImage] = useState(profileDefaultImg);
+  // 아이디 체크 메세지 색깔
+  const [idValId, setIdValId] = useState(true);
 
-  const userNameRef = useRef<HTMLInputElement>(null);
-  const nickNameRef = useRef<HTMLInputElement>(null);
-  const emailRef = useRef<HTMLInputElement>(null);
-  const idRef = useRef<HTMLInputElement>(null);
-  const pwRef = useRef<HTMLInputElement>(null);
-  const pwCheckRef = useRef<HTMLInputElement>(null);
+  // 비밀번호 보이기 상태
+  const [isPasswordVisible, setPasswordVisible] = useState(false);
 
-  //
-  const imgRef = useRef<HTMLInputElement | null>(null);
+  // 비밀번호 확인 보이기 상태
+  const [isPasswordConfirmVisible, setPasswordConfirmVisible] = useState(false);
+
+  // 비밀번호 확인 메세지 추가
+  const [passwordCheckMessage, setPasswordCheckMessage] = useState("");
+
+  // 비밀번호 메세지 색깔
+  const [pwValPw, setPwValPw] = useState(true);
 
   useEffect(() => {
     // 팝업이 열릴 때 body의 스크롤 막기
@@ -64,6 +93,47 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
     };
   }, []);
 
+  // 프로필 사진 임시업로드 (미리보기용)
+  const handleProfileImage = (e: any) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const imageUrl = URL.createObjectURL(file); // 로컬 프리뷰
+    setImage(imageUrl);
+    setTempImageFile(file);
+    setIsImageUpdated(true);
+    e.target.value = "";
+  };
+
+  // 프로필 사진 수정하기
+  const handleEditProfileImg = (e: any) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const imageUrl = URL.createObjectURL(file); // 로컬 프리뷰
+    setImage(imageUrl);
+    setTempImageFile(file);
+    setIsImageUpdated(true);
+    e.target.value = "";
+  };
+
+  // 프로필 사진 삭제하기
+  const handleDeleteProfileImg = () => {
+    if (window.confirm("사진을 정말로 삭제하시겠습니까?")) {
+      setImage(profileDefaultImg);
+      setTempImageFile(null);
+      setIsImageUpdated(true);
+      setIsImageDeleted(true); // 삭제 상태 true로 세팅
+      setEditableUserInfo((prev) => ({
+        ...prev,
+        fileName: "default",
+      }));
+    } else {
+      return;
+    }
+  };
+
+  // 회원정보 수정내용
   const handleChange = (
     field: keyof typeof editableUserInfo,
     value: string
@@ -73,7 +143,6 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
       [field]: value,
     }));
 
-    // let newValue = value;
     if (field !== "userName" && field !== "nickName") {
       value = value.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, "");
     }
@@ -87,6 +156,7 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
     }
   };
 
+  // 회원정보 수정하기 버튼
   const handleEdit = (field: any, ref: React.RefObject<HTMLInputElement>) => {
     setEditMode((prev) => ({
       ...prev,
@@ -95,7 +165,6 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
 
     if (field === "id") {
       setIdcheck(true);
-      setIsMessageCancel(false);
     }
 
     setTimeout(() => {
@@ -103,13 +172,68 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
     });
   };
 
+  // 아이디 중복확인
+  const handleIdCheck = () => {
+    if (!editableUserInfo.id.trim()) {
+      alert("아이디를 입력해주세요");
+      return;
+    }
+    axiosInstance
+      .post(`/checkId?id=${editableUserInfo.id}`)
+      .then((res) => {
+        if (res.data.result === false) {
+          setIdCheckMessage("사용 불가능한 ID 입니다.");
+          setIdValId(false);
+        } else {
+          setIdCheckMessage("사용 가능한 ID 입니다.");
+          setIdValId(true);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // 아이디 수정취소 버튼
+  const handleMessageCancel = () => {
+    setIdCheckMessage("");
+    setEditableUserInfo((prev) => ({
+      ...prev,
+      id: userInfo.id,
+    }));
+    setIdValId(true);
+  };
+
+  // 비밀번호 숨기기/보이기 토글 함수
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!isPasswordVisible);
+  };
+
+  // 비밀번호확인 숨기기/보이기 토글 함수
+  const togglePasswordCheckVisibility = () => {
+    setPasswordConfirmVisible(!isPasswordConfirmVisible);
+  };
+
+  // 비밀번호 확인
+  const handleOnChangePassword = (value: string) => {
+    if (value !== editableUserInfo.pw) {
+      setPasswordCheckMessage("비밀번호가 일치하지 않습니다.");
+      setPwValPw(false);
+    } else if (value === editableUserInfo.pw) {
+      setPasswordCheckMessage("비밀번호가 일치합니다.");
+      setPwValPw(true);
+    }
+  };
+
+  // 저장하기 버튼
   const handleSave = () => {
     const isModified =
       editableUserInfo.userName !== userInfo.userName ||
       editableUserInfo.nickName !== userInfo.nickName ||
       editableUserInfo.email !== userInfo.email ||
       editableUserInfo.id !== userInfo.id ||
-      editableUserInfo.pw !== userInfo.pw;
+      editableUserInfo.pw !== userInfo.pw ||
+      isImageUpdated;
 
     if (!isModified) {
       alert("수정된 내용이 없습니다.");
@@ -159,6 +283,53 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
       alert("일치하지 않은 비밀번호입니다. 다시 입력해주세요");
       return;
     }
+
+    if (isImageDeleted) {
+      axiosInstance
+        .post("/userImageDelete")
+        .then((res) => {
+          console.log(res.data);
+          if (res.data === "success") {
+            console.log("이미지 삭제 요청");
+            setUserInfo((prev: any) => ({
+              ...prev,
+              fileName: "default",
+            }));
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else if (isImageUpdated && tempImageFile) {
+      const formData = new FormData();
+      formData.append("file", tempImageFile);
+
+      const uploadUrl =
+        userInfo.fileName === "default"
+          ? "/userImageInsert"
+          : "/userImageUpdate";
+      console.log(uploadUrl);
+      axiosInstance
+        .post(uploadUrl, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          // setEditableUserInfo((prev) => ({
+          //   ...prev,
+          //   fileName: res.data,
+          // }));
+          setUserInfo((prev: any) => ({
+            ...prev,
+            fileName: res.data,
+          }));
+          // setUserInfo(editableUserInfo);
+        });
+    } else {
+      // setUserInfo(editableUserInfo);
+    }
     axiosInstance
       .post("/myPage/userInfoModify", {
         userName: editableUserInfo.userName,
@@ -168,183 +339,74 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
         pw: editableUserInfo.pw,
       })
       .then((res) => {
-        console.log(res);
+        console.log(res.data);
         if (res.data === "success") {
           alert("수정완료되었습니다.");
-          setUserInfo(editableUserInfo);
           onClose();
         }
       })
       .catch((error) => {
         console.log(error);
       });
+
+    // try {
+    //   // 이미지 삭제 요청
+    //   if (isImageDeleted) {
+    //     const res = await axiosInstance.post("/userImageDelete");
+    //     if (res.data === "success") {
+    //       console.log("이미지 삭제 요청");
+    //       setUserInfo((prev: any) => ({
+    //         ...prev,
+    //         fileName: "default",
+    //       }));
+    //     }
+    //   }
+    //   // 새 이미지 업로드
+    //   if (isImageUpdated && tempImageFile && !isImageDeleted) {
+    //     const formData = new FormData();
+    //     formData.append("file", tempImageFile);
+
+    //     const uploadUrl =
+    //       userInfo.fileName === "default"
+    //         ? "/userImageInsert"
+    //         : "/userImageUpdate";
+    //     const res = await axiosInstance.post(uploadUrl, formData, {
+    //       headers: {
+    //         "Content-Type": "multipart/form-data",
+    //       },
+    //     });
+    //     setEditableUserInfo((prev) => {
+    //       const updated = {
+    //         ...prev,
+    //         fileName: res.data,
+    //       };
+    //       setUserInfo(updated);
+    //       return updated;
+    //     });
+    //   } else {
+    //     // 이미지 변경이 없는 경우
+    //     setUserInfo(editableUserInfo);
+    //   }
+    //   // 회원 정보 수정 요청 api
+    //   const res = await axiosInstance.post("/myPage/userInfoModify", {
+    //     userName: editableUserInfo.userName,
+    //     nickName: editableUserInfo.nickName,
+    //     email: editableUserInfo.email,
+    //     id: editableUserInfo.id,
+    //     pw: editableUserInfo.pw,
+    //   });
+    //   if (res.data === "success") {
+    //     alert("수정완료되었습니다.");
+    //     onClose();
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
-  // 아이디 중복확인
-  const handleIdCheck = () => {
-    if (!editableUserInfo.id.trim()) {
-      alert("아이디를 입력해주세요");
-      return;
-    }
-    axiosInstance
-      .post(`/checkId?id=${editableUserInfo.id}`)
-      .then((res) => {
-        if (res.data.result === false) {
-          setIdCheckMessage("사용 불가능한 ID 입니다.");
-          setIdValId(false);
-        } else {
-          setIdCheckMessage("사용 가능한 ID 입니다.");
-          setIdValId(true);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  // 비밀번호 확인
-  const handleOnChangePassword = (value: string) => {
-    // setEditableUserInfo((prev) => ({
-    //   ...prev,
-    //   [field]: value,
-    // }));
-    setPwCheck(value);
-
-    if (value !== editableUserInfo.pw) {
-      setPasswordCheckMessage("비밀번호가 일치하지 않습니다.");
-      setPwValPw(false);
-    } else if (value === editableUserInfo.pw) {
-      setPasswordCheckMessage("비밀번호가 일치합니다.");
-      setPwValPw(true);
-    }
-  };
-
-  // 비밀번호 숨기기/보이기 토글 함수
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!isPasswordVisible);
-  };
-
-  // 비밀번호확인 숨기기/보이기 토글 함수
-  const togglePasswordCheckVisibility = () => {
-    setPasswordConfirmVisible(!isPasswordConfirmVisible);
-  };
-
-  const handleMessageCancel = () => {
-    setIdCheckMessage("");
-    setIsMessageCancel(false);
-    setEditableUserInfo((prev) => ({
-      ...prev,
-      id: userInfo.id,
-    }));
-    setIdValId(true);
-  };
-
-  // 사진 추가하기
-  const handleProfileImage = (e: any) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    console.log("선택된 파일:", file);
-
-    axiosInstance
-      .post("/userImageInsert", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        setImage(res.data);
-        // editableUserInfo.fileName 업데이트
-        setEditableUserInfo((prev) => ({
-          ...prev,
-          fileName: res.data,
-        }));
-
-        // 부모 컴포넌트의 userInfo도 업데이트
-        // setUserInfo((prev: any) => ({
-        //   ...prev,
-        //   fileName: res.data,
-        // }));
-        alert("사진이 추가되었습니다.");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  // 사진 수정하기
-  const handleEditProfileImg = (e: any) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    axiosInstance
-      .post("/userImageUpdate", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        setImage(res.data);
-        // editableUserInfo.fileName 업데이트
-        setEditableUserInfo((prev) => ({
-          ...prev,
-          fileName: res.data,
-        }));
-
-        // onClose();
-
-        // 부모 컴포넌트의 userInfo도 업데이트
-        // setUserInfo((prev: any) => ({
-        //   ...prev,
-        //   fileName: res.data,
-        // }));
-        alert("사진이 수정되었습니다.");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  //사진 삭제하기
-  const handleDeleteProfileImg = () => {
-    if (window.confirm("사진을 정말로 삭제하시겠습니까?")) {
-      axiosInstance
-        .post("/userImageDelete")
-        .then((res) => {
-          console.log(res.data);
-          if (res.data === "success") {
-            setImage(profileDefaultImg);
-
-            setEditableUserInfo((prev) => ({
-              ...prev,
-              fileName: "default",
-            }));
-
-            // setUserInfo((prev: any) => ({
-            //   ...prev,
-            //   fileName: "default",
-            // }));
-            alert("사진이 삭제되었습니다.");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      return;
-    }
-  };
-
+  // 취소(x) 버튼
   const handleClose = () => {
-    setUserInfo(editableUserInfo);
+    // setUserInfo(editableUserInfo);
     onClose();
   };
 
@@ -356,11 +418,7 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
         <div className="mypageInfo-popup-img-wrap">
           {editableUserInfo.fileName === "default" ? (
             <div className="mypageInfo-popup-img-box">
-              <img
-                src={image}
-                alt="기본 이미지"
-                // className="myPage-default-img"
-              />
+              <img src={image} alt="기본 이미지" />
               <div
                 className="mypageInfo-popup-bottom-box"
                 onClick={() => imgRef.current?.click()}
@@ -378,23 +436,24 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
           ) : (
             <>
               <img
-                src={
-                  editableUserInfo.fileName.startsWith("http")
-                    ? editableUserInfo.fileName
-                    : `http://localhost:8080/READPICKImages/${editableUserInfo.fileName}`
-                }
+                // src={
+                //   editableUserInfo.fileName.startsWith("http")
+                //     ? editableUserInfo.fileName
+                //     : `http://localhost:8080/READPICKImages/${editableUserInfo.fileName}`
+                // }
+                src={image}
                 alt="프로필 이미지"
                 className="mypageInfo-uploaded-img"
               />
               <div className="mypageInfo-popup-correction-wrap">
-                <div onClick={() => imgRef.current?.click()}>
+                <div onClick={() => editImgRef.current?.click()}>
                   <button type="button" className="mypageInfo-popup-edit-btn">
                     사진 수정
                   </button>
                   <input
                     type="file"
                     accept="image/*"
-                    ref={imgRef}
+                    ref={editImgRef}
                     style={{ display: "none" }}
                     onChange={handleEditProfileImg}
                   />
@@ -481,10 +540,10 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
                 </button>
               )}
             </div>
-            <div className="mypageInfo-message">
+            <div className="mypageInfo-popup-message">
               {idCheckMessage && (
                 <p
-                  className={`mypage-id-CheckMessage ${
+                  className={`mypageInfo-popup-id-CheckMessage ${
                     idValId ? "success" : "error"
                   }`}
                 >
@@ -504,18 +563,17 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
               type={isPasswordVisible ? "text" : "password"}
               ref={pwRef}
               onCopy={(e) => e.preventDefault()}
-              // placeholder={userInfo.pw}
               value={editableUserInfo.pw}
               disabled={!editMode.pw}
               onChange={(e) => handleChange("pw", e.target.value)}
             />
 
             {!isPasswordVisible ? (
-              <div className="mypage-toggle-visibility">
+              <div className="mypageInfo-popup-toggle-visibility">
                 <AiFillEyeInvisible onClick={togglePasswordVisibility} />
               </div>
             ) : (
-              <div className="mypage-toggle-visibility">
+              <div className="mypageInfo-popup-toggle-visibility">
                 <AiFillEye onClick={togglePasswordVisibility} />
               </div>
             )}
@@ -531,31 +589,21 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
               ref={pwCheckRef}
               onPaste={(e) => e.preventDefault()}
               onCopy={(e) => e.preventDefault()}
-              // placeholder={userInfo.pw}
-              // value={editableUserInfo.pw}
-              // disabled={!editMode.pw}
               onChange={(e) => handleOnChangePassword(e.target.value)}
             />
             {!isPasswordConfirmVisible ? (
-              <div className="mypage-toggle-visibility">
+              <div className="mypageInfo-popup-toggle-visibility">
                 <AiFillEyeInvisible onClick={togglePasswordCheckVisibility} />
               </div>
             ) : (
-              <div className="mypage-toggle-visibility">
+              <div className="mypageInfo-popup-toggle-visibility">
                 <AiFillEye onClick={togglePasswordCheckVisibility} />
               </div>
             )}
 
-            {/* <button
-                type="button"
-                onClick={() => handleEdit("pwCheck", pwCheckRef)}
-              >
-                수정
-              </button> */}
-
             {passwordCheckMessage && (
               <p
-                className={`mypage-member-pwCheck ${
+                className={`mypageInfo-popup-member-pwCheck ${
                   pwValPw ? "success" : "error"
                 }`}
               >

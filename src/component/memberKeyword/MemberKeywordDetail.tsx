@@ -10,6 +10,7 @@ import "../../assets/css/memberKeywordDetail.css";
 import "../../assets/css/memberKeywordDetailReview.css";
 import MemberKeywordDetailReviewPopup from "../popup/MemberKeywordDetailReviewPopup";
 import SpinnerIcon from "../../icon/SpinnerIcon";
+import profileDefaultImg from "../../assets/img/icon-profile.png";
 
 interface BookDetail {
   author: string;
@@ -26,6 +27,7 @@ interface Review {
   nickName: string;
   bookIdx: number;
   rvIdx: number;
+  fileName: string;
 }
 
 const MemberKeywordDetail = () => {
@@ -246,6 +248,11 @@ const MemberKeywordDetail = () => {
         })
         .then((res) => {
           console.log(res.data);
+          if (res.data === "reportReview:success") {
+            alert("신고 완료되었습니다.");
+          } else {
+            alert("이미 신고된 이력이 있습니다.");
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -456,7 +463,6 @@ const MemberKeywordDetail = () => {
 
             <div className="keyword-detail-scroll-container">
               <div
-                // className="keyword-detail-scroll-wrap"
                 className={`keyword-detail-scroll-wrap ${
                   reviewMessage ? "no-review" : ""
                 }`}
@@ -484,7 +490,21 @@ const MemberKeywordDetail = () => {
                               <button onClick={handleReviewDelete}>삭제</button>
                             </div>
                           )}
-                          <div className="keyword-detail-review-img"></div>
+                          <div className="keyword-detail-review-img">
+                            <img
+                              src={`${
+                                item.fileName === "default"
+                                  ? profileDefaultImg
+                                  : item.fileName
+                              }`}
+                              className={`${
+                                item.fileName === "default"
+                                  ? "keyword-detail-review-default-img"
+                                  : "keyword-detail-review-set-img"
+                              }`}
+                              alt="이미지"
+                            />
+                          </div>
                           <div className="keyword-detail-text-wrap">
                             <p>{item.nickName}</p>
                             <input type="text" value={item.content} readOnly />
@@ -622,11 +642,22 @@ const MemberKeywordDetail = () => {
       {isPopup && selectedReview && (
         <MemberKeywordDetailPopup
           // userInfo={userInfo}
-          reviewList={reviewList}
-          review={selectedReview}
-          onClose={() => {
+          // reviewList={reviewList}
+          selectedReview={selectedReview}
+          onClose={(updatedReview: any) => {
             setIsPopup(false);
-            reviewList(bookDetail?.bookIdx!); // 팝업 닫힐 때 리스트 다시 불러오기
+            if (updatedReview) {
+              setReview((prevReviews) =>
+                prevReviews.map((review) =>
+                  review.rvIdx === updatedReview.rvIdx
+                    ? { ...review, ...updatedReview }
+                    : review
+                )
+              );
+            }
+            // setMore(true);
+            // setLastRvIdx(null);
+            // reviewList(bookDetail?.bookIdx!); // 팝업 닫힐 때 리스트 다시 불러오기
           }}
         />
       )}
