@@ -56,6 +56,7 @@
   box-shadow: 0 4px 17.2px rgba(0, 0, 0, 0.5);
   position: absolute;
   left: 45%;
+  top: 30%;
 }
 
 .main-img img {
@@ -102,6 +103,8 @@
 
 .main-center-text {
   line-height: 250px;
+  position: absolute;
+  left: 41%;
 }
 
 /* main-center-content  */

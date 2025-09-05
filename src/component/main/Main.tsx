@@ -123,7 +123,7 @@ const Main = () => {
             </div>
           ) : (
             <p className="main-center-text">
-              오늘의 책이 아직 준비되어 있지 않았어요!{" "}
+              오늘의 책이 아직 준비되어 있지 않았어요!
             </p>
           )}
 
