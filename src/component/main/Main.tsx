@@ -33,6 +33,7 @@ const Main = () => {
     },
   ]);
 
+  // 키워드별 페이지이동
   const handleKeyWordIdx = (bsIdx: number) => {
     navigate(`/member/keyword?bsIdx=${bsIdx}`);
   };
@@ -115,8 +116,10 @@ const Main = () => {
                 )}
                 alt="책 이미지"
               />
-              <p>{todayBookData.bookName}</p>
-              <p>{todayBookData.content}</p>
+              <div className="main-books-text">
+                <p>{todayBookData.bookName}</p>
+                <p>{todayBookData.author}</p>
+              </div>
             </div>
           ) : (
             <p className="main-center-text">
@@ -133,8 +136,8 @@ const Main = () => {
 
       <div className="main-keyword-content">
         <div className="main-keyword-text">
-          <p>키워드별로 찾아볼수 있습니다.</p>
           <p>KEYWORD</p>
+          <p>키워드별로 찾아볼수 있습니다.</p>
         </div>
         <div className="main_keyword-wrap">
           {keyList.map((item) => (
@@ -173,7 +176,9 @@ const Main = () => {
             </>
           ))
         ) : (
-          <div>유저가 선택한 추천 도서가 없습니다.</div>
+          <div style={{ textAlign: "center" }}>
+            유저가 선택한 추천 도서가 없습니다.
+          </div>
         )}
       </div>
 
