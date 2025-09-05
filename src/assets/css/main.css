@@ -17,7 +17,7 @@
   box-sizing: border-box;
   margin: 0 auto;
   display: flex;
-  justify-content: space-between;
+  position: relative;
 }
 
 .main-text-wrap p:first-child {
@@ -54,6 +54,8 @@
   width: 160px;
   height: 200px;
   box-shadow: 0 4px 17.2px rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 45%;
 }
 
 .main-img img {
@@ -78,7 +80,8 @@
 .main-right-img {
   height: 230px;
   display: flex;
-  position: relative;
+  position: absolute;
+  right: 0;
 }
 
 .main-books-img {
