@@ -83,14 +83,13 @@
 }
 
 .keyword-detail-right-text p:nth-child(2) {
-  font-size: 15px;
-  margin-bottom: 50px;
+  font-size: 14px;
+  margin-bottom: 20px;
   color: #343434;
 }
 
 .keyword-detail-right-text p:nth-child(3) {
-  font-size: 18px;
-  color: #343434;
+  font-size: 17px;
   margin-bottom: 50px;
 }
 
@@ -113,42 +112,39 @@
   background-color: #3ab62a;
 }
 
+.keyword-detail-review-text {
+  margin-bottom: 30px;
+  width: 580px;
+}
+
 .keyword-detail-review-text p {
   font-family: "Gowun Dodum", sans-serif;
   font-size: 20px;
   color: #343434;
-}
-
-.keyword-detail-review-text {
-  margin-bottom: 30px;
-}
-
-.keyword-detail-review-text p {
-  float: left;
   margin-right: 20px;
+  margin-bottom: 20px;
+  float: left;
 }
 
 .keyword-detail-review-text button {
   outline: none;
   cursor: pointer;
-  background: #878787;
+  background: #01701d;
   border: none;
   display: block;
   width: 75px;
   height: 25px;
   color: white;
   font-size: 10px;
+  float: right;
 }
 
 .keyword-detail-review-text button:hover {
-  background-color: #009532;
+  background-color: #3ab62a;
   color: white;
 }
 
 .keyword-detail-scroll-container {
-  padding: 30px;
-  box-sizing: border-box;
-  box-shadow: 3px 2px 5px 1px rgba(193, 193, 193, 1);
   margin-bottom: 50px;
   float: left;
 }
@@ -170,10 +166,6 @@
   overflow-y: hidden;
 }
 
-/* .keyword-detail-scroll-wrap:has(.detail-review-no) {
-  height: auto;
-} */
-
 .keyword-detail-box-wrap {
   width: 550px;
   height: 150px;
@@ -181,7 +173,7 @@
   box-sizing: border-box;
   border-radius: 10px;
   margin-right: 30px;
-  /* box-shadow: 3px 2px 5px 1px rgba(193, 193, 193, 1); */
+  box-shadow: 3px 2px 5px 1px rgba(193, 193, 193, 1);
   position: relative;
   border: 1px solid #ababab;
   margin-top: 50px;
@@ -278,45 +270,5 @@
 
 .keyword-detail-review-no {
   font-size: 14px;
-  /* margin-bottom: 20px; */
-  /* width: 560px; */
-  /* height: 50px; */
+  margin-top: 20px;
 }
-
-/* .detail-review-button-wrap {
-  display: flex;
-  justify-content: flex-start;
-} */
-
-/* .detail-review-insert-wrap {
-  width: 600px;
-  min-height: 50px;
-  max-height: 100px;
-  border: none;
-  display: block;
-  outline: none;
-  background-color: white;
-  padding: 5px;
-  box-sizing: border-box;
-  font-size: 12px;
-  margin-right: 20px;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: pre-wrap;
-  resize: none;
-  overflow-y: hidden;
-} */
-
-/* .detail-review-button {
-  width: 80px;
-  height: 30px;
-  border: none;
-  background-color: #1e821e;
-  color: white;
-  cursor: pointer;
-  font-size: 13px;
-} */
-
-/* .detail-review-button:hover {
-  background-color: #3ab62a;
-} */

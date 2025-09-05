@@ -46,8 +46,18 @@
   margin-right: 10px;
 }
 
+.keyword-detail-review-popup-btn-wrap button:nth-child(1):hover {
+  background-color: #bdbdbd;
+  margin-right: 10px;
+}
+
 .keyword-detail-review-popup-btn-wrap button:nth-child(2) {
   background-color: #004f14;
+  color: white;
+}
+
+.keyword-detail-review-popup-btn-wrap button:nth-child(2):hover {
+  background-color: #01701d;
   color: white;
 }
 
@@ -81,11 +91,6 @@
   display: block;
   outline: none;
   font-size: 12px;
-  /* padding: 5px;
-  box-sizing: border-box; */
-  /* word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: pre-wrap; */
   resize: none;
   overflow-y: hidden;
 }

@@ -16,15 +16,15 @@ interface SubBookNames {
 }
 
 const MemberKeyword = () => {
+  const navigate = useNavigate();
+
   // URL에서 bsIdx 쿼리 파라미터 값 추출
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const bsIdx = queryParams.get("bsIdx");
   const bsIdxNumber = bsIdx ? parseInt(bsIdx, 10) : null;
 
-  const navigate = useNavigate();
-
-  // 키워드 메뉴
+  // 키워드 리스트 정보
   const [keyword, setKeyword] = useState([
     {
       bsIdx: 0,
@@ -38,7 +38,7 @@ const MemberKeyword = () => {
     },
   ]);
 
-  // 키워드 소분류 메뉴
+  // 키워드 리스트 토글 유무
   const [keywordToggle, setKeywordToggle] = useState<number | null>(null);
 
   // 책 정보
@@ -71,7 +71,7 @@ const MemberKeyword = () => {
     }
   }, [bsIdxNumber]);
 
-  // 키워드 리스트 api
+  // 메인페이지에서 선택한 중분류의 소분류 리스트 api
   const keywordList = () => {
     axiosInstance
       .get("/bssListByBsIdx")
@@ -84,7 +84,7 @@ const MemberKeyword = () => {
       });
   };
 
-  // 키워드 메뉴 api
+  // 키워드 리스트 토글 상태
   const handleClickTitle = (bsIdx: number) => {
     setSubBookList([]);
     if (keywordToggle === bsIdx) {
@@ -96,7 +96,7 @@ const MemberKeyword = () => {
     }
   };
 
-  // 키워드 소분류 메뉴 api
+  // 유저가 선택한 소분류 정보 api
   const handleClickSubTitle = (bssIdx: number) => {
     setBookList([]);
     subBookListImg(bssIdx);
@@ -128,7 +128,7 @@ const MemberKeyword = () => {
       });
   };
 
-  // 키워드 책 이미지 api
+  // 유저가 선택한 중분류의 책 이미지 리스트 api
   const bookListImg = (bsIdx: number) => {
     axiosInstance
       .get("/bsImageList", {
@@ -145,7 +145,7 @@ const MemberKeyword = () => {
       });
   };
 
-  // 키워드 소분류 책 이미지 api
+  // 유저가 선택한 소분류 책 이미지 리스트 api
   const subBookListImg = (bssIdx: number) => {
     axiosInstance
       .get("/bssImageList", {
@@ -154,7 +154,7 @@ const MemberKeyword = () => {
         },
       })
       .then((res) => {
-        console.log(res);
+        console.log(res.data);
         setSubBookImg(res.data);
       })
       .catch((error) => {
@@ -162,7 +162,7 @@ const MemberKeyword = () => {
       });
   };
 
-  // 책 정보 url api
+  // 책 상세정보 페이지이동
   const handleBookDetailClick = (bookIdx: number) => {
     navigate(`/member/keyword/detail/${bookIdx}`);
   };

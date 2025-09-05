@@ -1,4 +1,3 @@
-import React from "react";
 import BrowserRouterDom from "./router";
 import "./assets/css/index.css";
 

@@ -12,11 +12,13 @@ import MyPage from "../component/mypage/MyPage";
 import { RecoilRoot } from "recoil";
 import Admin from "../component/admin/Admin";
 import AdminMain from "../component/admin/AdminMain";
+import ScrollTop from "../layouts/scrollTop/ScrollTop";
 
 const BrowserRouterDom = () => {
   return (
     <RecoilRoot>
       <BrowserRouter>
+        <ScrollTop />
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Main />}></Route>

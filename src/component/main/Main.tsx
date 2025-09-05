@@ -33,14 +33,8 @@ const Main = () => {
     },
   ]);
 
-  // 키워드별 페이지이동
-  const handleKeyWordIdx = (bsIdx: number) => {
-    navigate(`/member/keyword?bsIdx=${bsIdx}`);
-  };
-
   // 화면 진입하자마자 실행되는 코드
   useEffect(() => {
-    window.scrollTo(0, 0);
     keywordList();
     todayBook();
     userGenreBookList();
@@ -59,12 +53,12 @@ const Main = () => {
       });
   };
 
-  // 오늘의 책 보러가기
+  // 오늘의 책 보러가기 버튼
   const handleTodayBook = (bookIdx: number) => {
     navigate(`/member/keyword/detail/${bookIdx}`);
   };
 
-  // 키워드 리스트 api
+  // 키워드 중분류 리스트 api
   const keywordList = () => {
     axiosInstance
       .get("/bsList")
@@ -76,7 +70,12 @@ const Main = () => {
       });
   };
 
-  // 추천도서 api
+  // 키워드별 페이지이동
+  const handleKeyWordIdx = (bsIdx: number) => {
+    navigate(`/member/keyword?bsIdx=${bsIdx}`);
+  };
+
+  // 유저 장르별 책 추천 api
   const userGenreBookList = () => {
     axiosInstance
       .get("/userGenreBook")
@@ -89,6 +88,7 @@ const Main = () => {
       });
   };
 
+  // 추천도서별 페이지이동
   const handleBookDetail = (bookIdx: number) => {
     navigate(`/member/keyword/detail/${bookIdx}`);
   };
@@ -136,8 +136,8 @@ const Main = () => {
 
       <div className="main-keyword-content">
         <div className="main-keyword-text">
-          <p>KEYWORD</p>
           <p>키워드별로 찾아볼수 있습니다.</p>
+          <p>KEYWORD</p>
         </div>
         <div className="main_keyword-wrap">
           {keyList.map((item) => (
@@ -160,20 +160,18 @@ const Main = () => {
 
         {genreBook.length > 0 ? (
           genreBook.map((item, index) => (
-            <>
-              <div key={index} onClick={() => handleBookDetail(item.bookIdx)}>
-                <div className="main-book-box">
-                  <img
-                    src={item.bookImageName.replace("coversum", "cover500")}
-                    alt="책 이미지"
-                  />
-                </div>
-                <div className="main-book-title">
-                  <p>{item.bookName}</p>
-                  <p>{item.author}</p>
-                </div>
+            <div key={index} onClick={() => handleBookDetail(item.bookIdx)}>
+              <div className="main-book-box">
+                <img
+                  src={item.bookImageName.replace("coversum", "cover500")}
+                  alt="책 이미지"
+                />
               </div>
-            </>
+              <div className="main-book-title">
+                <p>{item.bookName}</p>
+                <p>{item.author}</p>
+              </div>
+            </div>
           ))
         ) : (
           <div style={{ textAlign: "center" }}>

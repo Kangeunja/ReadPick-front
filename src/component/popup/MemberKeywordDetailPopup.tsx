@@ -2,9 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import "../../assets/css/memberkeywordDetailPopup.css";
 
-const MemberKeywordDetailPopup = ({ onClose, selectedReview }: any) => {
+const MemberKeywordDetailPopup = ({
+  onClose,
+  selectedReview,
+  renderProfileImg,
+}: any) => {
+  // 리뷰 내용
   const [editedReview, setEditedReview] = useState(selectedReview);
-  // 리뷰내용 포커싱
+
+  // 리뷰 내용 포커싱
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -21,15 +27,9 @@ const MemberKeywordDetailPopup = ({ onClose, selectedReview }: any) => {
       ...prev,
       content: e.target.value,
     }));
-    // const updateReview = [...editedReview];
-    // const reviewIndex = updateReview.findIndex((item) => item.rvIdx === rvIdx);
-
-    // setEditedReview(updateReview);
-    // const value = e.target.value;
-    // setEditedReview([...editedReview, { content: value }]);
   };
 
-  // 저장버튼
+  // 저장하기 버튼
   const handleDetailPopupSave = () => {
     // 입력이 비었을 경우
     if (editedReview.content.trim() === "") {
@@ -76,8 +76,10 @@ const MemberKeywordDetailPopup = ({ onClose, selectedReview }: any) => {
           key={editedReview.rvIdx}
           className="keyword-detail-popup-review-box"
         >
-          <div className="keyword-detail-popup-review-img">
-            <img src={editedReview.fileName} alt="이미지" />
+          <div className="keyword-detail-popup-review-img-wrap">
+            <div className="keyword-detail-popup-review-img">
+              {renderProfileImg(editedReview.fileName)}
+            </div>
 
             <div className="keyword-detail-popup-text-wrap">
               <p>{editedReview.nickName}</p>

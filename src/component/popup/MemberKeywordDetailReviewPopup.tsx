@@ -1,8 +1,9 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import { userInfoState } from "../../recoil/userInfoState";
 import axiosInstance from "../../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
+import "../../assets/css/memberKeywordDetailReviewPopup.css";
 
 const MemberKeywordDetailReviewPopup = ({
   onClose,
@@ -12,12 +13,23 @@ const MemberKeywordDetailReviewPopup = ({
 }: any) => {
   const navigate = useNavigate();
 
-  // 텍스트 빈값으로 저장
-  const [text, setText] = useState("");
-  // 텍스트 포커싱
-  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   // 유저 정보
   const [user] = useRecoilState(userInfoState);
+
+  // 텍스트 빈값으로 저장
+  const [text, setText] = useState("");
+
+  // 텍스트 포커싱
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    // 팝업이 열릴 때 body의 스크롤 막기
+    document.body.style.overflow = "hidden";
+    return () => {
+      // 팝업이 닫힐 때 스크롤 복구
+      document.body.style.overflow = "auto";
+    };
+  }, []);
 
   // 리뷰 작성하기 버튼
   const handleInsertReview = () => {
@@ -54,6 +66,7 @@ const MemberKeywordDetailReviewPopup = ({
     }
   };
 
+  // 리뷰 내용
   const handleInputChange = (e: any) => {
     const value = e.target.value;
     setText(value);
