@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 1000,
+  timeout: 5000,
   withCredentials: true, // Refresh Token을 httpOnly 쿠키로 저장할 경우
 });
 
