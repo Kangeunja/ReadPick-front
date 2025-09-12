@@ -2,7 +2,7 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 
 // 기본 api url 설정
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "http://localhost:8080/api";
 
 // axios 인스턴스 생성
 const axiosInstance = axios.create({
