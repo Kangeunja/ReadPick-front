@@ -11,7 +11,7 @@ const MemberKeywordDetailPopup = ({
   const [editedReview, setEditedReview] = useState(selectedReview);
 
   // 리뷰 내용 포커싱
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     // 팝업이 열릴 때 body의 스크롤 막기
@@ -83,12 +83,19 @@ const MemberKeywordDetailPopup = ({
 
             <div className="keyword-detail-popup-text-wrap">
               <p>{editedReview.nickName}</p>
-              <input
+              {/* <input
                 ref={inputRef}
                 type="text"
                 value={editedReview.content}
                 onChange={(e) => handleDetailPopup(e)}
-              />
+              /> */}
+              <textarea
+                ref={inputRef}
+                className="keyword-detail-popup-insert"
+                value={editedReview.content}
+                maxLength={200}
+                onChange={(e) => handleDetailPopup(e)}
+              ></textarea>
             </div>
           </div>
         </div>

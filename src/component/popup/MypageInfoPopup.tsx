@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import "../../assets/css/mypagePopup.css";
+import "../../assets/css/mypageInfoPopup.css";
 
 import profileDefaultImg from "../../assets/img/icon-profile-2.png";
 import TrashImg from "../../assets/img/icon-trash.png";
-import { error } from "console";
+import MypageInfoEditPopup from "./MypageInfoEditPopup";
+import MyPageInfoAlterPopup from "./MyPageInfoAlterPopup";
 
 const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
   // 회원 상세 정보
@@ -76,6 +76,15 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
 
   // 비밀번호 메세지 색깔
   const [pwValPw, setPwValPw] = useState(true);
+
+  // 비밀번호 확인 팝업창
+  const [isShowEditPopup, setIsShowEditPopup] = useState(false);
+
+  // 비밀번호 변경 팝업창
+  const [isShowAlterPopup, setIsShowAlterPopup] = useState(false);
+
+  // 필드 정보
+  const [targetField, setTargetField] = useState<string>("");
 
   useEffect(() => {
     // 팝업이 열릴 때 body의 스크롤 막기
@@ -158,18 +167,63 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
 
   // 회원정보 수정하기 버튼
   const handleEdit = (field: any, ref: React.RefObject<HTMLInputElement>) => {
+    if (field === "email" || field === "id") {
+      setIsShowEditPopup(true);
+      setTargetField(field);
+      return;
+    }
+
+    if (field === "pw") {
+      setIsShowAlterPopup(true);
+      return;
+    }
+
     setEditMode((prev) => ({
       ...prev,
       [field]: true,
     }));
 
-    if (field === "id") {
-      setIdcheck(true);
-    }
+    // if (field === "id") {
+    //   setIdcheck(true);
+    // }
 
     setTimeout(() => {
-      ref.current?.focus();
+      if (ref.current) {
+        ref.current.focus();
+        const length = ref.current.value.length;
+        ref.current.setSelectionRange(length, length);
+      }
+      // ref.current?.focus();
     });
+  };
+
+  // const handleClosePopup = (sucess, field) => {
+  //   setIsShowEditPopup(false);
+
+  //   // setEditMode((prev: any) => ({
+  //   //   ...prev,
+  //   //   [targetField]: true,
+  //   // }));
+
+  //   setTimeout(() => {
+  //     // if (ref.current) {
+  //     //   ref.current.focus();
+  //     //   const length = ref.current.value.length;
+  //     //   ref.current.setSelectionRange(length, length);
+  //     // }
+  //     // ref.current?.focus();
+  //   });
+  // };
+
+  const handleClosePopup = (field: string) => {
+    setIsShowEditPopup(false);
+
+    setEditMode((prev) => ({ ...prev, [field]: true }));
+
+    setTimeout(() => {
+      if (field === "email") emailRef.current?.focus();
+      if (field === "id") idRef.current?.focus();
+    }, 0);
   };
 
   // 아이디 중복확인
@@ -178,6 +232,13 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
       alert("아이디를 입력해주세요");
       return;
     }
+
+    if (editableUserInfo.id === userInfo.id) {
+      setIdCheckMessage("아이디가 변경되지 않았습니다.");
+      setIdValId(false);
+      return;
+    }
+
     axiosInstance
       .post(`/checkId?id=${editableUserInfo.id}`)
       .then((res) => {
@@ -195,7 +256,11 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
   };
 
   // 아이디 수정취소 버튼
-  const handleMessageCancel = () => {
+  const handleIdCancel = (field: any) => {
+    setEditMode((prev) => ({
+      ...prev,
+      [field]: false,
+    }));
     setIdCheckMessage("");
     setEditableUserInfo((prev) => ({
       ...prev,
@@ -269,20 +334,20 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
       alert("사용 불가능한 아이디입니다. 다시 입력 후 중복 확인을 해주세요.");
       return;
     }
-    if (editableUserInfo.pw === "") {
-      alert("비밀번호를 입력해주세요");
-      pwRef.current?.focus();
-      return;
-    }
-    if (!passwordCheckMessage) {
-      alert("비밀번호확인을 입력해주세요");
-      pwCheckRef.current?.focus();
-      return;
-    }
-    if (!pwValPw) {
-      alert("일치하지 않은 비밀번호입니다. 다시 입력해주세요");
-      return;
-    }
+    // if (editableUserInfo.pw === "") {
+    //   alert("비밀번호를 입력해주세요");
+    //   pwRef.current?.focus();
+    //   return;
+    // }
+    // if (!passwordCheckMessage) {
+    //   alert("비밀번호확인을 입력해주세요");
+    //   pwCheckRef.current?.focus();
+    //   return;
+    // }
+    // if (!pwValPw) {
+    //   alert("일치하지 않은 비밀번호입니다. 다시 입력해주세요");
+    //   return;
+    // }
 
     if (isImageDeleted) {
       axiosInstance
@@ -343,6 +408,7 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
         if (res.data === "success") {
           alert("수정완료되었습니다.");
           onClose();
+          setUserInfo(editableUserInfo);
         }
       })
       .catch((error) => {
@@ -411,164 +477,178 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
   };
 
   return (
-    <div className="mypageInfo-popup-wrap">
-      <div className="mypageInfo-popup-box">
-        <div className="mypageInfo-popup-text">회원정보수정</div>
+    <>
+      <div className="mypageInfo-popup-wrap">
+        <div className="mypageInfo-popup-box">
+          <div className="mypageInfo-popup-text">회원정보수정</div>
 
-        <div className="mypageInfo-popup-img-wrap">
-          {editableUserInfo.fileName === "default" ? (
-            <div className="mypageInfo-popup-img-box">
-              <img src={image} alt="기본 이미지" />
-              <div
-                className="mypageInfo-popup-bottom-box"
-                onClick={() => imgRef.current?.click()}
-              >
-                <div className="mypageInfo-popup-bottom-img"></div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  ref={imgRef}
-                  style={{ display: "none" }}
-                  onChange={handleProfileImage}
-                />
-              </div>
-            </div>
-          ) : (
-            <>
-              <img
-                // src={
-                //   editableUserInfo.fileName.startsWith("http")
-                //     ? editableUserInfo.fileName
-                //     : `http://localhost:8080/READPICKImages/${editableUserInfo.fileName}`
-                // }
-                src={image}
-                alt="프로필 이미지"
-                className="mypageInfo-uploaded-img"
-              />
-              <div className="mypageInfo-popup-correction-wrap">
-                <div onClick={() => editImgRef.current?.click()}>
-                  <button type="button" className="mypageInfo-popup-edit-btn">
-                    사진 수정
-                  </button>
+          <div className="mypageInfo-popup-img-wrap">
+            {editableUserInfo.fileName === "default" ? (
+              <div className="mypageInfo-popup-img-box">
+                <img src={image} alt="기본 이미지" />
+                <div
+                  className="mypageInfo-popup-bottom-box"
+                  onClick={() => imgRef.current?.click()}
+                >
+                  <div className="mypageInfo-popup-bottom-img"></div>
                   <input
                     type="file"
                     accept="image/*"
-                    ref={editImgRef}
+                    ref={imgRef}
                     style={{ display: "none" }}
-                    onChange={handleEditProfileImg}
+                    onChange={handleProfileImage}
                   />
                 </div>
-                <button
-                  type="button"
-                  className="mypageInfo-popup-delete-btn"
-                  onClick={handleDeleteProfileImg}
-                >
-                  <img src={TrashImg} alt="쓰레기통" />
-                </button>
               </div>
-            </>
-          )}
-        </div>
-        <div className="mypageInfo-popup-text-wrap">
-          <div className="mypageInfo-popup-text-box">
-            <div className="mypageInfo-popup-title">이름</div>
-            <input
-              ref={userNameRef}
-              type="text"
-              placeholder={userInfo.userName}
-              value={editableUserInfo.userName}
-              disabled={!editMode.userName}
-              onChange={(e) => handleChange("userName", e.target.value)}
-            />
+            ) : (
+              <>
+                <img
+                  // src={
+                  //   editableUserInfo.fileName.startsWith("http")
+                  //     ? editableUserInfo.fileName
+                  //     : `http://localhost:8080/READPICKImages/${editableUserInfo.fileName}`
+                  // }
+                  src={image}
+                  alt="프로필 이미지"
+                  className="mypageInfo-uploaded-img"
+                />
+                <div className="mypageInfo-popup-correction-wrap">
+                  <div onClick={() => editImgRef.current?.click()}>
+                    <button type="button" className="mypageInfo-popup-edit-btn">
+                      사진 수정
+                    </button>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={editImgRef}
+                      style={{ display: "none" }}
+                      onChange={handleEditProfileImg}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    className="mypageInfo-popup-delete-btn"
+                    onClick={handleDeleteProfileImg}
+                  >
+                    <img src={TrashImg} alt="쓰레기통" />
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+          <div className="mypageInfo-popup-text-wrap">
+            <div className="mypageInfo-popup-text-box">
+              <div className="mypageInfo-popup-title">이름</div>
+              <input
+                ref={userNameRef}
+                type="text"
+                placeholder={userInfo.userName}
+                value={editableUserInfo.userName}
+                disabled={!editMode.userName}
+                onChange={(e) => handleChange("userName", e.target.value)}
+              />
 
-            <button
-              type="button"
-              onClick={() => handleEdit("userName", userNameRef)}
-            >
-              수정
-            </button>
-          </div>
-          <div className="mypageInfo-popup-text-box">
-            <div className="mypageInfo-popup-title">닉네임</div>
-            <input
-              ref={nickNameRef}
-              type="text"
-              placeholder={userInfo.nickName}
-              value={editableUserInfo.nickName}
-              disabled={!editMode.nickName}
-              onChange={(e) => handleChange("nickName", e.target.value)}
-            />
-            <button
-              type="button"
-              onClick={() => handleEdit("nickName", nickNameRef)}
-            >
-              수정
-            </button>
-          </div>
-          <div className="mypageInfo-popup-text-box">
-            <div className="mypageInfo-popup-title">이메일</div>
-            <input
-              type="text"
-              ref={emailRef}
-              placeholder={userInfo.email}
-              value={editableUserInfo.email}
-              disabled={!editMode.email}
-              onChange={(e) => handleChange("email", e.target.value)}
-            />
-            <button type="button" onClick={() => handleEdit("email", emailRef)}>
-              수정
-            </button>
-          </div>
-          <div className="mypageInfo-popup-text-box">
-            <div className="mypageInfo-popup-title">아이디</div>
-            <input
-              type="text"
-              ref={idRef}
-              onCopy={(e) => e.preventDefault()}
-              placeholder={userInfo.id}
-              value={editableUserInfo.id}
-              disabled={!editMode.id}
-              onChange={(e) => handleChange("id", e.target.value)}
-            />
-            <div className="mypageInfo-popup-button-wrap">
-              <button type="button" onClick={() => handleEdit("id", idRef)}>
+              <button
+                type="button"
+                onClick={() => handleEdit("userName", userNameRef)}
+              >
                 수정
               </button>
-              {idCheck && (
-                <button type="button" onClick={handleIdCheck}>
-                  중복확인
-                </button>
-              )}
             </div>
-            <div className="mypageInfo-popup-message">
-              {idCheckMessage && (
-                <p
-                  className={`mypageInfo-popup-id-CheckMessage ${
-                    idValId ? "success" : "error"
-                  }`}
-                >
-                  {idCheckMessage}
-                </p>
-              )}
-              {idCheckMessage && (
+            <div className="mypageInfo-popup-text-box">
+              <div className="mypageInfo-popup-title">닉네임</div>
+              <input
+                ref={nickNameRef}
+                type="text"
+                placeholder={userInfo.nickName}
+                value={editableUserInfo.nickName}
+                disabled={!editMode.nickName}
+                onChange={(e) => handleChange("nickName", e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={() => handleEdit("nickName", nickNameRef)}
+              >
+                수정
+              </button>
+            </div>
+            <div className="mypageInfo-popup-text-box">
+              <div className="mypageInfo-popup-title">이메일</div>
+              <input
+                type="text"
+                ref={emailRef}
+                placeholder={userInfo.email}
+                value={editableUserInfo.email}
+                disabled={!editMode.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+              />
+              {/* <button type="button" onClick={() => setIsShowEditPopup(true)}>
+                수정
+              </button> */}
+              <button
+                type="button"
+                onClick={() => handleEdit("email", emailRef)}
+              >
+                수정
+              </button>
+            </div>
+            <div className="mypageInfo-popup-text-box">
+              <div className="mypageInfo-popup-title">아이디</div>
+              <input
+                className={editMode.id ? "id-edit" : ""}
+                type="text"
+                ref={idRef}
+                onCopy={(e) => e.preventDefault()}
+                placeholder={userInfo.id}
+                value={editableUserInfo.id}
+                disabled={!editMode.id}
+                onChange={(e) => handleChange("id", e.target.value)}
+              />
+              <div className="mypageInfo-popup-button-wrap">
+                {!editMode.id ? (
+                  <button type="button" onClick={() => handleEdit("id", idRef)}>
+                    수정
+                  </button>
+                ) : (
+                  <>
+                    <button type="button" onClick={() => handleIdCancel("id")}>
+                      취소
+                    </button>
+                    <button type="button" onClick={handleIdCheck}>
+                      중복확인
+                    </button>
+                  </>
+                )}
+              </div>
+              <div className="mypageInfo-popup-message">
+                {idCheckMessage && (
+                  <p
+                    className={`mypageInfo-popup-id-CheckMessage ${
+                      idValId ? "success" : "error"
+                    }`}
+                  >
+                    {idCheckMessage}
+                  </p>
+                )}
+                {/* {idCheckMessage && (
                 <button type="button" onClick={handleMessageCancel}>
                   수정취소
                 </button>
-              )}
+              )} */}
+              </div>
             </div>
-          </div>
-          <div className="mypageInfo-popup-text-box">
-            <div className="mypageInfo-popup-title">비밀번호</div>
-            <input
-              type={isPasswordVisible ? "text" : "password"}
-              ref={pwRef}
-              onCopy={(e) => e.preventDefault()}
-              value={editableUserInfo.pw}
-              disabled={!editMode.pw}
-              onChange={(e) => handleChange("pw", e.target.value)}
-            />
+            <div className="mypageInfo-popup-text-box">
+              <div className="mypageInfo-popup-title">비밀번호</div>
+              <input
+                type={isPasswordVisible ? "text" : "password"}
+                ref={pwRef}
+                onCopy={(e) => e.preventDefault()}
+                value={editableUserInfo.pw}
+                disabled={!editMode.pw}
+                onChange={(e) => handleChange("pw", e.target.value)}
+              />
 
-            {!isPasswordVisible ? (
+              {/* {!isPasswordVisible ? (
               <div className="mypageInfo-popup-toggle-visibility">
                 <AiFillEyeInvisible onClick={togglePasswordVisibility} />
               </div>
@@ -576,13 +656,13 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
               <div className="mypageInfo-popup-toggle-visibility">
                 <AiFillEye onClick={togglePasswordVisibility} />
               </div>
-            )}
-            <button type="button" onClick={() => handleEdit("pw", pwRef)}>
-              수정
-            </button>
-          </div>
+            )} */}
+              <button type="button" onClick={() => handleEdit("pw", pwRef)}>
+                수정
+              </button>
+            </div>
 
-          <div className="mypageInfo-popup-text-box">
+            {/* <div className="mypageInfo-popup-text-box">
             <div className="mypageInfo-popup-title">비밀번호확인</div>
             <input
               type={isPasswordConfirmVisible ? "text" : "password"}
@@ -610,23 +690,47 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
                 {passwordCheckMessage}
               </p>
             )}
+          </div> */}
           </div>
-        </div>
 
-        <button
-          type="button"
-          className="mypage-popup-save"
-          onClick={handleSave}
-        >
-          저장하기
-        </button>
-        <button
-          type="button"
-          className="mypage-popup-cancel"
-          onClick={handleClose}
-        ></button>
+          <button
+            type="button"
+            className="mypage-popup-button cancel"
+            onClick={handleClose}
+          >
+            취소
+          </button>
+
+          <button
+            type="button"
+            className="mypage-popup-button save"
+            onClick={handleSave}
+          >
+            저장
+          </button>
+          <button
+            type="button"
+            className="mypage-popup-icon"
+            onClick={handleClose}
+          ></button>
+        </div>
       </div>
-    </div>
+      {isShowEditPopup && (
+        <MypageInfoEditPopup
+          // onClose={() => setIsShowEditPopup(false)}
+          onClose={handleClosePopup}
+          editableUserInfo={editableUserInfo}
+          setEditMode={setEditMode}
+          targetField={targetField}
+        />
+      )}
+      {isShowAlterPopup && (
+        <MyPageInfoAlterPopup
+          onClose={() => setIsShowAlterPopup(false)}
+          editableUserInfo={editableUserInfo}
+        />
+      )}
+    </>
   );
 };
 export default MypageInfoPopup;

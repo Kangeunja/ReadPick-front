@@ -181,48 +181,177 @@ const Main = () => {
       </div>
 
       <div className="main-system-wrap">
-        <div className="main-system-box1"></div>
+        {/* <div className="main-system-box1"></div> */}
         <div className="main-system-text">
           <p>
-            세련된 도서 리뷰 시스템, <br />
+            세련된 도서 리뷰 시스템,
+            <br />
             지금 바로 만나보세요!
           </p>
           <p>책의 간단한 줄거리와 리뷰를 통해 취향껏 만나볼수 있습니다.</p>
         </div>
-        <div className="main-system-box2"></div>
+        {/* <div className="main-system-box2"></div> */}
       </div>
 
-      <div className="main-function-wrap">
-        <div className="main-function-box">
-          <div className="main-function-con"></div>
-          <div className="main-function-icon-wrap">
-            <div className="main-function-good main-good-img1"></div>
-            <div className="main-function-recomend main-recomend-img1"></div>
-          </div>
-
-          <div className="main-function-text">
-            <p>찜기능</p>
+      <div className="main-option-wrap">
+        <div className="main-save-wrap">
+          <div className="main-save-text">
+            <p>찜기능 & 찜목록</p>
             <p>
               책의 리뷰와 줄거리를 통해 <br />
-              맘에 들면 저장할수 있습니다.
+              맘에 들면 저장할수 있고,
+              <br />
+              찜목록을 통해 저장한 책을 확인할수 있습니다.
             </p>
+          </div>
+
+          <div className="main-save-left-box">
+            <div className="main-save-left-con"></div>
+            <div className="main-save-left-icon">
+              <div className="main-option-good main-good-img1"></div>
+              <div className="main-option-recomend main-recomend-img1"></div>
+            </div>
+          </div>
+
+          <div className="main-save-line"></div>
+
+          <div className="main-save-right-box">
+            <p>찜목록</p>
+            <div className="main-save-right-con-wrap">
+              <div className="main-save-right-sub-wrap">
+                <div className="main-save-right-con"></div>
+                <div className="main-save-right-text">
+                  <p>책제목</p>
+                  <p>지은이</p>
+                </div>
+              </div>
+              <div className="main-save-right-sub-wrap">
+                <div className="main-save-right-con"></div>
+                <div className="main-save-right-text">
+                  <p>책제목</p>
+                  <p>지은이</p>
+                </div>
+              </div>
+              <div className="main-save-right-sub-wrap">
+                <div className="main-save-right-con"></div>
+                <div className="main-save-right-text">
+                  <p>책제목</p>
+                  <p>지은이</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="main-function-box">
+        <div className="main-bottom-wrap">
+          <div className="main-review-wrap">
+            <div className="main-review-text">
+              <p>리뷰기능</p>
+              <p>
+                다른사람에게 책을 추천하고 싶을때 <br />
+                해당 기능을 통해 추천할수 있습니다.
+              </p>
+            </div>
+
+            <div className="main-review-box">
+              <div className="main-review-profile"></div>
+              <div className="main-review-profile-text">
+                <p>아이디</p>
+                <p>
+                  이 책은 이제 막 취업준비하는
+                  <br />
+                  준비생들에게 도움이 많이될것같다.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="main-recommend-wrap">
+            <div className="main-recommend-text">
+              <p>추천기능</p>
+              <p>
+                다른사람에게 책을 추천하고 싶을때 <br />
+                해당 기능을 통해 추천할수 있습니다.
+              </p>
+            </div>
+
+            <div>
+              <div className="main-recommend-con"></div>
+              <div className="main-recommend-icon-wrap">
+                <div className="main-option-good main-good-img2"></div>
+                <div className="main-option-recomend main-recomend-img2"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* <div className="main-function-top-wrap">
+          <div className="main-function-text">
+            <p>찜기능 & 찜목록</p>
+            <p>
+              책의 리뷰와 줄거리를 통해 <br />
+              맘에 들면 저장할수 있고,
+              <br />
+              찜목록을 통해 저장한 책을 확인할수 있습니다.
+            </p>
+          </div>
+          <div className="main-function-box">
+            <div className="main-function-con"></div>
+            <div className="main-function-icon-wrap">
+              <div className="main-function-good main-good-img1"></div>
+              <div className="main-function-recomend main-recomend-img1"></div>
+            </div>
+          </div>
+
+          <div className="main-function-line"></div>
+
+          <div className="main-function-bottom">
+            <p>찜목록</p>
+            <div className="main-function-bottom-box-wrap">
+              <div>
+                <div className="main-function-bottom-box"></div>
+                <div className="main-function-bottom-box-text">
+                  <p>책제목</p>
+                  <p>지은이</p>
+                </div>
+              </div>
+
+              <div>
+                <div className="main-function-bottom-box"></div>
+                <div className="main-function-bottom-box-text">
+                  <p>책제목</p>
+                  <p>지은이</p>
+                </div>
+              </div>
+              <div>
+                <div className="main-function-bottom-box"></div>
+                <div className="main-function-bottom-box-text">
+                  <p>책제목</p>
+                  <p>지은이</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> */}
+
+        {/* <div className="main-function-bottom-wrap">
+          <div className="main-function-text">
+            <p>리뷰기능</p>
+            <p>
+              다른사람에게 책을 추천하고 싶을때 <br />
+              해당 기능을 통해 추천할수 있습니다.
+            </p>
+          </div>
+        </div> */}
+
+        {/* <div className="main-function-box">
           <div className="main-function-con"></div>
           <div className="main-function-icon-wrap">
             <div className="main-function-good main-good-img2"></div>
             <div className="main-function-recomend main-recomend-img2"></div>
           </div>
 
-          <div className="main-function-text">
-            <p>추천기능</p>
-            <p>
-              다른사람에게 책을 추천하고 싶을때 <br />
-              해당 기능을 통해 추천할수 있습니다.
-            </p>
-          </div>
+        
         </div>
         <div className="main-function-box">
           <div className="main-function-bottom">
@@ -237,39 +366,9 @@ const Main = () => {
             </div>
           </div>
 
-          <div className="main-function-text">
-            <p>리뷰기능</p>
-            <p>
-              다른사람에게 후기를 남겨주고 싶을때 <br />
-              해당 기능을 통해 리뷰를 남길수 있습니다.
-            </p>
-          </div>
         </div>
         <div className="main-function-box">
-          <div className="main-function-bottom">
-            <p>찜목록</p>
-            <div className="main-function-bottom-box-wrap">
-              <div className="main-function-bottom-box"></div>
-              <div className="main-function-bottom-box-text">
-                <p>책제목</p>
-                <p>지은이</p>
-              </div>
-            </div>
-            <div className="main-function-bottom-box-wrap">
-              <div className="main-function-bottom-box"></div>
-              <div className="main-function-bottom-box-text">
-                <p>책제목</p>
-                <p>지은이</p>
-              </div>
-            </div>
-            <div className="main-function-bottom-box-wrap">
-              <div className="main-function-bottom-box"></div>
-              <div className="main-function-bottom-box-text">
-                <p>책제목</p>
-                <p>지은이</p>
-              </div>
-            </div>
-          </div>
+      
 
           <div className="main-function-text">
             <p>마이페이지기능</p>
@@ -278,7 +377,7 @@ const Main = () => {
               책목록들을 이 기능을 통해 확인할수 있습니다.
             </p>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

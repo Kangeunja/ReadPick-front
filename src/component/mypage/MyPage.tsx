@@ -33,6 +33,7 @@ const MyPage = () => {
     },
   ]);
 
+  // 페이지 로드시 api호출
   useEffect(() => {
     userInfos();
     userPickBook();

@@ -479,7 +479,14 @@ const MemberKeywordDetail = () => {
                           </div>
                           <div className="keyword-detail-text-wrap">
                             <p>{item.nickName}</p>
-                            <input type="text" value={item.content} readOnly />
+                            {/* <input type="text" value={item.content} readOnly /> */}
+
+                            <textarea
+                              className="keyword-detail-text-select"
+                              value={item.content}
+                              readOnly
+                              maxLength={200}
+                            ></textarea>
                           </div>
                         </div>
                       </div>

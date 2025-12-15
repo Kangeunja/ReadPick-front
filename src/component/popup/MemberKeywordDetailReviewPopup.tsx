@@ -44,7 +44,8 @@ const MemberKeywordDetailReviewPopup = ({
             console.log(res);
             if (res.data === "reviewInsert:fail") {
               alert("리뷰는 책 한 권당 1개만 작성가능합니다.");
-              return;
+              onClose();
+              // return;
             } else {
               alert("리뷰가 작성완료되었습니다.");
               reviewList(bookDetail?.bookIdx!);
@@ -103,6 +104,7 @@ const MemberKeywordDetailReviewPopup = ({
           className="detail-review-insert"
           placeholder="리뷰를 작성해주세요(200자 이내)"
           value={text}
+          maxLength={200}
           onChange={handleInputChange}
         ></textarea>
       </div>

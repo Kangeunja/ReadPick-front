@@ -13,16 +13,14 @@
 
 .keyword-detail-popup-box {
   width: 600px;
-  height: 350px;
+  height: 330px;
   background-color: white;
   position: fixed;
   z-index: 100;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 25px 35px;
-  box-sizing: border-box;
-  padding: 25px 40px;
+  padding: 25px 30px;
   box-sizing: border-box;
 }
 
@@ -48,12 +46,11 @@
 }
 
 .keyword-detail-popup-review-box {
-  width: 520px;
+  width: 540px;
   height: 180px;
   background-color: white;
   padding: 20px;
   box-sizing: border-box;
-  margin-bottom: 50px;
   border-radius: 10px;
   float: left;
   box-shadow: 3px 2px 9.6px 0.5px rgba(116, 116, 116, 0.25);
@@ -79,16 +76,21 @@
   margin-bottom: 20px;
 }
 
-.keyword-detail-popup-text-wrap input {
+.keyword-detail-popup-insert {
+  width: 400px;
+  height: 90px;
   outline: none;
+  display: block;
   border: none;
+  resize: none;
+  overflow-y: auto;
 }
 
 .keyword-detail-popup-save {
   width: 80px;
   height: 30px;
   border: none;
-  background-color: #004f14;
+  background-color: #3ab62a;
   color: white;
   cursor: pointer;
   font-size: 13px;
@@ -99,5 +101,5 @@
 }
 
 .keyword-detail-popup-save:hover {
-  background-color: #01701d;
+  background-color: #309323;
 }

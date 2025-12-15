@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import "../../assets/css/admin.css";
 import axiosInstance from "../../api/axiosInstance";
-import { error } from "console";
 
 interface UserInfo {
   userIdx: number;

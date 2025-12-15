@@ -43,15 +43,17 @@
 .mypage-button {
   width: 97px;
   height: 35px;
-  background-color: #f3f3f3;
+  background-color: #51ac99;
+  color: white;
   display: block;
   text-align: center;
   font-size: 12px;
   border: none;
+  border-radius: 5px;
 }
 
 .mypage-button:hover {
-  background-color: #7b7b7b;
+  background-color: #3a7c6e;
   color: white;
   cursor: pointer;
 }

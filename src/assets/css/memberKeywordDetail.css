@@ -129,18 +129,17 @@
 .keyword-detail-review-text button {
   outline: none;
   cursor: pointer;
-  background: #01701d;
+  background: #3ab62a;
   border: none;
   display: block;
   width: 75px;
   height: 25px;
   color: white;
   font-size: 10px;
-  float: right;
 }
 
 .keyword-detail-review-text button:hover {
-  background-color: #3ab62a;
+  background-color: #309323;
   color: white;
 }
 
@@ -168,7 +167,7 @@
 
 .keyword-detail-box-wrap {
   width: 550px;
-  height: 150px;
+  height: 200px;
   padding: 20px;
   box-sizing: border-box;
   border-radius: 10px;
@@ -177,6 +176,8 @@
   position: relative;
   border: 1px solid #ababab;
   margin-top: 50px;
+  display: flex;
+  flex-direction: column;
 }
 
 .keyword-detail-declaration-button {
@@ -230,11 +231,19 @@
   margin-bottom: 15px;
 }
 
-.keyword-detail-text-wrap input {
-  width: 300px;
+.keyword-detail-text-select {
+  width: 400px;
+  height: 120px;
+  /* max-height: 200px; */
+  display: block;
   border: none;
   outline: none;
+  resize: none;
   color: #343434;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  flex: 1;
 }
 
 .keyword-detail-button-wrap {

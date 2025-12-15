@@ -15,6 +15,13 @@ interface SubBookNames {
   bookIdx: number;
 }
 
+interface SearchResult {
+  author: string;
+  bookName: string;
+  bookImageName: String;
+  bookIdx: number;
+}
+
 const MemberKeyword = () => {
   const navigate = useNavigate();
 
@@ -23,6 +30,12 @@ const MemberKeyword = () => {
   const queryParams = new URLSearchParams(location.search);
   const bsIdx = queryParams.get("bsIdx");
   const bsIdxNumber = bsIdx ? parseInt(bsIdx, 10) : null;
+
+  // URL에서 검색 옵션 파라미터 값 추출
+  const option = queryParams.get("option");
+  console.log(option);
+  const keywordText = queryParams.get("keyword");
+  console.log(keywordText);
 
   // 키워드 리스트 정보
   const [keyword, setKeyword] = useState([
@@ -61,6 +74,9 @@ const MemberKeyword = () => {
     },
   ]);
 
+  // 검색결과 리스트 정보
+  const [searchResultList, setSearchResultList] = useState<SearchResult[]>([]);
+
   // 페이지 로드시 api호출
   useEffect(() => {
     keywordList();
@@ -69,7 +85,12 @@ const MemberKeyword = () => {
       fetchSetClick(bsIdxNumber);
       bookListImg(bsIdxNumber);
     }
-  }, [bsIdxNumber]);
+
+    if (option && keywordText) {
+      if (option === "도서명") bookNameResult();
+      if (option === "작가명") authorResult();
+    }
+  }, [bsIdxNumber, option, keywordText]);
 
   // 메인페이지에서 선택한 중분류의 소분류 리스트 api
   const keywordList = () => {
@@ -87,18 +108,25 @@ const MemberKeyword = () => {
   // 키워드 리스트 토글 상태
   const handleClickTitle = (bsIdx: number) => {
     setSubBookList([]);
-    if (keywordToggle === bsIdx) {
-      setKeywordToggle(null);
-    } else {
-      setKeywordToggle(bsIdx);
-      fetchSetClick(bsIdx);
-      bookListImg(bsIdx);
-    }
+    setSearchResultList([]);
+    setKeywordToggle(bsIdx);
+    fetchSetClick(bsIdx);
+    bookListImg(bsIdx);
+    navigate(`/member/keyword?bsIdx=${bsIdx}`);
+    // if (keywordToggle === bsIdx) {
+    //   setKeywordToggle(null);
+    // } else {
+    //   setKeywordToggle(bsIdx);
+    //   fetchSetClick(bsIdx);
+    //   bookListImg(bsIdx);
+    //   navigate(`/member/keyword?bsIdx=${bsIdx}`);
+    // }
   };
 
   // 유저가 선택한 소분류 정보 api
   const handleClickSubTitle = (bssIdx: number) => {
     setBookList([]);
+    setSearchResultList([]);
     subBookListImg(bssIdx);
     axiosInstance
       .get("/bookListByBssIdx", { params: { bssIdx: bssIdx } })
@@ -109,6 +137,8 @@ const MemberKeyword = () => {
       .catch((error) => {
         console.log(error);
       });
+
+    navigate(`/member/keyword?bssIdx=${bssIdx}`);
   };
 
   // 책 정보 api
@@ -167,6 +197,38 @@ const MemberKeyword = () => {
     navigate(`/member/keyword/detail/${bookIdx}`);
   };
 
+  // 도서명으로 검색한 결과 리스트 api
+  const bookNameResult = () => {
+    setBookList([]);
+    setSubBookList([]);
+    axiosInstance
+      .get("/bookNameSearch", {
+        params: { bookName: keywordText },
+      })
+      .then((res) => {
+        console.log(res.data);
+
+        setSearchResultList(res.data);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  // 작가명으로 검색한 결과 리스트 api
+  const authorResult = () => {
+    setBookList([]);
+    setSubBookList([]);
+    axiosInstance
+      .get("/authorSearch", {
+        params: { author: keywordText },
+      })
+      .then((res) => {
+        console.log(res.data);
+
+        setSearchResultList(res.data);
+      })
+      .catch((error) => console.log(error));
+  };
+
   return (
     <div className="keyword-content-wrap">
       <div className="keyword-text-wrap">
@@ -200,6 +262,79 @@ const MemberKeyword = () => {
         </div>
 
         <div className="keyword-bookList-wrap">
+          {searchResultList.length > 0 ? (
+            searchResultList.map((item, index) => (
+              <div
+                className="keyword-box"
+                key={index}
+                onClick={() => handleBookDetailClick(item.bookIdx)}
+              >
+                <div className="keyword-img">
+                  <img
+                    src={item.bookImageName.replace("coversum", "cover500")}
+                    alt="책 이미지"
+                  />
+                </div>
+                <div className="keyword-text">
+                  <p>{item.bookName}</p>
+                  <p>{item.author}</p>
+                </div>
+              </div>
+            ))
+          ) : keywordText ? (
+            <p className="keyword-none">검색 결과가 없습니다.</p>
+          ) : bookList.length > 0 ? (
+            bookList.map((item, index) => (
+              <div
+                className="keyword-box"
+                key={index}
+                onClick={() => handleBookDetailClick(item.bookIdx)}
+              >
+                <div className="keyword-img">
+                  {bookImg[index] && (
+                    <img
+                      src={bookImg[index]?.fileName.replace(
+                        "coversum",
+                        "cover500"
+                      )}
+                      alt="책 이미지"
+                    />
+                  )}
+                </div>
+                <div className="keyword-text">
+                  <p>{item.bookName}</p>
+                  <p>{item.author}</p>
+                </div>
+              </div>
+            ))
+          ) : subBookList.length > 0 ? (
+            subBookList.map((item, index) => (
+              <div
+                className="keyword-box"
+                key={index}
+                onClick={() => handleBookDetailClick(item.bookIdx)}
+              >
+                <div className="keyword-img">
+                  {subBookImg[index] && (
+                    <img
+                      src={subBookImg[index]?.fileName.replace(
+                        "coversum",
+                        "cover500"
+                      )}
+                      alt="책 이미지"
+                    />
+                  )}
+                </div>
+                <div className="keyword-text">
+                  <p>{item.bookName}</p>
+                  <p>{item.author}</p>
+                </div>
+              </div>
+            ))
+          ) : null}
+        </div>
+
+        {/* <div className="keyword-bookList-wrap">
           {bookList.length > 0 && (
             <>
               {bookList.map((item, index) => (
@@ -255,7 +390,32 @@ const MemberKeyword = () => {
               ))}
             </>
           )}
-        </div>
+
+          {searchResultList.length > 0 ? (
+            <>
+              {searchResultList.map((item, index) => (
+                <div
+                  className="keyword-box"
+                  key={index}
+                  onClick={() => handleBookDetailClick(item.bookIdx)}
+                >
+                  <div className="keyword-img">
+                    <img
+                      src={item.bookImageName.replace("coversum", "cover500")}
+                      alt="책 이미지"
+                    />
+                  </div>
+                  <div className="keyword-text">
+                    <p>{item.bookName}</p>
+                    <p>{item.author}</p>
+                  </div>
+                </div>
+              ))}
+            </>
+          ) : (
+            <p className="keyword-none">검색 결과가 없습니다.</p>
+          )}
+        </div> */}
       </div>
     </div>
   );
