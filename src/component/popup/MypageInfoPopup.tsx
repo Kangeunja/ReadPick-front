@@ -183,10 +183,6 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
       [field]: true,
     }));
 
-    // if (field === "id") {
-    //   setIdcheck(true);
-    // }
-
     setTimeout(() => {
       if (ref.current) {
         ref.current.focus();
@@ -214,6 +210,15 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
   //     // ref.current?.focus();
   //   });
   // };
+
+  // 비밀번호 변경 콜백함수
+  const handlePasswordChange = (newPw: string) => {
+    setEditableUserInfo((prev) => ({
+      ...prev,
+      pw: newPw,
+    }));
+    setIsShowAlterPopup(false);
+  };
 
   const handleClosePopup = (field: string) => {
     setIsShowEditPopup(false);
@@ -334,20 +339,6 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
       alert("사용 불가능한 아이디입니다. 다시 입력 후 중복 확인을 해주세요.");
       return;
     }
-    // if (editableUserInfo.pw === "") {
-    //   alert("비밀번호를 입력해주세요");
-    //   pwRef.current?.focus();
-    //   return;
-    // }
-    // if (!passwordCheckMessage) {
-    //   alert("비밀번호확인을 입력해주세요");
-    //   pwCheckRef.current?.focus();
-    //   return;
-    // }
-    // if (!pwValPw) {
-    //   alert("일치하지 않은 비밀번호입니다. 다시 입력해주세요");
-    //   return;
-    // }
 
     if (isImageDeleted) {
       axiosInstance
@@ -726,6 +717,7 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
       )}
       {isShowAlterPopup && (
         <MyPageInfoAlterPopup
+          onPasswordChange={handlePasswordChange}
           onClose={() => setIsShowAlterPopup(false)}
           editableUserInfo={editableUserInfo}
         />

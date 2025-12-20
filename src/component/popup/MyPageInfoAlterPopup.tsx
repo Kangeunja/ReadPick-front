@@ -2,7 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import "../../assets/css/mypageInfoAlterPopup.css";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
-const MyPageInfoAlterPopup = ({ onClose, editableUserInfo }: any) => {
+const MyPageInfoAlterPopup = ({
+  onClose,
+  editableUserInfo,
+  onPasswordChange,
+}: any) => {
   console.log(editableUserInfo.pw);
   // 현재 비밀번호 입력창
   const [currentPw, setCurrentPw] = useState("");
@@ -31,8 +35,15 @@ const MyPageInfoAlterPopup = ({ onClose, editableUserInfo }: any) => {
   // 새 비밀번호 확인 메시지 색깔
   const [newPwCheckVaild, setNewPwCheckValid] = useState(true);
 
+  // 현재 비밀번호 확인 보이기 상태
+  const [isPasswordCurrentVisible, setPasswordCurrentVisible] = useState(false);
+
+  // 비밀번호 보이기 상태
+  const [isPasswordNewVisible, setPasswordNewVisible] = useState(false);
+
   // 비밀번호 확인 보이기 상태
-  const [isPasswordConfirmVisible, setPasswordConfirmVisible] = useState(false);
+  const [isPasswordNewCheckVisible, setPasswordNewCheckVisible] =
+    useState(false);
 
   // 현재 비밀번호 포커싱
   const pwRef = useRef<HTMLInputElement>(null);
@@ -40,13 +51,36 @@ const MyPageInfoAlterPopup = ({ onClose, editableUserInfo }: any) => {
   // 새 비밀번호 포커싱
   const newPwRef = useRef<HTMLInputElement>(null);
 
-  // 비밀번호확인 숨기기/보이기 토글 함수
-  const togglePasswordCheckVisibility = () => {
-    setPasswordConfirmVisible(!isPasswordConfirmVisible);
+  // 새 비밀번호 확인 포커싱
+  const newPwCheckRef = useRef<HTMLInputElement>(null);
+
+  // 현재 비밀번호 숨기기/보이기 토글 함수
+  const toggleCurrentPasswordVisibility = () => {
+    setPasswordCurrentVisible(!isPasswordCurrentVisible);
   };
 
+  // 비밀번호 숨기기/보이기 토글 함수
+  const toggleNewPasswordVisibility = () => {
+    setPasswordNewVisible(!isPasswordNewVisible);
+  };
+
+  // 비밀번호 확인 숨기기/보이기 토글 함수
+  const toggleNewCheckPasswordVisibility = () => {
+    setPasswordNewCheckVisible(!isPasswordNewCheckVisible);
+  };
+
+  // 새 비밀번호 확인 비활성화 로직
   const isNewPwCheckDisabled =
     !newPw || newPw === editableUserInfo.pw || !newPwVaild;
+
+  // 확인버튼 비활성화 로직
+  const isConfirmDisabled =
+    !currentPw ||
+    !currentPwVaild ||
+    !newPw ||
+    !newPwVaild ||
+    !newPwCheck ||
+    !newPwCheckVaild;
 
   // 페이지 진입시 처음 실행
   useEffect(() => {
@@ -58,30 +92,63 @@ const MyPageInfoAlterPopup = ({ onClose, editableUserInfo }: any) => {
     }
   }, []);
 
-  const handleChange = (field: keyof typeof editableUserInfo, value: any) => {
-    const normalized = value.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, "");
-
-    // 상태 업데이트
-    if (field === "current") setCurrentPw(normalized);
-    else if (field === "new") setNewPw(normalized);
-    else if (field === "newCheck") setNewPwCheck(normalized);
-
-    // 빈값 처리
-    if (!normalized) {
-      if (field === "current") {
-        setCurrentPwMessage("");
-        setCurrentPwValid(true);
-      } else if (field === "new") {
-        setNewPwMessage("");
-      } else {
-        setNewPwCheckMessage("");
-      }
+  // 새 비밀번호 검증 함수
+  const validateNewPw = (pw: string) => {
+    if (!pw) {
+      setNewPwMessage("");
+      setNewPwValid(true);
       return;
     }
+
+    if (pw === editableUserInfo.pw) {
+      setNewPwMessage("현재 비밀번호와 일치합니다.");
+      setNewPwValid(false);
+      return;
+    }
+
+    if (pw.length < 5) {
+      setNewPwMessage("비밀번호는 최소 5자리 이상이어야 합니다.");
+      setNewPwValid(false);
+      return;
+    }
+
+    setNewPwMessage("사용가능한 비밀번호입니다.");
+    setNewPwValid(true);
+  };
+
+  // 새 비밀번호 확인 검증 함수
+  const validateNewPwCheck = (value: string) => {
+    if (!value) {
+      setNewPwCheckMessage("");
+      setNewPwCheckValid(true);
+      return;
+    }
+
+    if (value === newPw) {
+      setNewPwCheckMessage("입력한 비밀번호와 일치합니다.");
+      setNewPwCheckValid(true);
+    } else {
+      setNewPwCheckMessage("입력한 비밀번호와 일치하지 않습니다.");
+      setNewPwCheckValid(false);
+    }
+  };
+
+  const handleChange = (
+    field: "current" | "new" | "newCheck",
+    value: string
+  ) => {
+    const normalized = value.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, "");
 
     // 유효성 검사
     if (field === "current") {
       setCurrentPw(normalized);
+
+      if (!normalized) {
+        setCurrentPwMessage("");
+        setCurrentPwValid(true);
+        return;
+      }
+
       if (editableUserInfo.pw === normalized) {
         setCurrentPwMessage("비밀번호가 일치합니다.");
         setCurrentPwValid(true);
@@ -89,42 +156,26 @@ const MyPageInfoAlterPopup = ({ onClose, editableUserInfo }: any) => {
         setCurrentPwMessage("비밀번호가 일치하지 않습니다.");
         setCurrentPwValid(false);
       }
+      return;
     }
 
     if (field === "new") {
       setNewPw(normalized);
-      if (normalized === editableUserInfo.pw) {
-        setNewPwMessage("현재 비밀번호와 일치합니다.");
-        setNewPwValid(false);
-      } else if (normalized.length < 5) {
-        setNewPwMessage("비밀번호는 최소 5자리 이상이어야 합니다.");
-        setNewPwValid(false);
-      } else {
-        setNewPwMessage("사용가능한 비밀번호입니다.");
-        setNewPwValid(true);
-      }
+
+      // 새 비밀번호 변경 시 새 비밀번호 확인 관련 초기화
+      setNewPwCheck("");
+      setNewPwCheckMessage("");
+      setNewPwCheckValid(true);
+
+      validateNewPw(normalized);
+      return;
     }
 
     if (field === "newCheck") {
       setNewPwCheck(normalized);
-      if (normalized === newPw) {
-        setNewPwCheckMessage("입력한 비밀번호와 일치합니다.");
-        setNewPwCheckValid(true);
-      } else if (normalized === editableUserInfo.pw) {
-      } else {
-        setNewPwCheckMessage("입력한 비밀번호와 일치하지 않습니다.");
-        setNewPwCheckValid(false);
-      }
-    }
 
-    // 실시간 유효성 체크
-    // if (normalized.length < 8) {
-    //   setCurrentPwMessage("비밀번호는 최소 8자리여야 합니다.");
-    //   setCurrentPwValid(false);
-    // } else {
-    //   setCurrentPwMessage("");
-    //   setCurrentPwValid(true);
-    // }
+      validateNewPwCheck(normalized);
+    }
   };
 
   // 취소버튼
@@ -134,22 +185,43 @@ const MyPageInfoAlterPopup = ({ onClose, editableUserInfo }: any) => {
 
   // 확인버튼
   const handleConfirm = () => {
-    if (!currentPw) {
-      alert("현재 비밀번호를 입력해주세요.");
-      pwRef.current?.focus();
+    if (isConfirmDisabled) {
+      if (!currentPw) {
+        alert("현재 비밀번호를 입력해주세요.");
+        pwRef.current?.focus();
+        return;
+      }
+
+      if (!currentPwVaild) {
+        pwRef.current?.focus();
+        return;
+      }
+
+      if (!newPw) {
+        alert("새 비밀번호를 입력해주세요.");
+        newPwRef.current?.focus();
+        return;
+      }
+
+      if (!newPwVaild) {
+        newPwRef.current?.focus();
+        return;
+      }
+
+      if (!newPwCheck) {
+        alert("새 비밀번호 확인을 입력해주세요.");
+        newPwCheckRef.current?.focus();
+        return;
+      }
+
+      if (!newPwCheckVaild) {
+        newPwCheckRef.current?.focus();
+        return;
+      }
     }
-    if (!newPw) {
-      alert("새 비밀번호를 입력해주세요.");
-      newPwRef.current?.focus();
-    }
-    // if (editableUserInfo.pw === checkPw) {
-    //   // onClose(true);
-    //   onClose(targetField);
-    // } else {
-    //   setPasswordCheckMessage("비밀번호가 일치하지 않습니다.");
-    //   setPwValPw(false);
-    //   pwRef.current?.focus();
-    // }
+
+    // 부모 상태 업데이트
+    onPasswordChange(newPw);
   };
 
   return (
@@ -163,18 +235,18 @@ const MyPageInfoAlterPopup = ({ onClose, editableUserInfo }: any) => {
               ref={pwRef}
               // onChange={handleChange}
               onChange={(e) => handleChange("current", e.target.value)}
-              type={isPasswordConfirmVisible ? "text" : "password"}
+              type={isPasswordCurrentVisible ? "text" : "password"}
               className="mypageInfoAlter-input"
               maxLength={15}
               value={currentPw}
             />
-            {!isPasswordConfirmVisible ? (
+            {!isPasswordCurrentVisible ? (
               <div className="mypageInfoAlter-popup-toggle-visibility">
-                <AiFillEyeInvisible onClick={togglePasswordCheckVisibility} />
+                <AiFillEyeInvisible onClick={toggleCurrentPasswordVisibility} />
               </div>
             ) : (
               <div className="mypageInfoAlter-popup-toggle-visibility">
-                <AiFillEye onClick={togglePasswordCheckVisibility} />
+                <AiFillEye onClick={toggleCurrentPasswordVisibility} />
               </div>
             )}
           </div>
@@ -195,18 +267,18 @@ const MyPageInfoAlterPopup = ({ onClose, editableUserInfo }: any) => {
             <input
               ref={newPwRef}
               onChange={(e) => handleChange("new", e.target.value)}
-              type={isPasswordConfirmVisible ? "text" : "password"}
+              type={isPasswordNewVisible ? "text" : "password"}
               className="mypageInfoAlter-input"
               maxLength={15}
               value={newPw}
             />
-            {!isPasswordConfirmVisible ? (
+            {!isPasswordNewVisible ? (
               <div className="mypageInfoAlter-popup-toggle-visibility">
-                <AiFillEyeInvisible onClick={togglePasswordCheckVisibility} />
+                <AiFillEyeInvisible onClick={toggleNewPasswordVisibility} />
               </div>
             ) : (
               <div className="mypageInfoAlter-popup-toggle-visibility">
-                <AiFillEye onClick={togglePasswordCheckVisibility} />
+                <AiFillEye onClick={toggleNewPasswordVisibility} />
               </div>
             )}
           </div>
@@ -225,20 +297,23 @@ const MyPageInfoAlterPopup = ({ onClose, editableUserInfo }: any) => {
           <div className="mypageInfoAlter-input-box">
             <p>새 비밀번호 확인</p>
             <input
+              ref={newPwCheckRef}
               onChange={(e) => handleChange("newCheck", e.target.value)}
-              type={isPasswordConfirmVisible ? "text" : "password"}
+              type={isPasswordNewCheckVisible ? "text" : "password"}
               className="mypageInfoAlter-input"
               maxLength={15}
               value={newPwCheck}
               disabled={isNewPwCheckDisabled}
             />
-            {!isPasswordConfirmVisible ? (
+            {!isPasswordNewCheckVisible ? (
               <div className="mypageInfoAlter-popup-toggle-visibility">
-                <AiFillEyeInvisible onClick={togglePasswordCheckVisibility} />
+                <AiFillEyeInvisible
+                  onClick={toggleNewCheckPasswordVisibility}
+                />
               </div>
             ) : (
               <div className="mypageInfoAlter-popup-toggle-visibility">
-                <AiFillEye onClick={togglePasswordCheckVisibility} />
+                <AiFillEye onClick={toggleNewCheckPasswordVisibility} />
               </div>
             )}
           </div>
@@ -254,72 +329,17 @@ const MyPageInfoAlterPopup = ({ onClose, editableUserInfo }: any) => {
           )}
         </div>
 
-        {/* <div className="mypageInfoAlter-input-wrap">
-          <p>새 비밀번호</p>
-          <div className="mypageInfoAlter-input-box">
-            <input
-              onChange={(e) => handleChange("new", e.target.value)}
-              type={isPasswordConfirmVisible ? "text" : "password"}
-              className="mypageInfoAlter-input"
-              maxLength={15}
-              value={newPw}
-            />
-            {!isPasswordConfirmVisible ? (
-              <div className="mypageInfoAlter-popup-toggle-visibility">
-                <AiFillEyeInvisible onClick={togglePasswordCheckVisibility} />
-              </div>
-            ) : (
-              <div className="mypageInfoAlter-popup-toggle-visibility">
-                <AiFillEye onClick={togglePasswordCheckVisibility} />
-              </div>
-            )}
-          
-          </div>
-        </div> */}
-
-        {/* <div className="mypageInfoAlter-input-wrap">
-          <p>새 비밀번호 확인</p>
-          <div className="mypageInfoAlter-input-box">
-            <input
-              onChange={(e) => handleChange("newCheck", e.target.value)}
-              type={isPasswordConfirmVisible ? "text" : "password"}
-              className="mypageInfoAlter-input"
-              maxLength={15}
-              value={newPwCheck}
-              disabled={!newPw}
-            />
-            {!isPasswordConfirmVisible ? (
-              <div className="mypageInfoAlter-popup-toggle-visibility">
-                <AiFillEyeInvisible onClick={togglePasswordCheckVisibility} />
-              </div>
-            ) : (
-              <div className="mypageInfoAlter-popup-toggle-visibility">
-                <AiFillEye onClick={togglePasswordCheckVisibility} />
-              </div>
-            )}
-          </div>
-        </div>
-
-        {newPwCheckMessage && (
-          <p
-            className={`mypageInfoAlter-popup-member-pwCheck ${
-              newPwCheckVaild ? "success" : "error"
-            }`}
-          >
-            {newPwCheckMessage}
-          </p>
-        )} */}
-
         <div className="mypageInfoAlter-button">
           <button type="button" onClick={handleClose}>
             취소
           </button>
-          <button type="button" onClick={handleConfirm}>
+          <button
+            type="button"
+            onClick={handleConfirm}
+            disabled={isConfirmDisabled}
+          >
             확인
           </button>
-          {/* <button type="button" onClick={() => handleConfirm(targetField)}>
-            확인
-          </button> */}
         </div>
       </div>
     </div>
