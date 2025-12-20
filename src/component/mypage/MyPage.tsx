@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import MypageInfoPopup from "../popup/MypageInfoPopup";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,10 @@ import profileDefaultImg from "../../assets/img/icon-profile.png";
 
 const MyPage = () => {
   const navigate = useNavigate();
+
+  const listRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
   // 회원정보
   const [userInfo, setUserInfo] = useState({
@@ -84,6 +88,27 @@ const MyPage = () => {
     navigate(`/member/keyword/detail/${bookIdx}`);
   };
 
+  const scrollList = (direction: "left" | "right") => {
+    if (!listRef.current) return;
+
+    const cardWidth = 180;
+    const moveAmount = cardWidth * 3;
+
+    listRef.current.scrollBy({
+      left: direction === "right" ? moveAmount : -moveAmount,
+      behavior: "smooth",
+    });
+  };
+
+  const updateScrollState = () => {
+    if (!listRef.current) return;
+
+    const { scrollLeft, scrollWidth, clientWidth } = listRef.current;
+
+    setCanScrollLeft(scrollLeft > 0);
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
+  };
+
   return (
     <>
       <div className="mypage-con-wrap">
@@ -124,37 +149,61 @@ const MyPage = () => {
             회원정보수정
           </button>
         </div>
-        <div className="mypage-list-wrap">
-          <div className="mypage-list-title">찜목록</div>
-          <div className="mypage-list-box">
-            {userPick.length > 0 ? (
-              userPick.map((item, index) => (
-                <div
-                  key={index}
-                  className="mypage-box-wrap"
-                  onClick={() => handleBookList(item.bookIdx)}
-                >
-                  <div className="mypage-list-img">
-                    {userBookImg[index] && (
-                      <img
-                        src={userBookImg[index]?.fileName.replace(
-                          "coversum",
-                          "cover500"
-                        )}
-                        alt="책 이미지"
-                      />
-                    )}
+        <div className="mypage-list-container">
+          {canScrollLeft && (
+            <button
+              className={`nav-arrow left ${canScrollLeft ? "" : "disabled"}`}
+              onClick={() => scrollList("left")}
+            >
+              ◀
+            </button>
+          )}
+
+          <div className="mypage-list-wrap">
+            <div className="mypage-list-title">찜목록</div>
+
+            <div
+              className="mypage-list-box"
+              ref={listRef}
+              onScroll={updateScrollState}
+            >
+              {userPick.length > 0 ? (
+                userPick.map((item, index) => (
+                  <div
+                    key={index}
+                    className="mypage-box-wrap"
+                    onClick={() => handleBookList(item.bookIdx)}
+                  >
+                    <div className="mypage-list-img">
+                      {userBookImg[index] && (
+                        <img
+                          src={userBookImg[index]?.fileName.replace(
+                            "coversum",
+                            "cover500"
+                          )}
+                          alt="책 이미지"
+                        />
+                      )}
+                    </div>
+                    <div className="mypage-text">
+                      <p>{item.bookName}</p>
+                      <p>{item.author}</p>
+                    </div>
                   </div>
-                  <div className="mypage-text">
-                    <p>{item.bookName}</p>
-                    <p>{item.author}</p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div>유저가 찜한 도서가 없습니다.</div>
-            )}
+                ))
+              ) : (
+                <div>유저가 찜한 도서가 없습니다.</div>
+              )}
+            </div>
           </div>
+          {canScrollRight && (
+            <button
+              className={`nav-arrow right ${canScrollRight ? "" : "disabled"}`}
+              onClick={() => scrollList("right")}
+            >
+              ▶
+            </button>
+          )}
         </div>
       </div>
       {isShowPopup && (

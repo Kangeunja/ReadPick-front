@@ -81,15 +81,67 @@
   margin-bottom: 40px;
 }
 
+.mypage-list-container {
+  position: relative;
+}
+
+.nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  box-shadow: 3px 2px 9.6px 1px rgba(0, 0, 0, 0.25);
+}
+
+/* hover 시 나타남 */
+.mypage-list-container:hover .nav-arrow {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.nav-arrow:hover {
+  background: rgb(195, 195, 195);
+}
+
+/* 좌우 위치 */
+.nav-arrow.left {
+  left: 45px;
+}
+
+.nav-arrow.right {
+  right: 10px;
+}
+
+/* 비활성화 */
+.nav-arrow.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
 .mypage-list-box {
+  display: flex;
   overflow-x: auto;
-  white-space: nowrap;
+  /* white-space: nowrap; */
+  scrollbar-width: none;
+}
+
+.mypage-list-box::-webkit-scrollbar {
+  display: none;
 }
 
 .mypage-box-wrap {
   vertical-align: top;
   display: inline-block;
-  height: 300px;
+  /* height: 330px; */
   cursor: pointer;
 }
 
@@ -114,6 +166,9 @@
 }
 
 .mypage-text p:nth-child(1) {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   font-weight: bold;
   font-size: 14px;
   margin-bottom: 5px;
