@@ -13,7 +13,7 @@
 
 .mypageInfo-popup-box {
   width: 650px;
-  height: 480px;
+  /* height: 480px; */
   background-color: white;
   position: fixed;
   z-index: 100;
@@ -27,6 +27,13 @@
 .mypageInfo-popup-text {
   font-size: 23px;
   margin-bottom: 35px;
+}
+
+.mypageInfo-popup-notice {
+  font-size: 10px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: red;
 }
 
 .mypageInfo-popup-img-wrap {
@@ -239,6 +246,15 @@
 .save:hover,
 .cancel:hover {
   background-color: #01701d;
+}
+
+.mypage-popup-button.save.highlight {
+  background-color: #fe8686;
+  color: #fff;
+}
+
+.mypage-popup-button.save.highlight:hover {
+  background-color: #ff6b6b;
 }
 
 .mypage-popup-icon {

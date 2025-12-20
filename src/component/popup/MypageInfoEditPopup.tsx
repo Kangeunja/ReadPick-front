@@ -35,18 +35,29 @@ const MypageInfoEditPopup = ({
     setPasswordConfirmVisible(!isPasswordConfirmVisible);
   };
 
+  // 확인버튼 비활성화 로직
+  const isConfirmDisabled = editableUserInfo.pw !== checkPw;
+
   // onChange 함수
-  const handleChange = (e: any) => {
-    const value = e.target.value;
+  const handleChange = (e: string) => {
+    const normalized = e.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, "");
+
+    setCheckPw(normalized);
 
     // 입력할 때마다 메시지 초기화
-    if (passwordCheckMessage) {
+    if (!normalized) {
       setPasswordCheckMessage("");
       setPwValPw(true);
+      return;
     }
 
-    setCheckPw(value);
-    // let value = e.target.value;
+    if (editableUserInfo.pw === normalized) {
+      setPasswordCheckMessage("비밀번호가 일치합니다.");
+      setPwValPw(true);
+    } else {
+      setPasswordCheckMessage("비밀번호가 일치하지 않습니다.");
+      setPwValPw(false);
+    }
 
     // // 한글 제거
     // const newValue = value.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, "");
@@ -117,7 +128,7 @@ const MypageInfoEditPopup = ({
             onCopy={(e) => e.preventDefault()}
             onPaste={(e) => e.preventDefault()}
             onKeyDown={handleKeyDown}
-            onChange={handleChange}
+            onChange={(e) => handleChange(e.target.value)}
             // onChange={(e) => setCheckPw(e.target.value)}
             // onKeyDown={(e) => {
             //   if (e.key === "Enter") {
@@ -150,7 +161,11 @@ const MypageInfoEditPopup = ({
           <button type="button" onClick={handleClose}>
             취소
           </button>
-          <button type="button" onClick={handleConfirm}>
+          <button
+            type="button"
+            onClick={handleConfirm}
+            disabled={isConfirmDisabled}
+          >
             확인
           </button>
           {/* <button type="button" onClick={() => handleConfirm(targetField)}>

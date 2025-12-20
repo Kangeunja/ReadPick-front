@@ -13,7 +13,7 @@
 
 .mypageInfoEdit-box {
   width: 330px;
-  height: 250px;
+  /* height: 250px; */
   background-color: white;
   position: fixed;
   z-index: 100;
@@ -89,10 +89,10 @@
   width: 40px;
   background: transparent;
   border: 0;
-  cursor: pointer;
   margin-top: 20px;
 }
 
-.mypageInfoEdit-button button:hover {
+.mypageInfoEdit-button button:not(:disabled):hover {
   color: rgb(80, 80, 80);
+  cursor: pointer;
 }

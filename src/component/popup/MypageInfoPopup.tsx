@@ -86,6 +86,15 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
   // 필드 정보
   const [targetField, setTargetField] = useState<string>("");
 
+  const modifiedCount = [
+    editableUserInfo.userName !== userInfo.userName,
+    editableUserInfo.nickName !== userInfo.nickName,
+    editableUserInfo.email !== userInfo.email,
+    editableUserInfo.id !== userInfo.id,
+    editableUserInfo.pw !== userInfo.pw,
+    isImageUpdated,
+  ].filter(Boolean).length;
+
   useEffect(() => {
     // 팝업이 열릴 때 body의 스크롤 막기
     document.body.style.overflow = "hidden";
@@ -527,6 +536,7 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
               </>
             )}
           </div>
+
           <div className="mypageInfo-popup-text-wrap">
             <div className="mypageInfo-popup-text-box">
               <div className="mypageInfo-popup-title">이름</div>
@@ -682,6 +692,13 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
               </p>
             )}
           </div> */}
+
+            {modifiedCount > 0 && (
+              <div className="mypageInfo-popup-notice">
+                변경사항이 {modifiedCount}개 있습니다. 저장하지 않으면 반영되지
+                않습니다.
+              </div>
+            )}
           </div>
 
           <button
@@ -694,11 +711,15 @@ const MypageInfoPopup = ({ onClose, userInfo, setUserInfo }: any) => {
 
           <button
             type="button"
-            className="mypage-popup-button save"
+            // className="mypage-popup-button save"
+            className={`mypage-popup-button save  ${
+              modifiedCount > 0 ? "highlight" : ""
+            }`}
             onClick={handleSave}
           >
-            저장
+            저장{modifiedCount > 0 && ` (${modifiedCount})`}
           </button>
+
           <button
             type="button"
             className="mypage-popup-icon"
