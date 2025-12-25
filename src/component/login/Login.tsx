@@ -5,30 +5,60 @@ import axiosInstance from "../../api/axiosInstance";
 import MemberLoginPopup from "../popup/MemberLoginPopup";
 import { useSetRecoilState } from "recoil";
 import { userInfoState } from "../../recoil/userInfoState";
+import "../../assets/css/login.css";
+import IsLoginPopup from "../popup/IsLoginPopup";
 
 const Login = () => {
   const navigate = useNavigate();
+  const setUserInfo = useSetRecoilState(userInfoState);
   const [userLogin, setUserLogin] = useState({
-    id: "",
-    pw: "",
+    username: "",
+    password: "",
   });
   const [isPasswordVisible, setPasswordVisible] = useState(false);
-  const [isShowPopup, setShowPopup] = useState(false);
-  const setUserInfo = useSetRecoilState(userInfoState);
 
+  // 회원가입 완료 팝업
+  const [isLoginPopup, setLoginPopup] = useState(false);
+
+  // 관심사 선택창 팝업
+  const [isShowPopup, setShowPopup] = useState(false);
+
+  // 로그인 에러 메세지
+  const [loginErrorMessage, setLoginErrorMessage] = useState("");
+
+  // 정규식 입력 함수
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    setUserLogin((state) => ({
-      ...state,
-      [name]: newValue,
-    }));
 
-    let newValue = value.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, ""); // 한글 제거
-
-    if (name === "id" || name === "pw") {
+    // 아이디
+    if (name === "username") {
+      const fitered = value.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, "");
       const idRegex = /^[a-zA-Z][a-zA-Z0-9]{0,14}$/;
-      if (!idRegex.test(newValue)) return;
+      if (!idRegex.test(fitered) && fitered !== "") return;
+
+      setUserLogin((prev) => ({
+        ...prev,
+        username: fitered,
+      }));
+
+      if (loginErrorMessage) setLoginErrorMessage("");
     }
+
+    // 비밀번호
+    if (name === "password") {
+      setUserLogin((prev) => ({
+        ...prev,
+        password: value,
+      }));
+
+      if (loginErrorMessage) setLoginErrorMessage("");
+    }
+    // let newValue = value.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, ""); // 한글 제거
+
+    // if (name === "username") {
+    //   const idRegex = /^[a-zA-Z][a-zA-Z0-9]{0,14}$/;
+    //   if (!idRegex.test(newValue)) return;
+    // }
   };
 
   // 비밀번호 숨기기/보이기 토글 함수
@@ -36,20 +66,15 @@ const Login = () => {
     setPasswordVisible(!isPasswordVisible);
   };
 
-  // 로그인
+  // 로그인 비활성화 로직
+  const isLoginDisabled = !userLogin.username || !userLogin.password;
+
+  // 로그인 api
   const handleLogin = () => {
-    if (userLogin.id === "") {
-      alert("아이디를 입력해주세요");
-      return;
-    }
-    if (userLogin.pw === "") {
-      alert("비밀번호를 입력해주세요");
-      return;
-    }
     axiosInstance
       .post("/login", {
-        id: userLogin.id,
-        pw: userLogin.pw,
+        id: userLogin.username,
+        pw: userLogin.password,
       })
       .then((res) => {
         console.log(res.data);
@@ -58,7 +83,6 @@ const Login = () => {
           axiosInstance
             .get("/firstAt")
             .then((res) => {
-              // console.log(res.data);
               if (res.data === "Y") {
                 setShowPopup(true);
               } else {
@@ -69,8 +93,11 @@ const Login = () => {
               console.log(error);
             });
         } else {
-          alert("해당 회원은 존재하지 않습니다");
+          setLoginErrorMessage("아이디 또는 비밀번호를 다시 확인해주세요");
         }
+        // else {
+        //   alert("해당 회원은 존재하지 않습니다");
+        // }
       })
       .catch((error) => {
         console.log("Member Login failed", error);
@@ -79,57 +106,86 @@ const Login = () => {
 
   return (
     <>
-      <div className="sub-img"></div>
-      <div className="login-wrap">
-        <div className="login-title">
-          다양한 경험, 소중한 추억
-          <br />
-          <span>ReadPick</span> 에서 <br />
-          한번 만나보세요
-        </div>
-        <div className="input-wrap">
-          <input
-            name="id"
-            className="id"
-            type="text"
-            placeholder="아이디를 입력해주세요"
-            maxLength={15}
-            value={userLogin.id}
-            onChange={handleChange}
-          />
-          <input
-            name="pw"
-            className="pw"
-            type={isPasswordVisible ? "text" : "password"}
-            placeholder="비밀번호를 입력해주세요"
-            maxLength={15}
-            value={userLogin.pw}
-            onChange={handleChange}
-          />
+      <div className="login-layout">
+        <div className="login-main-img"></div>
+        <div className="login-panel">
+          <div className="login-panel-inner">
+            <div className="login-visual"></div>
+            <div className="login-title">
+              다양한 경험, 소중한 추억
+              <br />
+              <span>ReadPick</span>에서 한번 만나보세요
+            </div>
+            <form
+              className="login-form"
+              onSubmit={(e) => {
+                e.preventDefault(); // 페이지 새로고침 방지
+                handleLogin(); // 기존 로직 그대로
+              }}
+            >
+              <input
+                name="username"
+                className="login-input"
+                type="text"
+                placeholder="아이디를 입력해주세요."
+                maxLength={15}
+                value={userLogin.username}
+                onChange={handleChange}
+                autoComplete="username"
+              />
 
-          {!isPasswordVisible ? (
-            <div className="login-toggle-visibility">
-              <AiFillEyeInvisible onClick={togglePasswordVisibility} />
-            </div>
-          ) : (
-            <div className="login-toggle-visibility">
-              <AiFillEye onClick={togglePasswordVisibility} />
-            </div>
-          )}
+              <div className="login-input-pw">
+                <input
+                  name="password"
+                  className="login-input"
+                  type={isPasswordVisible ? "text" : "password"}
+                  placeholder="비밀번호를 입력해주세요."
+                  // maxLength={15}
+                  value={userLogin.password}
+                  onChange={handleChange}
+                  autoComplete="current-password"
+                />
 
-          <button type="button" className="login-button" onClick={handleLogin}>
-            로그인
-          </button>
-          <div className="login-bottom">
-            <div className="log-in" onClick={() => navigate("/member")}>
-              회원가입
-            </div>
-            <div className="find-id">아이디 찾기</div>
-            <div className="find-pw">비밀번호 찾기</div>
+                <span
+                  className="login-toggle-visibility"
+                  onClick={togglePasswordVisibility}
+                >
+                  {isPasswordVisible ? <AiFillEye /> : <AiFillEyeInvisible />}
+                </span>
+              </div>
+              {loginErrorMessage && (
+                <p className="login-Error">{loginErrorMessage}</p>
+              )}
+
+              <button
+                type="submit"
+                className="login-submit"
+                // onClick={handleLogin}
+                disabled={isLoginDisabled}
+              >
+                로그인
+              </button>
+
+              <div className="login-actions">
+                <button onClick={() => navigate("/member")}>회원가입</button>
+                <button>아이디 찾기</button>
+                <button>비밀번호 찾기</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
-      {isShowPopup && <MemberLoginPopup onClose={() => setShowPopup(false)} />}
+
+      {isShowPopup && (
+        <MemberLoginPopup
+          onClose={() => {
+            setShowPopup(false);
+            setLoginPopup(true);
+          }}
+        />
+      )}
+
+      {isLoginPopup && <IsLoginPopup />}
     </>
   );
 };

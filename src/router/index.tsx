@@ -22,7 +22,7 @@ const BrowserRouterDom = () => {
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Main />}></Route>
-            <Route path="/login" element={<Login />}></Route>
+
             <Route path="/member" element={<Member />}></Route>
             <Route path="/member/login" element={<MemberLogin />}></Route>
             <Route path="/member/keyword" element={<MemberKeyword />}></Route>
@@ -33,6 +33,8 @@ const BrowserRouterDom = () => {
             ></Route>
             <Route path="/mypage" element={<MyPage />}></Route>
           </Route>
+
+          <Route path="/login" element={<Login />}></Route>
 
           <Route path="/admin" element={<Admin />}></Route>
           <Route path="/admin/main" element={<AdminMain />}></Route>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
+import IsLoginPopup from "./IsLoginPopup";
 
 interface BssItem {
   // bmIdx: string;
@@ -73,12 +74,13 @@ const MemberLoginPopup = ({ onClose }: any) => {
   };
   console.log(selectedItems);
 
+  // 선택완료 api
   const handleSelectedItems = () => {
     if (selectedItems.length === 0) {
       alert("관심사를 선택해주세요.");
       return;
     } else if (selectedItems.length < 4) {
-      alert("관심사를 최대 4개까지 선택해주세요.");
+      // alert("관심사를 최대 4개까지 선택해주세요.");
       return;
     }
     const formattedData = selectedItems.map((item) => [
@@ -92,9 +94,10 @@ const MemberLoginPopup = ({ onClose }: any) => {
       .then((res) => {
         console.log(res);
         if (res.data === "success") {
-          navigate("/");
+          onClose();
+          // navigate("/");
         }
-        onClose();
+        // setLoginPopup(true);
       })
       .catch((error) => {
         console.log("User selected failed", error);
@@ -102,59 +105,61 @@ const MemberLoginPopup = ({ onClose }: any) => {
   };
 
   return (
-    <div className="popup-background">
-      <div className="popup-box">
-        <div className="popup-title-wrap">
-          <div className="popup-title">관심사 PICK</div>
-          <div className="popup-sub-p">
-            <p>관심사 키워드를 통해 오늘의 책 또는 관련책을 추천해줍니다.</p>
-            <p> (최대4개까지 선택가능)</p>
-          </div>
-        </div>
-        <div className="popup-container">
-          {bsName.map((item) => (
-            <div key={item.bsName}>
-              <div className="popup-sub-title">{`# ${item.bsName}`}</div>
-              <ul className="popup-con">
-                {item.bssList.map((item) => (
-                  <li
-                    key={item.bssIdx}
-                    onClick={() =>
-                      handleSelect({
-                        // bmIdx: item.bmIdx,
-                        bsIdx: item.bsIdx,
-                        bssIdx: item.bssIdx,
-                        // bssName: item.bssName,
-                      })
-                    }
-                    className={
-                      selectedItems.some(
-                        (selected) => selected.bssIdx === item.bssIdx
-                      )
-                        ? "selected"
-                        : ""
-                    }
-                    // className={
-                    //   selectedItems.includes(item.bssName) ? "selected" : ""
-                    // }
-                  >
-                    {item.bssName}
-                  </li>
-                ))}
-              </ul>
+    <>
+      <div className="popup-background">
+        <div className="popup-box">
+          <div className="popup-title-wrap">
+            <div className="popup-title">관심사 PICK</div>
+            <div className="popup-sub-p">
+              <p>관심사 키워드를 통해 오늘의 책 또는 관련책을 추천해줍니다.</p>
+              <p> (최대4개까지 선택해주세요.)</p>
             </div>
-          ))}
+          </div>
+          <div className="popup-container">
+            {bsName.map((item) => (
+              <div key={item.bsName}>
+                <div className="popup-sub-title">{`# ${item.bsName}`}</div>
+                <ul className="popup-con">
+                  {item.bssList.map((item) => (
+                    <li
+                      key={item.bssIdx}
+                      onClick={() =>
+                        handleSelect({
+                          // bmIdx: item.bmIdx,
+                          bsIdx: item.bsIdx,
+                          bssIdx: item.bssIdx,
+                          // bssName: item.bssName,
+                        })
+                      }
+                      className={
+                        selectedItems.some(
+                          (selected) => selected.bssIdx === item.bssIdx
+                        )
+                          ? "selected"
+                          : ""
+                      }
+                      // className={
+                      //   selectedItems.includes(item.bssName) ? "selected" : ""
+                      // }
+                    >
+                      {item.bssName}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <button
+            className={`button-pick ${
+              selectedItems.length === 4 ? "active" : ""
+            }`}
+            onClick={handleSelectedItems}
+          >
+            선택완료
+          </button>
         </div>
-        <button
-          className={`button-pick ${
-            selectedItems.length === 4 ? "active" : ""
-          }`}
-          onClick={handleSelectedItems}
-        >
-          선택완료
-        </button>
       </div>
-    </div>
+    </>
   );
 };
 export default MemberLoginPopup;

@@ -18,10 +18,20 @@ interface BookInfo {
   pubDate: string;
 }
 
+interface ReviewInfo {
+  rvIdx: number;
+  bookIdx: number;
+  content: string;
+  reportCount: number;
+  regDate: string;
+  userIdx: number;
+}
+
 const AdminMain = () => {
   const [activeTab, setActiveTab] = useState("menu1");
   const [userList, setUserList] = useState<UserInfo[]>([]);
   const [bookList, setBookList] = useState<BookInfo[]>([]);
+  const [reviewList, setReviewList] = useState<ReviewInfo[]>([]);
 
   const showTab = (tabId: string) => {
     setActiveTab(tabId);
@@ -66,8 +76,10 @@ const AdminMain = () => {
   useEffect(() => {
     adminUserList();
     adminBookList();
+    adminReviewList();
   }, []);
 
+  // 회원관리 리스트 api
   const adminUserList = () => {
     axiosInstance
       .get("/adminUserList")
@@ -80,6 +92,7 @@ const AdminMain = () => {
       });
   };
 
+  // 회원삭제 버튼
   const handleUserDelete = (userIdx: number) => {
     if (window.confirm("회원을 삭제하시겠습니까?")) {
       axiosInstance
@@ -96,6 +109,7 @@ const AdminMain = () => {
     }
   };
 
+  // 도서관리 리스트 api
   const adminBookList = () => {
     axiosInstance
       .get("/adminBookList")
@@ -108,6 +122,7 @@ const AdminMain = () => {
       });
   };
 
+  // 도서삭제 버튼
   const handleBookDelete = (bookIdx: number) => {
     if (window.confirm("도서를 삭제하시겠습니까?")) {
       axiosInstance
@@ -122,6 +137,19 @@ const AdminMain = () => {
           console.log(error);
         });
     }
+  };
+
+  // 리뷰관리 리스트 api
+  const adminReviewList = () => {
+    axiosInstance
+      .get("/adminReviewList")
+      .then((res) => {
+        console.log(res.data);
+        setReviewList(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -248,12 +276,12 @@ const AdminMain = () => {
                 "삭제",
                 "초기화",
               ]}
-              row={[
-                "리뷰 번호",
-                "도서 번호",
-                "리뷰 내용",
-                "신고횟수",
-                "작성일",
+              rows={reviewList.map((review) => [
+                review.bookIdx,
+                review.bookIdx,
+                review.content,
+                review.reportCount,
+                review.regDate,
                 <button className="admin-search-button">삭제</button>,
                 <button
                   className="admin-search-button"
@@ -261,7 +289,21 @@ const AdminMain = () => {
                 >
                   초기화
                 </button>,
-              ]}
+              ])}
+              // row={[
+              //   "리뷰 번호",
+              //   "도서 번호",
+              //   "리뷰 내용",
+              //   "신고횟수",
+              //   "작성일",
+              //   <button className="admin-search-button">삭제</button>,
+              //   <button
+              //     className="admin-search-button"
+              //     title="신고횟수를 초기화합니다."
+              //   >
+              //     초기화
+              //   </button>,
+              // ]}
             />
           </div>
         )}
