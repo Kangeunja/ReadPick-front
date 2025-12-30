@@ -5,8 +5,7 @@ const Footer = () => {
     <div className="footer">
       <div className="footer-wrap">
         <div className="footer-top-box">
-          <div className="footer-logo"></div>
-          <div className="footer-right-text">
+          <div className="footer-top-text">
             <p>이용약관</p>
             <p>개인정보처리방침</p>
             <p>고객센터</p>

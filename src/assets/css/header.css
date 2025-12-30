@@ -2,7 +2,7 @@
   width: 100%;
 }
 
-.content {
+.header-wrap {
   width: 1300px;
   height: 100px;
   margin: 20px auto;
@@ -39,10 +39,6 @@
   cursor: pointer;
   color: #797979;
 }
-
-/* .selectBox p {
-  color: black;
-} */
 
 .placeholder {
   color: #5e5e5e;

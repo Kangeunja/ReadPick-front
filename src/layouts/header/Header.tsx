@@ -107,7 +107,7 @@ const Header = () => {
 
   return (
     <div className="header">
-      <div className="content">
+      <div className="header-wrap">
         <div className="logo" onClick={() => navigate("/")}></div>
 
         {/* <select className="selectBox">

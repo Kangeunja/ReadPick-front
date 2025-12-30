@@ -8,6 +8,7 @@ const MyPageInfoAlterPopup = ({
   onPasswordChange,
 }: any) => {
   console.log(editableUserInfo.pw);
+
   // 현재 비밀번호 입력창
   const [currentPw, setCurrentPw] = useState("");
 
