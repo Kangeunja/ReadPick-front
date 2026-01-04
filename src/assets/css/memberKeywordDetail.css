@@ -1,7 +1,13 @@
-.keyword-detail-wrap {
-  width: 1200px;
+.keyword-detail-page {
+  width: 100%;
+  /* width: 1200px;
   margin: 0 auto;
-  margin-top: 50px;
+  margin-top: 50px; */
+}
+
+.keyword-detail-container {
+  width: 1300px;
+  margin: 0 auto;
 }
 
 .keyword-detail-img-wrap {

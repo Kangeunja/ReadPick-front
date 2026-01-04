@@ -385,8 +385,9 @@ const MemberKeywordDetail = () => {
 
   return (
     <>
-      <div className="keyword-detail-wrap">
-        <div className="keyword-detail-img-wrap">
+      <div className="keyword-detail-page">
+        <div className="keyword-detail-container"></div>
+        {/* <div className="keyword-detail-img-wrap">
           <div className="keyword-detail-img">
             {bookImg && (
               <img
@@ -413,9 +414,9 @@ const MemberKeywordDetail = () => {
               ></div>
             </div>
           </div>
-        </div>
+        </div> */}
 
-        <div className="keyword-detail-right-con-wrap">
+        {/* <div className="keyword-detail-right-con-wrap">
           {bookDetail && (
             <>
               <div className="keyword-detail-right-text">
@@ -479,7 +480,6 @@ const MemberKeywordDetail = () => {
                           </div>
                           <div className="keyword-detail-text-wrap">
                             <p>{item.nickName}</p>
-                            {/* <input type="text" value={item.content} readOnly /> */}
 
                             <textarea
                               className="keyword-detail-text-select"
@@ -501,7 +501,7 @@ const MemberKeywordDetail = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       {isPopup && selectedReview && (
         <MemberKeywordDetailPopup

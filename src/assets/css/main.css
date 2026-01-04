@@ -151,7 +151,6 @@
   height: 220px;
   background-color: white;
   border: 1px solid #ededed;
-  /* box-shadow: 3px 2px 20.4px 1px rgba(0, 0, 0, 0.15); */
   margin-bottom: 15px;
   cursor: pointer;
   transition: transform 0.25s ease, box-shadow 0.25s ease;

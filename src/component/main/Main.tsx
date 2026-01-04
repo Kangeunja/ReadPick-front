@@ -23,20 +23,10 @@ const Main = () => {
   const isLogin = !!userInfo?.userIdx;
 
   //
-  const functionSubtitle = [
-    {
-      book: "책제목",
-      author: "지은이",
-    },
-    {
-      book: "책제목",
-      author: "지은이",
-    },
-    {
-      book: "책제목",
-      author: "지은이",
-    },
-  ];
+  const functionSubtitle = Array.from({ length: 3 }, () => ({
+    book: "책제목",
+    author: "지은이",
+  }));
 
   // 최초 진입
   useEffect(() => {
@@ -72,7 +62,7 @@ const Main = () => {
     axiosInstance
       .get("/bsList")
       .then((res) => {
-        // console.log(res.data);
+        console.log(res.data);
         setKeywordList(res.data);
       })
       .catch((error) => {

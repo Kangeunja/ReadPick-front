@@ -109,12 +109,6 @@ const Header = () => {
     <div className="header">
       <div className="header-wrap">
         <div className="logo" onClick={() => navigate("/")}></div>
-
-        {/* <select className="selectBox">
-          <option>선택</option>
-          <option>도서명</option>
-          <option>작가명</option>
-        </select> */}
         <div>
           <div className="customSelect" ref={selectRef}>
             <div
