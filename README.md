@@ -1,46 +1,39 @@
-# Getting Started with Create React App
+안녕하세요.
+사용자 경험을 기준으로 UI 흐름을 설계하고, React 기반으로 기능을 하나씩 개선해 나가고 있으며
+실서비스 구현 경험을 쌓아가고 있는 성장형 프론트엔드 개발자입니다.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 🚧 Current Status
+- 본 프로젝트는 현재도 지속적으로 개선 및 기능을 추가 중입니다.
+- 기존 기능 리팩토링, UX 개선, 코드 구조 정리를 병행하고 있습니다.
 
-## Available Scripts
+## 💼 지원 직무
+- 프론트엔드 개발자 (신입)
 
-In the project directory, you can run:
+## 🛠 Tech Stack
+- Language: JavaScript (ES6+)
+- Framework / Library: React
+- State Management: Recoil
+- HTTP: Axios
+- Styling: CSS (BEM 방식)
+- Tooling: Git, Figma
+- TypeScript: 학습 및 일부 적용 중
 
-### `npm start`
+## 📌 Main Project
+📚 ReadPick – 도서 추천 & 리뷰 웹 서비스
+개발 기간: 2025.03 ~ 현재 (진행 중)
+역할: 프론트엔드 개발
+형태: 2인 팀 프로젝트
+협업: 백엔드 개발자 1인
+- Backend Repository: https://github.com/ghdudths/ReadPickCopy.git
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 💡 고민 & 배운 점
+- 인증 상태 유지 문제를 겪으며
+  Access / Refresh Token 기반 인증 흐름을 이해하고 구현했습니다.
+- UI 상태(로딩, 에러, 데이터 없음)를 분리하며
+  사용자 경험의 중요성을 체감했습니다.
+- 초기에는 기능 구현에 집중했지만,
+  기능이 늘어날수록 수정 범위가 커지는 문제를 겪으며
+  유지보수가 쉬운 구조가 이후 개발 속도와 안정성에
+  더 중요하다는 것을 프로젝트를 통해 배웠습니다.
+ 
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
