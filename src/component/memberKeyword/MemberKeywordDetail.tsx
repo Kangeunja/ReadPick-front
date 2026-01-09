@@ -1,15 +1,15 @@
-import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { useRecoilState } from "recoil";
-import MemberKeywordDetailPopup from "../popup/MemberKeywordDetailPopup";
-import { userInfoState } from "../../recoil/userInfoState";
-import { bookmarkState } from "../../recoil/bookmarkState";
-import { isGoodState } from "../../recoil/isGoodState";
-import axiosInstance from "../../api/axiosInstance";
 import "../../assets/css/memberKeywordDetail.css";
-import MemberKeywordDetailReviewPopup from "../popup/MemberKeywordDetailReviewPopup";
+import TopMenu from "../../layouts/topMenu/TopMenu";
+import axiosInstance from "../../api/axiosInstance";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import SpinnerIcon from "../../icon/SpinnerIcon";
-import profileDefaultImg from "../../assets/img/icon-profile.png";
+import MemberKeywordDetailReviewPopup from "../popup/MemberKeywordDetailReviewPopup";
+import { useRecoilState } from "recoil";
+import { userInfoState } from "../../recoil/userInfoState";
+import LoginRequiredPopup from "../popup/LoginRequiredPopup";
+import MemberKeywordDetailEditPopup from "../popup/MemberKeywordDetailEditPopup";
+import ReviewDeletePopup from "../popup/ReviewDeletePopup";
 
 interface BookDetail {
   author: string;
@@ -26,31 +26,36 @@ interface Review {
   bookIdx: number;
   rvIdx: number;
   fileName: string;
+  userIdx: number;
 }
 
 const MemberKeywordDetail = () => {
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
   // 유저 정보
   const [user] = useRecoilState(userInfoState);
 
-  // URL에서 bookIdx 쿼리 파라미터 값 추출
-  const { bookIdx } = useParams();
-  const bookIdxNumber = bookIdx ? parseInt(bookIdx, 10) : null;
-
-  // 로딩바 상태
-  const [loading, setLoading] = useState(false);
-
   // 스크롤 포커싱
   const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  // 마우스 포커싱
+  const moreMenuRef = useRef<HTMLDivElement | null>(null);
+
+  // URL에서 bsIdx 쿼리 파라미터 값 추출
+  const bsIdx = Number(query.get("bsIdx")) || null;
+  const bssIdx = Number(query.get("bssIdx")) || null;
+
+  const { bookIdx } = useParams();
+  const bookIdxNumber = bookIdx ? Number(bookIdx) : null;
+
+  // 키워드 중분류 안에 소분류 리스트
+  const [keyword, setKeyword] = useState([]);
 
   // 책 대표 이미지
   const [bookImg, setBookImg] = useState({
     fileName: "",
   });
-
-  // 북마크 유무
-  const [isBookMark, setIsBookMark] = useRecoilState(bookmarkState);
 
   // 책 상세 정보
   const [bookDetail, setBookDetail] = useState<BookDetail | null>(null);
@@ -59,45 +64,161 @@ const MemberKeywordDetail = () => {
   const [isContent, setIsContent] = useState(false);
 
   // 리뷰 없을 때 메세지
-  const [reviewMessage, setReviewMessage] = useState(false);
+  const [hasNoReviews, setHasNoReviews] = useState(false);
 
   // 리뷰 리스트
   const [review, setReview] = useState<Review[]>([]);
 
+  // 리뷰 전체 개수
+  const [totalReviewCount, setTotalReviewCount] = useState("");
+
   // 마지막 리뷰의 rvIdx
   const [lastRvIdx, setLastRvIdx] = useState(null);
+
+  // 로딩바 상태
+  const [loading, setLoading] = useState(false);
+
+  // 무한 스크롤 콘텐츠 유무
+  const [more, setMore] = useState(true);
+
+  // 로그인 팝업
+  const [isLoginPopup, setIsLoginPopup] = useState(false);
+
+  // 리뷰 작성 팝업
+  const [isReviewPopup, setIsReviewPopup] = useState(false);
+
+  // 더보기란 상태바
+  const [openMoreReviewId, setOpenMoreReviewId] = useState<number | null>(null);
 
   // 선택된 리뷰내용
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
 
   // 리뷰 수정 팝업
-  const [isPopup, setIsPopup] = useState(false);
+  const [isReviewEditPopup, setIsReviewEditPopup] = useState(false);
+
+  // 리뷰 삭제 팝업
+  const [isReviewClosePopup, setIsReviewClosePopup] = useState(false);
 
   // 추천 완료 유무
-  const [isGood, setIsGood] = useRecoilState(isGoodState);
+  const [isGood, setIsGood] = useState(false);
 
   // 책 추천수
   const [checkCount, setCheckCount] = useState(0);
 
-  // 무한 스크롤 콘텐츠 유무
-  const [more, setMore] = useState(true);
+  // 찜 유무
+  const [isBookMark, setIsBookMark] = useState(false);
 
-  // 리뷰작성 팝업
-  const [isReviewPopup, setIsReviewPopup] = useState(false);
+  // 작성자가 리뷰 작성되었는지 유무
+  const hasMyReview = !!review.find((rv) => rv.userIdx === user?.userIdx);
 
-  // 페이지 로드시 api호출
+  // 페이지 진입시 맨처음 실행되는 코드
   useEffect(() => {
+    keywordList();
+
     if (bookIdxNumber !== null) {
-      handleBookDetail(bookIdxNumber);
       bookDetailImg(bookIdxNumber);
+      handleBookDetail(bookIdxNumber);
       reviewList(bookIdxNumber);
-      handleCheckGood();
     }
-    if (user) {
-      bookMarkCheck();
-      goodCheck();
-    }
+    checkIsRecommended();
+    handleCheckGood();
+    bookMarkCheck();
   }, [bookIdxNumber]);
+
+  // 추천 여부 확인 api
+  const checkIsRecommended = () => {
+    axiosInstance
+      .get("/isRec", {
+        params: { bookIdx: bookIdx },
+      })
+      .then((res) => {
+        console.log(res.data);
+        if (res.data === "Y") {
+          setIsGood(true);
+        } else {
+          setIsGood(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // 책 추천수 api
+  const handleCheckGood = () => {
+    if (!bookIdxNumber) return;
+    axiosInstance
+      .get("/recCount", {
+        params: {
+          bookIdx: bookIdxNumber,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setCheckCount(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // 찜 여부 확인 api
+  const bookMarkCheck = () => {
+    axiosInstance
+      .get("/isBookmark", {
+        params: { bookIdx: bookIdx },
+      })
+      .then((res) => {
+        if (res.data === "Y") {
+          console.log(res.data);
+          setIsBookMark(true);
+        } else {
+          setIsBookMark(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // 외부 클릭 시 메뉴 닫기
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        moreMenuRef.current &&
+        !moreMenuRef.current.contains(e.target as Node)
+      ) {
+        setOpenMoreReviewId(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openMoreReviewId]);
+
+  // 메인페이지에서 선택한 중분류의 소분류 리스트 api
+  const keywordList = () => {
+    axiosInstance
+      .get("/bssListByBsIdx")
+      .then((res) => {
+        setKeyword(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // 키워드 리스트 토글 상태
+  const handleBsClick = (bsIdx: number) => {
+    navigate(`/member/keyword?bsIdx=${bsIdx}`);
+  };
+
+  // 유저가 선택한 소분류 정보 api
+  const handleBssClick = (bssIdx: number) => {
+    navigate(`/member/keyword?bsIdx=${bsIdx}&bssIdx=${bssIdx}`);
+  };
 
   // 책 대표 이미지 api
   const bookDetailImg = (bookIdx: number) => {
@@ -108,7 +229,6 @@ const MemberKeywordDetail = () => {
         },
       })
       .then((res) => {
-        console.log(res.data);
         setBookImg(res.data);
       })
       .catch((error) => {
@@ -138,117 +258,6 @@ const MemberKeywordDetail = () => {
       });
   };
 
-  // 북마크 확인 api
-  const bookMarkCheck = () => {
-    axiosInstance
-      .get("/isBookmark", {
-        params: { bookIdx: bookIdx },
-      })
-      .then((res) => {
-        console.log(res.data);
-        if (res.data === "Y") {
-          setIsBookMark(true);
-        } else {
-          setIsBookMark(false);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  // 추천 확인 api
-  const goodCheck = () => {
-    axiosInstance
-      .get("/isRec", {
-        params: { bookIdx: bookIdx },
-      })
-      .then((res) => {
-        console.log(res.data);
-        if (res.data === "Y") {
-          setIsGood(true);
-        } else {
-          setIsGood(false);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  // 북마크 추가 api
-  const handleIsBookMark = () => {
-    if (!user) {
-      alert("로그인이 필요한 서비스입니다.");
-      navigate("/login");
-      return;
-    }
-
-    if (bookDetail?.bookIdx && bookDetail?.bookIdx > 0) {
-      axiosInstance
-        .post(`/bookmark?bookIdx=${bookIdx}`)
-        .then((res) => {
-          console.log(res.data);
-          if (res.data.message === "로그인필요.") {
-            alert("로그인이 필요한 서비스입니다.");
-            navigate("/login");
-          } else if (res.data.message === "북마크추가완료") {
-            alert("찜목록에 추가되었습니다.");
-            setIsBookMark(true);
-            if (window.confirm("찜목록으로 이동하시겠습니까?")) {
-              navigate("/mypage");
-            }
-          } else {
-            alert("찜목록에 해제되었습니다.");
-            setIsBookMark(false);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  };
-
-  // 책 추천 api
-  const handleIsGood = () => {
-    axiosInstance
-      .post(`/recommend?bookIdx=${bookIdx}`)
-      .then((res) => {
-        console.log(res.data);
-        if (res.data.message === "로그인필요.") {
-          alert("로그인이 필요한 서비스입니다.");
-          navigate("/login");
-        }
-        if (res.data.message === "추천완료") {
-          setIsGood(true);
-        } else {
-          setIsGood(false);
-        }
-        handleCheckGood();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  // 책 추천수 api
-  const handleCheckGood = () => {
-    if (!bookIdxNumber) return;
-    axiosInstance
-      .get("/recCount", {
-        params: {
-          bookIdx: bookIdxNumber,
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        setCheckCount(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   // 리뷰 리스트 api
   const reviewList = (bookIdx: number) => {
     axiosInstance
@@ -260,63 +269,23 @@ const MemberKeywordDetail = () => {
       .then((res) => {
         console.log(res.data);
         setReview(res.data);
+        setTotalReviewCount(res.data.length);
         if (res.data.length > 0) {
           setLastRvIdx(res.data[res.data.length - 1].rvIdx); // 마지막 리뷰의 rvIdx 저장
         }
-        setReviewMessage(res.data.length === 0);
+        setHasNoReviews(res.data.length === 0);
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  // 리뷰 신고버튼 api
-  const handleDeclaration = (rvIdx: number) => {
-    if (window.confirm("신고하시겠습니까?")) {
-      axiosInstance
-        .get("/reportReview", {
-          params: { rvIdx: rvIdx },
-        })
-        .then((res) => {
-          console.log(res.data);
-          if (res.data === "reportReview:success") {
-            alert("신고 완료되었습니다.");
-          } else {
-            alert("이미 신고된 이력이 있습니다.");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  };
-
-  // 리뷰 수정버튼  api
-  const handleReviewUpdate = (rvIdx: number) => {
-    const reviewNumber = review.find((item) => item.rvIdx === rvIdx) || null;
-    setSelectedReview(reviewNumber);
-    setIsPopup(true);
-  };
-
-  // 리뷰 삭제버튼 api
-  const handleReviewDelete = () => {
-    if (window.confirm("정말로 해당 리뷰를 삭제하시겠습니까?")) {
-      axiosInstance
-        .get("/reviewDelete", {
-          params: {
-            bookIdx: bookDetail?.bookIdx,
-          },
-        })
-        .then((res) => {
-          console.log(res);
-          if (res.data === "success") {
-            alert("해당 리뷰가 삭제되었습니다.");
-            reviewList(bookDetail?.bookIdx!);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+  // 리뷰 작성하기 X버튼
+  const handleOpenReviewPopup = () => {
+    if (user) {
+      setIsReviewPopup(true);
+    } else {
+      setIsLoginPopup(true);
     }
   };
 
@@ -370,157 +339,310 @@ const MemberKeywordDetail = () => {
     }
   };
 
-  // 공통 프로필 이미지 렌더링 함수
-  const renderProfileImg = (fileName: string) => (
-    <img
-      src={fileName === "default" ? profileDefaultImg : fileName}
-      className={
-        fileName === "default"
-          ? "keyword-detail-review-default-img"
-          : "keyword-detail-review-set-img"
-      }
-      alt="이미지"
-    />
-  );
+  // 더보기 버튼 클릭 시 토글
+  const handleToggleMoreMenu = (rvIdx: number) => {
+    setOpenMoreReviewId((prev) => (prev === rvIdx ? null : rvIdx));
+  };
+
+  // 수정하기 버튼
+  const handleReviewUpdate = (rvIdx: number) => {
+    const targetReview = review.find((item) => item.rvIdx === rvIdx) || null;
+    setSelectedReview(targetReview);
+    setIsReviewEditPopup(true);
+
+    setOpenMoreReviewId(null);
+  };
+
+  // 책 추천해요 버튼
+  const handleIsGood = () => {
+    if (!user) {
+      setIsLoginPopup(true);
+      return;
+    } else {
+      axiosInstance
+        .post(`/recommend?bookIdx=${bookIdx}`)
+        .then((res) => {
+          if (res.data.message === "추천완료") {
+            setIsGood(true);
+          } else {
+            setIsGood(false);
+          }
+          handleCheckGood();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  // 이 책 찜해요 버튼
+  const handleIsBookMark = () => {
+    if (!user) {
+      setIsLoginPopup(true);
+      return;
+    } else {
+      axiosInstance
+        .post(`/bookmark?bookIdx=${bookIdx}`)
+        .then((res) => {
+          if (res.data.message === "북마크추가완료") {
+            setIsBookMark(true);
+          } else {
+            setIsBookMark(false);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  //   // 북마크 추가 api
+  //   // const handleIsBookMark = () => {
+
+  //   //   if (bookDetail?.bookIdx && bookDetail?.bookIdx > 0) {
+  //   //     axiosInstance
+  //   //       .post(`/bookmark?bookIdx=${bookIdx}`)
+  //   //       .then((res) => {
+  //   //         console.log(res.data);
+  //   //         if (res.data.message === "로그인필요.") {
+  //   //           alert("로그인이 필요한 서비스입니다.");
+  //   //           navigate("/login");
+  //   //         } else if (res.data.message === "북마크추가완료") {
+  //   //           alert("찜목록에 추가되었습니다.");
+  //   //           setIsBookMark(true);
+  //   //           if (window.confirm("찜목록으로 이동하시겠습니까?")) {
+  //   //             navigate("/mypage");
+  //   //           }
+  //   //         } else {
+  //   //           alert("찜목록에 해제되었습니다.");
+  //   //           setIsBookMark(false);
+  //   //         }
+  //   //       })
+  //   //       .catch((error) => {
+  //   //         console.log(error);
+  //   //       });
+  //   //   }
+  //   // };
+
+  // 삭제하기 버튼
+  const handleReviewDelete = () => {
+    setIsReviewClosePopup(true);
+    setOpenMoreReviewId(null);
+  };
 
   return (
     <>
       <div className="keyword-detail-page">
-        <div className="keyword-detail-container"></div>
-        {/* <div className="keyword-detail-img-wrap">
-          <div className="keyword-detail-img">
-            {bookImg && (
-              <img
-                src={bookImg.fileName.replace("coversum", "cover500")}
-                alt="책 이미지"
-              />
-            )}
-          </div>
+        <div className="keyword-detail__container">
+          <TopMenu
+            keywordList={keyword}
+            selectedBsIdx={bsIdx}
+            selectedBssIdx={bssIdx}
+            onBsClick={handleBsClick}
+            onBssClick={handleBssClick}
+          />
 
-          <div className="keyword-detail-icon-wrap">
-            <div
-              className={
-                isBookMark ? `keyword-detail-save add` : "keyword-detail-save"
-              }
-              onClick={handleIsBookMark}
-            ></div>
-            <div className="keyword-detail-good-wrap">
-              <div className="keyword-detail-good-text">{`추천해요${checkCount}`}</div>
-              <div
-                className={
-                  isGood ? `keyword-detail-good add` : "keyword-detail-good"
-                }
-                onClick={handleIsGood}
-              ></div>
-            </div>
-          </div>
-        </div> */}
-
-        {/* <div className="keyword-detail-right-con-wrap">
-          {bookDetail && (
-            <>
-              <div className="keyword-detail-right-text">
-                <p>{bookDetail.bookName}</p>
-                <p>{bookDetail.author}</p>
-                {isContent ? (
-                  <p>줄거리가 없습니다.</p>
-                ) : (
-                  <p>{bookDetail.bookContent}</p>
+          <div className="book-detail-page">
+            <div className="book-detail">
+              <div className="book-detail__image">
+                {bookImg && (
+                  <img
+                    src={bookImg.fileName.replace("coversum", "cover500")}
+                    alt="책 이미지"
+                  />
                 )}
               </div>
 
-              <button
-                className="keyword-detail-buy-button"
-                onClick={() => (window.location.href = `${bookDetail.link}`)}
-              >
-                이 책 사고 싶어요!
-              </button>
-            </>
-          )}
+              <div className="book-detail__actions">
+                <button
+                  className={
+                    isGood
+                      ? "book-detail__recommend-btn hover"
+                      : "book-detail__recommend-btn"
+                  }
+                  onClick={handleIsGood}
+                >
+                  <div
+                    className={
+                      isGood
+                        ? "book-detail__recommend-icon hover"
+                        : "book-detail__recommend-icon"
+                    }
+                  ></div>
+                  <p>{`이 책 추천해요 ${checkCount}`}</p>
+                </button>
 
-          <div className="keyword-detail-review-wrap">
-            <div className="keyword-detail-review-text">
-              <p>이 책을 읽은 사람들의 리뷰</p>
-              <button onClick={() => setIsReviewPopup(true)}>
-                리뷰 남기기
-              </button>
+                <button
+                  className={
+                    isBookMark
+                      ? "book-detail__bookmark-btn hover"
+                      : "book-detail__bookmark-btn"
+                  }
+                  onClick={handleIsBookMark}
+                >
+                  <div className="book-detail__bookmark-icon"></div>
+                  <p>{isBookMark ? "찜했어요" : "이 책 찜해요"}</p>
+                </button>
+              </div>
             </div>
 
-            <div className="keyword-detail-scroll-container">
-              <div
-                className={`keyword-detail-scroll-wrap ${
-                  reviewMessage ? "no-review" : ""
-                }`}
-                ref={scrollRef}
-              >
-                {!reviewMessage ? (
-                  <>
-                    {review.map((item, index) => (
-                      <div className="keyword-detail-box-wrap" key={index}>
-                        <div className="keyword-detail-box">
-                          {user?.nickName !== item.nickName ? (
-                            <button
-                              className="keyword-detail-declaration-button"
-                              onClick={() => handleDeclaration(item.rvIdx)}
-                            >
-                              신고
-                            </button>
-                          ) : (
-                            <div className="keyword-detail-button-wrap">
-                              <button
-                                onClick={() => handleReviewUpdate(item.rvIdx)}
-                              >
-                                수정
-                              </button>
-                              <button onClick={handleReviewDelete}>삭제</button>
-                            </div>
-                          )}
-                          <div className="keyword-detail-review-img">
-                            {renderProfileImg(item.fileName)}
-                          </div>
-                          <div className="keyword-detail-text-wrap">
-                            <p>{item.nickName}</p>
+            <div className="book-detail__info">
+              {bookDetail && (
+                <>
+                  <div className="book-detail__info-text">
+                    <p>{bookDetail.bookName}</p>
+                    <p>{bookDetail.author}</p>
+                  </div>
 
-                            <textarea
-                              className="keyword-detail-text-select"
-                              value={item.content}
-                              readOnly
-                              maxLength={200}
-                            ></textarea>
+                  <div className="book-detail__description">
+                    <div className="book-detail__description-title">
+                      책 소개
+                    </div>
+                    <div className="book-detail__description-text">
+                      {isContent ? (
+                        <p>이 책의 줄거리는 아직 준비 중이에요.</p>
+                      ) : (
+                        <p>{bookDetail.bookContent}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <button
+                    className="book-detail__buy-button"
+                    onClick={() =>
+                      (window.location.href = `${bookDetail.link}`)
+                    }
+                  >
+                    <div className="book-detail__buy-icon"></div>
+                    <p>이 책 사고싶어요.</p>
+                  </button>
+                </>
+              )}
+
+              <div className="book-detail__reviews">
+                <div className="book-detail__reviews-header">
+                  {`이 책을 읽은 사람들의 리뷰(${totalReviewCount})`}
+                </div>
+                {!hasMyReview ? (
+                  <button
+                    className="book-detail__reviews-btn"
+                    onClick={handleOpenReviewPopup}
+                  >
+                    <div className="book-detail__reviews-icon"></div>
+                    <p>리뷰 작성하기</p>
+                  </button>
+                ) : (
+                  <button className="book-detail__reviews-btn done">
+                    <div className="book-detail__reviews-icon--done"></div>
+                    <p>리뷰 작성완료</p>
+                  </button>
+                )}
+              </div>
+
+              <div className="book-detail__reviews-scroll" ref={scrollRef}>
+                {!hasNoReviews ? (
+                  <>
+                    {review.map((item) => (
+                      <>
+                        <div
+                          className="book-detail__reviews-list"
+                          key={item.rvIdx}
+                        >
+                          <div
+                            className={`book-detail__reviews-img ${
+                              item.fileName === "default"
+                                ? "book-detail__review-img-has-default"
+                                : ""
+                            }`}
+                          >
+                            {item.fileName === "default" ? (
+                              <div className="book-detail__reviews-img--default" />
+                            ) : (
+                              <img src={item.fileName} alt="프로필 이미지" />
+                            )}
+                          </div>
+                          <div className="book-detail__reviews-text-wrap">
+                            <div className="book-detail__reviews-info">
+                              <p className="book-detail__reviews-nickname">
+                                {item.nickName}
+                                {item.userIdx === user?.userIdx ? (
+                                  <span className="book-detail__reviews-mine-label">
+                                    내 리뷰
+                                  </span>
+                                ) : null}
+                              </p>
+                              <div className="book-detail__reviews-meta">
+                                <p>{item.regDate}</p>
+                                <div
+                                  className="book-detail__review-add--btn"
+                                  onClick={() =>
+                                    handleToggleMoreMenu(item.rvIdx)
+                                  }
+                                ></div>
+                              </div>
+                            </div>
+                            {openMoreReviewId === item.rvIdx && (
+                              <div
+                                className="book-detail__review-more--menu"
+                                ref={
+                                  openMoreReviewId === item.rvIdx
+                                    ? moreMenuRef
+                                    : null
+                                }
+                              >
+                                {item.userIdx === user?.userIdx ? (
+                                  <>
+                                    <button
+                                      className="book-detail__review-more-item"
+                                      onClick={() =>
+                                        handleReviewUpdate(item.rvIdx)
+                                      }
+                                    >
+                                      수정하기
+                                    </button>
+                                    <button
+                                      className="book-detail__review-more-item"
+                                      onClick={handleReviewDelete}
+                                    >
+                                      삭제하기
+                                    </button>
+                                  </>
+                                ) : (
+                                  <button className="book-detail__review-more-item">
+                                    신고하기
+                                  </button>
+                                )}
+                              </div>
+                            )}
+
+                            <div className="book-detail__reviews-content">
+                              {item.content}
+                            </div>
                           </div>
                         </div>
-                      </div>
+                        {loading && more && review.length > 0 && (
+                          <SpinnerIcon />
+                        )}
+                      </>
                     ))}
-                    {loading && more && review.length > 0 && <SpinnerIcon />}
                   </>
                 ) : (
-                  <p className="keyword-detail-review-no">
-                    아직 리뷰가 없어요!
+                  <p className="book-detail__reviews-empty">
+                    등록된 리뷰가 없습니다.
+                    <br />
+                    첫번째 리뷰를 남겨보세요!
                   </p>
                 )}
               </div>
             </div>
           </div>
-        </div> */}
+        </div>
       </div>
-      {isPopup && selectedReview && (
-        <MemberKeywordDetailPopup
-          selectedReview={selectedReview}
-          renderProfileImg={renderProfileImg}
-          onClose={(updatedReview: any) => {
-            setIsPopup(false);
-            if (updatedReview) {
-              setReview((prevReviews) =>
-                prevReviews.map((review) =>
-                  review.rvIdx === updatedReview.rvIdx
-                    ? { ...review, ...updatedReview }
-                    : review
-                )
-              );
-            }
-          }}
-        />
+
+      {isLoginPopup && (
+        <LoginRequiredPopup onClose={() => setIsLoginPopup(false)} />
       )}
+
       {isReviewPopup && (
         <MemberKeywordDetailReviewPopup
           onClose={() => setIsReviewPopup(false)}
@@ -529,7 +651,30 @@ const MemberKeywordDetail = () => {
           bookImg={bookImg}
         />
       )}
+
+      {isReviewEditPopup && (
+        <MemberKeywordDetailEditPopup
+          onClose={() => {
+            setIsReviewEditPopup(false);
+            if (bookIdxNumber !== null) {
+              reviewList(bookIdxNumber);
+            }
+          }}
+          selectedReview={selectedReview}
+          bookDetail={bookDetail}
+          bookImg={bookImg}
+        />
+      )}
+
+      {isReviewClosePopup && (
+        <ReviewDeletePopup
+          onClose={() => setIsReviewClosePopup(false)}
+          reviewList={reviewList}
+          bookDetail={bookDetail}
+        />
+      )}
     </>
   );
 };
+
 export default MemberKeywordDetail;

@@ -221,7 +221,12 @@ const MemberKeyword = () => {
 
   // 책 상세정보 페이지이동
   const handleBookDetailClick = (bookIdx: number) => {
-    navigate(`/member/keyword/detail/${bookIdx}`);
+    // navigate(`/member/keyword/detail/${bookIdx}`);
+    let url = `/member/keyword/detail/${bookIdx}?bsIdx=${bsIdx}`;
+    if (bssIdx !== null) {
+      url += `&bssIdx=${bssIdx}`;
+    }
+    navigate(url);
   };
 
   // 도서명으로 검색한 결과 리스트 api

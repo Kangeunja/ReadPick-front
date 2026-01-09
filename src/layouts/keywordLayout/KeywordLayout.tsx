@@ -1,12 +1,8 @@
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import TopMenu from "../topMenu/TopMenu";
 import axiosInstance from "../../api/axiosInstance";
 import KeywordNav from "./KeywordNav";
-
-// interface Props {
-//   children: ReactNode;
-// }
 
 interface KeywrodLayoutProps {
   onBsClick: (bsIdx: number) => void;
@@ -63,14 +59,6 @@ const KeywordLayout = ({ onBsClick, onBssClick }: KeywrodLayoutProps) => {
       setKeywordToggle(bsIdxNumber);
     }
   }, [bssIdxNumber, bsIdxNumber]);
-
-  // const handleBsClick = () => {
-  //   navigate(`/member/keyword?bsIdx=${bsIdx}`);
-  // };
-
-  // const handleBssClick = () => {
-  //   navigate(`/member/keyword?bsIdx=${bsIdxNumber}&bssIdx=${bssIdx}`);
-  // };
 
   return (
     <>

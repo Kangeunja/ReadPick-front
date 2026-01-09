@@ -78,25 +78,30 @@ const Header = () => {
 
   // 로그아웃 api
   const handleLogout = () => {
+    if (!window.confirm("로그아웃하시겠습니까?")) {
+      return;
+    }
     axiosInstance
       .post("/logout", {})
       .then((res) => {
         console.log(res);
         if (res.data === "success") {
-          if (window.confirm("로그아웃하시겠습니까?")) {
-            // setUserInfo(null);
-            alert("로그아웃되었습니다.");
-            setUserInfo({
-              userIdx: null,
-              nickName: "",
-              userName: "",
-              email: "",
-              adminAt: "",
-              firstAt: "",
-              id: "",
-            });
-            sessionStorage.removeItem("recoil-persist");
-          }
+          alert("로그아웃되었습니다.");
+          setUserInfo(null);
+          sessionStorage.removeItem("recoil-persist");
+          // if (window.confirm("로그아웃하시겠습니까?")) {
+          //   alert("로그아웃되었습니다.");
+          //   setUserInfo({
+          //     userIdx: null,
+          //     nickName: "",
+          //     userName: "",
+          //     email: "",
+          //     adminAt: "",
+          //     firstAt: "",
+          //     id: "",
+          //   });
+          //   sessionStorage.removeItem("recoil-persist");
+          // }
           navigate("/");
         }
       })
@@ -145,7 +150,7 @@ const Header = () => {
         </div>
 
         <div className="side-menu">
-          {userInfo.userIdx ? (
+          {userInfo ? (
             <>
               <button
                 className="menu-mypage"

@@ -6,16 +6,27 @@ const { persistAtom } = recoilPersist({
   storage: sessionStorage, // sessionStorage 사용
 });
 
-export const userInfoState = atom({
+export interface User {
+  userIdx: number;
+  nickName: string;
+  userName: string;
+  email: string;
+  adminAt: string;
+  firstAt: string;
+  id: string;
+}
+
+export const userInfoState = atom<User | null>({
   key: "userInfoState",
-  default: {
-    userIdx: null,
-    nickName: "",
-    userName: "",
-    email: "",
-    adminAt: "",
-    firstAt: "",
-    id: "",
-  },
+  default: null,
+  // default: {
+  //   userIdx: null,
+  //   nickName: "",
+  //   userName: "",
+  //   email: "",
+  //   adminAt: "",
+  //   firstAt: "",
+  //   id: "",
+  // },
   effects_UNSTABLE: [persistAtom], // sessionStorage에 자동 저장
 });

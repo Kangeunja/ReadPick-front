@@ -1,7 +1,3 @@
-// interface Props {
-//   keyword: any[];
-// }
-
 interface BsItem {
   bsIdx: number;
   bsName: string;
