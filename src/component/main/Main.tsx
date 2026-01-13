@@ -53,8 +53,8 @@ const Main = () => {
   };
 
   // 오늘의 책 보러가기
-  const handleTodayBook = (bookIdx: number) => {
-    navigate(`/member/keyword/detail/${bookIdx}`);
+  const handleTodayBook = (bookIdx: number, bsIdx: number) => {
+    navigate(`/member/keyword/detail/${bookIdx}?bsIdx=${bsIdx}`);
   };
 
   // 키워드 중분류 리스트 api
@@ -89,15 +89,17 @@ const Main = () => {
   };
 
   // 추천도서별 페이지이동
-  const handleBookDetail = (bookIdx: number) => {
-    navigate(`/member/keyword/detail/${bookIdx}`);
+  const handleBookDetail = (bookIdx: number, bsIdx: number) => {
+    navigate(`/member/keyword/detail/${bookIdx}?bsIdx=${bsIdx}`);
   };
 
   return (
     <div className="main">
       <div
         className="main-today"
-        onClick={() => handleTodayBook(todayBookData.bookIdx)}
+        onClick={() =>
+          handleTodayBook(todayBookData.bookIdx, todayBookData.bsIdx)
+        }
       >
         <div className="main-today-header">
           <div className="main-book-icon" />
@@ -153,7 +155,7 @@ const Main = () => {
               <div
                 className="recommend-book"
                 key={item.bookIdx}
-                onClick={() => handleBookDetail(item.bookIdx)}
+                onClick={() => handleBookDetail(item.bookIdx, item.bsIdx)}
               >
                 <img
                   className="recommend-book-img"

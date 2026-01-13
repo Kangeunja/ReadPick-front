@@ -3,6 +3,8 @@ import { useLocation } from "react-router-dom";
 import TopMenu from "../topMenu/TopMenu";
 import axiosInstance from "../../api/axiosInstance";
 import KeywordNav from "./KeywordNav";
+import "../../assets/css/topmenu.css";
+import "../../assets/css/keywordNav.css";
 
 interface KeywrodLayoutProps {
   onBsClick: (bsIdx: number) => void;
@@ -26,14 +28,6 @@ const KeywordLayout = ({ onBsClick, onBssClick }: KeywrodLayoutProps) => {
   const [keywordToggle, setKeywordToggle] = useState<number | null>(null);
 
   useEffect(() => {
-    // axiosInstance
-    //   .get("/bssListByBsIdx")
-    //   .then((res) => {
-    //     setKeyword(res.data);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
     keywordList();
   }, []);
 

@@ -4,6 +4,10 @@
   border-bottom: 1px solid #eaeaea;
 }
 
+.layout--main .header {
+  border-bottom: none;
+}
+
 .header-wrap {
   width: 1300px;
   height: 100px;

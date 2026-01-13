@@ -8,6 +8,7 @@ const MemberKeywordDetailReviewPopup = ({
   bookDetail,
   reviewList,
   bookImg,
+  onSuccess,
 }: any) => {
   // 텍스트 빈값으로 저장
   const [text, setText] = useState("");
@@ -51,8 +52,10 @@ const MemberKeywordDetailReviewPopup = ({
       })
       .then((res) => {
         if (res.data === "success") {
-          reviewList(bookDetail?.bookIdx!);
-          onClose();
+          // reviewList(bookDetail?.bookIdx!);
+          // onClose();
+          onSuccess();
+          // onClose();
         }
       })
       .catch((error) => {

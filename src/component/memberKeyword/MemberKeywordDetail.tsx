@@ -10,6 +10,7 @@ import { userInfoState } from "../../recoil/userInfoState";
 import LoginRequiredPopup from "../popup/LoginRequiredPopup";
 import MemberKeywordDetailEditPopup from "../popup/MemberKeywordDetailEditPopup";
 import ReviewDeletePopup from "../popup/ReviewDeletePopup";
+import ReviewCompletePopup from "../popup/ReviewCompletePopup";
 
 interface BookDetail {
   author: string;
@@ -69,9 +70,6 @@ const MemberKeywordDetail = () => {
   // 리뷰 리스트
   const [review, setReview] = useState<Review[]>([]);
 
-  // 리뷰 전체 개수
-  const [totalReviewCount, setTotalReviewCount] = useState("");
-
   // 마지막 리뷰의 rvIdx
   const [lastRvIdx, setLastRvIdx] = useState(null);
 
@@ -79,7 +77,7 @@ const MemberKeywordDetail = () => {
   const [loading, setLoading] = useState(false);
 
   // 무한 스크롤 콘텐츠 유무
-  const [more, setMore] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
 
   // 로그인 팝업
   const [isLoginPopup, setIsLoginPopup] = useState(false);
@@ -108,6 +106,17 @@ const MemberKeywordDetail = () => {
   // 찜 유무
   const [isBookMark, setIsBookMark] = useState(false);
 
+  // 완료 팝업 타입
+  const [reviewAction, setReviewAction] = useState<"write" | "edit" | null>(
+    null
+  );
+
+  // 완료 팝업 표시 여부
+  const [showCompletePopup, setShowCompletePopup] = useState(false);
+
+  // 총 리뷰 개수
+  const [totalReviewCount, setTotalReviewCount] = useState(0);
+
   // 작성자가 리뷰 작성되었는지 유무
   const hasMyReview = !!review.find((rv) => rv.userIdx === user?.userIdx);
 
@@ -123,7 +132,23 @@ const MemberKeywordDetail = () => {
     checkIsRecommended();
     handleCheckGood();
     bookMarkCheck();
+    reviewCount();
   }, [bookIdxNumber]);
+
+  // 총 리뷰 개수 api
+  const reviewCount = () => {
+    axiosInstance
+      .get("/reviewCount", {
+        params: { bookIdx: bookIdx },
+      })
+      .then((res) => {
+        // console.log(res.data);
+        setTotalReviewCount(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   // 추천 여부 확인 api
   const checkIsRecommended = () => {
@@ -132,7 +157,7 @@ const MemberKeywordDetail = () => {
         params: { bookIdx: bookIdx },
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         if (res.data === "Y") {
           setIsGood(true);
         } else {
@@ -154,7 +179,7 @@ const MemberKeywordDetail = () => {
         },
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setCheckCount(res.data);
       })
       .catch((error) => {
@@ -267,13 +292,12 @@ const MemberKeywordDetail = () => {
         },
       })
       .then((res) => {
-        console.log(res.data);
         setReview(res.data);
-        setTotalReviewCount(res.data.length);
+        setHasNoReviews(res.data.length === 0);
+
         if (res.data.length > 0) {
           setLastRvIdx(res.data[res.data.length - 1].rvIdx); // 마지막 리뷰의 rvIdx 저장
         }
-        setHasNoReviews(res.data.length === 0);
       })
       .catch((error) => {
         console.log(error);
@@ -289,57 +313,98 @@ const MemberKeywordDetail = () => {
     }
   };
 
-  // 무한스크롤
   useEffect(() => {
-    const handleScroll = () => {
-      if (!scrollRef.current && loading && !more) return;
+    if (totalReviewCount === 0) return;
+    setHasMore(review.length < totalReviewCount);
+  }, [totalReviewCount, review.length]);
+  console.log(hasMore);
 
-      const scrollContainer = scrollRef.current as HTMLDivElement;
-      const { scrollTop, clientHeight, scrollHeight } = scrollContainer;
-
-      if (scrollTop + clientHeight >= scrollHeight - 200) {
-        fetchMoreReview();
-      }
-    };
-
-    if (scrollRef.current) {
-      scrollRef.current.addEventListener("scroll", handleScroll);
-    }
-
-    return () => {
-      if (scrollRef.current) {
-        scrollRef.current.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, [more, loading, lastRvIdx]);
-
-  // 다음 리뷰리스트 api
   const fetchMoreReview = async () => {
-    if (!more || loading || lastRvIdx === null) return;
+    if (!hasMore || loading || lastRvIdx === null) return;
+
     setLoading(true);
 
     try {
       const res = await axiosInstance.get("/reviewMore", {
-        params: {
-          rvIdx: lastRvIdx,
-        },
+        params: { rvIdx: lastRvIdx },
       });
 
-      if (res.data.length > 0) {
-        await new Promise((resolve) => setTimeout(resolve, 900)); // 다음 틱으로 넘기기
+      if (res.data.length === 0) {
+        setHasMore(false);
+        return;
+      }
+      setTimeout(() => {
         setReview((prev) => [...prev, ...res.data]);
         setLastRvIdx(res.data[res.data.length - 1].rvIdx);
-      } else {
-        setMore(false);
-      }
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
+
+        if (review.length + res.data.length >= totalReviewCount) {
+          setHasMore(false);
+        }
+        setLoading(false);
+      }, 2000);
+    } catch (e) {
+      console.error(e);
     }
+    // finally {
+    //   setTimeout(() => {
+    //     setLoading(false);
+    //   }, 200);
+    //   // setLoading(false);
+    // }
   };
 
+  // 무한스크롤
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     if (!scrollRef.current && loading && !more) return;
+
+  //     const scrollContainer = scrollRef.current as HTMLDivElement;
+  //     const { scrollTop, clientHeight, scrollHeight } = scrollContainer;
+
+  //     if (scrollTop + clientHeight >= scrollHeight - 200) {
+  //       fetchMoreReview();
+  //     }
+  //   };
+
+  //   if (scrollRef.current) {
+  //     scrollRef.current.addEventListener("scroll", handleScroll);
+  //   }
+
+  //   return () => {
+  //     if (scrollRef.current) {
+  //       scrollRef.current.removeEventListener("scroll", handleScroll);
+  //     }
+  //   };
+  // }, [more, loading, lastRvIdx]);
+
+  // 다음 리뷰리스트 api
+  // const fetchMoreReview = async () => {
+  //   if (!more || loading || lastRvIdx === null) return;
+  //   setLoading(true);
+
+  //   try {
+  //     const res = await axiosInstance.get("/reviewMore", {
+  //       params: {
+  //         rvIdx: lastRvIdx,
+  //       },
+  //     });
+
+  //     if (res.data.length > 0) {
+  //       await new Promise((resolve) => setTimeout(resolve, 900)); // 다음 틱으로 넘기기
+  //       setReview((prev) => [...prev, ...res.data]);
+  //       setLastRvIdx(res.data[res.data.length - 1].rvIdx);
+  //     } else {
+  //       setMore(false);
+  //     }
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.log(error);
+  //     setLoading(false);
+  //   }
+  // };
+
   // 더보기 버튼 클릭 시 토글
+
   const handleToggleMoreMenu = (rvIdx: number) => {
     setOpenMoreReviewId((prev) => (prev === rvIdx ? null : rvIdx));
   };
@@ -375,6 +440,25 @@ const MemberKeywordDetail = () => {
     }
   };
 
+  // 신고하기 버튼
+  const handleIsReport = (rvIdx: number) => {
+    if (!user) {
+      setIsLoginPopup(true);
+      return;
+    } else {
+      axiosInstance
+        .get("/reportReview", {
+          params: { rvIdx: rvIdx },
+        })
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
   // 이 책 찜해요 버튼
   const handleIsBookMark = () => {
     if (!user) {
@@ -396,38 +480,30 @@ const MemberKeywordDetail = () => {
     }
   };
 
-  //   // 북마크 추가 api
-  //   // const handleIsBookMark = () => {
-
-  //   //   if (bookDetail?.bookIdx && bookDetail?.bookIdx > 0) {
-  //   //     axiosInstance
-  //   //       .post(`/bookmark?bookIdx=${bookIdx}`)
-  //   //       .then((res) => {
-  //   //         console.log(res.data);
-  //   //         if (res.data.message === "로그인필요.") {
-  //   //           alert("로그인이 필요한 서비스입니다.");
-  //   //           navigate("/login");
-  //   //         } else if (res.data.message === "북마크추가완료") {
-  //   //           alert("찜목록에 추가되었습니다.");
-  //   //           setIsBookMark(true);
-  //   //           if (window.confirm("찜목록으로 이동하시겠습니까?")) {
-  //   //             navigate("/mypage");
-  //   //           }
-  //   //         } else {
-  //   //           alert("찜목록에 해제되었습니다.");
-  //   //           setIsBookMark(false);
-  //   //         }
-  //   //       })
-  //   //       .catch((error) => {
-  //   //         console.log(error);
-  //   //       });
-  //   //   }
-  //   // };
-
   // 삭제하기 버튼
   const handleReviewDelete = () => {
     setIsReviewClosePopup(true);
     setOpenMoreReviewId(null);
+  };
+
+  const handleReviewSuccess = (type: "write" | "edit") => {
+    setReviewAction(type);
+    setShowCompletePopup(true);
+
+    // 완료 팝업 유지
+    setTimeout(() => {
+      setShowCompletePopup(false);
+
+      // 작성/수정 팝업 닫기
+      setIsReviewPopup(false);
+      setIsReviewEditPopup(false);
+
+      // 그 다음 데이터 갱신
+      if (bookIdxNumber) {
+        reviewList(bookIdxNumber);
+        reviewCount();
+      }
+    }, 2000);
   };
 
   return (
@@ -608,7 +684,10 @@ const MemberKeywordDetail = () => {
                                     </button>
                                   </>
                                 ) : (
-                                  <button className="book-detail__review-more-item">
+                                  <button
+                                    className="book-detail__review-more-item"
+                                    onClick={() => handleIsReport(item.rvIdx)}
+                                  >
                                     신고하기
                                   </button>
                                 )}
@@ -620,11 +699,21 @@ const MemberKeywordDetail = () => {
                             </div>
                           </div>
                         </div>
-                        {loading && more && review.length > 0 && (
-                          <SpinnerIcon />
-                        )}
                       </>
                     ))}
+                    <div className="book-detail__reviews-more">
+                      {loading && <SpinnerIcon />}
+                      {!loading && hasMore && (
+                        <button onClick={fetchMoreReview}>리뷰 더보기</button>
+                      )}
+                      {/* {loading ? (
+                        <SpinnerIcon />
+                      ) : (
+                        more && (
+                          <button onClick={fetchMoreReview}>리뷰 더보기</button>
+                        )
+                      )} */}
+                    </div>
                   </>
                 ) : (
                   <p className="book-detail__reviews-empty">
@@ -645,6 +734,7 @@ const MemberKeywordDetail = () => {
 
       {isReviewPopup && (
         <MemberKeywordDetailReviewPopup
+          onSuccess={() => handleReviewSuccess("write")}
           onClose={() => setIsReviewPopup(false)}
           bookDetail={bookDetail}
           reviewList={reviewList}
@@ -654,15 +744,20 @@ const MemberKeywordDetail = () => {
 
       {isReviewEditPopup && (
         <MemberKeywordDetailEditPopup
-          onClose={() => {
-            setIsReviewEditPopup(false);
-            if (bookIdxNumber !== null) {
-              reviewList(bookIdxNumber);
-            }
-          }}
+          onSuccess={() => handleReviewSuccess("edit")}
+          onClose={() => setIsReviewEditPopup(false)}
           selectedReview={selectedReview}
           bookDetail={bookDetail}
           bookImg={bookImg}
+        />
+      )}
+
+      {showCompletePopup && (
+        <ReviewCompletePopup
+          type={reviewAction}
+          onFinish={() => {
+            setShowCompletePopup(false);
+          }}
         />
       )}
 

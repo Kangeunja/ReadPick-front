@@ -8,6 +8,7 @@ const MemberKeywordDetailEditPopup = ({
   bookDetail,
   selectedReview,
   bookImg,
+  onSuccess,
 }: any) => {
   // 리뷰 내용
   const [editedReview, setEditedReview] = useState(selectedReview);
@@ -55,7 +56,9 @@ const MemberKeywordDetailEditPopup = ({
       .then((res) => {
         console.log(res);
         if (res.data === "success") {
-          onClose(editedReview);
+          // onClose(editedReview);
+          onSuccess();
+          // onClose();
         }
       })
       .catch((error) => {

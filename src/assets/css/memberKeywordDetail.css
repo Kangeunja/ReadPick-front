@@ -204,8 +204,17 @@
 }
 
 .book-detail__reviews-scroll {
+  /* max-height: 430px; */
   margin-bottom: 200px;
+  /* overflow-y: auto; */
+  /* -ms-overflow-style: none; */
+  /* scrollbar-width: none;
+  position: relative; */
 }
+
+/* .book-detail__reviews-scroll::-webkit-scrollbar {
+  display: none;
+} */
 
 .book-detail__reviews-list {
   width: 700px;
@@ -324,6 +333,22 @@
 .book-detail__reviews-content {
   font-size: 13px;
   color: #333333;
+}
+
+.book-detail__reviews-more {
+  width: 100%;
+  cursor: pointer;
+  text-align: center;
+}
+
+.book-detail__reviews-more button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.book-detail__reviews-more button:hover {
+  color: rgb(94, 94, 94);
 }
 
 .book-detail__reviews-empty {
