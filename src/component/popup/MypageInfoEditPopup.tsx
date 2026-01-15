@@ -1,6 +1,8 @@
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import "../../assets/css/mypageInfoEditPopup.css";
 import { useEffect, useRef, useState } from "react";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const MypageInfoEditPopup = ({
   onClose,
@@ -138,11 +140,11 @@ const MypageInfoEditPopup = ({
           />
           {!isPasswordConfirmVisible ? (
             <div className="mypageInfoEdit-popup-toggle-visibility">
-              <AiFillEyeInvisible onClick={togglePasswordCheckVisibility} />
+              <VisibilityIcon onClick={togglePasswordCheckVisibility} />
             </div>
           ) : (
             <div className="mypageInfoEdit-popup-toggle-visibility">
-              <AiFillEye onClick={togglePasswordCheckVisibility} />
+              <VisibilityOffIcon onClick={togglePasswordCheckVisibility} />
             </div>
           )}
         </div>

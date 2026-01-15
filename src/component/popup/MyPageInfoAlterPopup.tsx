@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import "../../assets/css/mypageInfoAlterPopup.css";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const MyPageInfoAlterPopup = ({
   onClose,
@@ -243,11 +245,11 @@ const MyPageInfoAlterPopup = ({
             />
             {!isPasswordCurrentVisible ? (
               <div className="mypageInfoAlter-popup-toggle-visibility">
-                <AiFillEyeInvisible onClick={toggleCurrentPasswordVisibility} />
+                <VisibilityIcon onClick={toggleCurrentPasswordVisibility} />
               </div>
             ) : (
               <div className="mypageInfoAlter-popup-toggle-visibility">
-                <AiFillEye onClick={toggleCurrentPasswordVisibility} />
+                <VisibilityOffIcon onClick={toggleCurrentPasswordVisibility} />
               </div>
             )}
           </div>
@@ -275,11 +277,11 @@ const MyPageInfoAlterPopup = ({
             />
             {!isPasswordNewVisible ? (
               <div className="mypageInfoAlter-popup-toggle-visibility">
-                <AiFillEyeInvisible onClick={toggleNewPasswordVisibility} />
+                <VisibilityIcon onClick={toggleNewPasswordVisibility} />
               </div>
             ) : (
               <div className="mypageInfoAlter-popup-toggle-visibility">
-                <AiFillEye onClick={toggleNewPasswordVisibility} />
+                <VisibilityOffIcon onClick={toggleNewPasswordVisibility} />
               </div>
             )}
           </div>
@@ -308,13 +310,11 @@ const MyPageInfoAlterPopup = ({
             />
             {!isPasswordNewCheckVisible ? (
               <div className="mypageInfoAlter-popup-toggle-visibility">
-                <AiFillEyeInvisible
-                  onClick={toggleNewCheckPasswordVisibility}
-                />
+                <VisibilityIcon onClick={toggleNewCheckPasswordVisibility} />
               </div>
             ) : (
               <div className="mypageInfoAlter-popup-toggle-visibility">
-                <AiFillEye onClick={toggleNewCheckPasswordVisibility} />
+                <VisibilityOffIcon onClick={toggleNewCheckPasswordVisibility} />
               </div>
             )}
           </div>

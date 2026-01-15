@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import axiosInstance from "../../api/axiosInstance";
 import MemberLoginPopup from "../popup/MemberLoginPopup";
 import { useSetRecoilState } from "recoil";
 import { userInfoState } from "../../recoil/userInfoState";
 import "../../assets/css/login.css";
 import IsLoginPopup from "../popup/IsLoginPopup";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -150,7 +151,11 @@ const Login = () => {
                   className="login-toggle-visibility"
                   onClick={togglePasswordVisibility}
                 >
-                  {isPasswordVisible ? <AiFillEye /> : <AiFillEyeInvisible />}
+                  {isPasswordVisible ? (
+                    <VisibilityIcon />
+                  ) : (
+                    <VisibilityOffIcon />
+                  )}
                 </span>
               </div>
               {loginErrorMessage && (

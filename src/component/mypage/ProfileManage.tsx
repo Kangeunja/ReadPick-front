@@ -1,5 +1,5 @@
 import "../../assets/css/profileManage.css";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { MyPageOutletContext } from "../../types/mypage";
 import { useRef, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
@@ -8,7 +8,8 @@ import SuccessPopup from "../popup/SuccessPopup";
 
 const ProfileManage = () => {
   // interface 함수
-  const { userInfo } = useOutletContext<MyPageOutletContext>();
+  const { userInfo, fetchUserInfo } = useOutletContext<MyPageOutletContext>();
+  const navigate = useNavigate();
 
   // 프로필 파일 input 포커싱
   const editImgRef = useRef<HTMLInputElement | null>(null);
@@ -19,9 +20,6 @@ const ProfileManage = () => {
   // 서버 전송용으로 선택된 실제 파일 객체를 저장하는 상태
   const [tempImageFile, setSelectedFile] = useState<File | null>(null);
 
-  // 화면 표시용 + 서버 전송용 프로필 이미지 상태
-  const [editedUserImg, setEditedUserImg] = useState(userInfo.fileName);
-
   // 기본 프로필 이미지 사용 여부
   const isDefaultImage = !uploadedImage && userInfo.fileName === "default";
 
@@ -29,26 +27,35 @@ const ProfileManage = () => {
   const [isProfileDeletePopup, setIsProfileDeletePopup] = useState(false);
 
   // 화면에서 닉네임 수정용 로컬 상태 (서버 전송 시 전체 User 객체에 반영)
-  const [editedUser, setEditedUser] = useState({
-    userName: userInfo.userName,
-    nickName: userInfo.nickName,
-    id: userInfo.id,
-    pw: userInfo.pw,
-    email: userInfo.email,
-    adminAt: userInfo.adminAt,
-    firstAt: userInfo.firstAt,
-  });
+  // const [editedUser, setEditedUser] = useState({
+  //   userName: userInfo.userName,
+  //   nickName: userInfo.nickName,
+  //   id: userInfo.id,
+  //   pw: userInfo.pw,
+  //   email: userInfo.email,
+  //   adminAt: userInfo.adminAt,
+  //   firstAt: userInfo.firstAt,
+  // });
+
+  // 닉네임 수정용 로컬 상태
+  const [editedNickName, setEditedNickName] = useState(userInfo.nickName);
 
   // 완료 팝업 메시지 상태
   const [completeMessage, setCompleteMessage] = useState<string | null>(null);
 
+  const isImageModified = tempImageFile
+    ? tempImageFile.name !== userInfo.fileName
+    : false;
+
   // 변경된 필드 수 (이미지/닉네임) 계산
   const modifiedCount = [
-    uploadedImage !== null,
-    editedUser?.nickName &&
-      editedUser.nickName !== null &&
-      editedUser.nickName !== userInfo.nickName,
+    isImageModified,
+    editedNickName &&
+      // editedNickName !== null &&
+      editedNickName !== userInfo.nickName,
   ].filter(Boolean).length;
+  console.log(uploadedImage);
+  console.log(userInfo.fileName);
 
   // 프로필 사진 선택/미리보기 처리함수, 실제 서버 저장은 handleSave에서 진행
   const handleEditProfileImg = (e: any) => {
@@ -62,10 +69,11 @@ const ProfileManage = () => {
 
   // 닉네임 입력 값 로컬 상태 업데이트
   const handleIdChange = (e: any) => {
-    setEditedUser((prev: any) => ({
-      ...prev,
-      nickName: e.target.value,
-    }));
+    setEditedNickName(e.target.value);
+    // setEditedUser((prev: any) => ({
+    //   ...prev,
+    //   nickName: e.target.value,
+    // }));
   };
 
   // 저장하기 버튼
@@ -85,29 +93,33 @@ const ProfileManage = () => {
           },
         })
         .then((res) => {
-          setEditedUserImg(res.data);
+          if (res.data) {
+            setCompleteMessage("변경 사항이 저장되었습니다.");
+            fetchUserInfo();
+            setTimeout(() => {
+              navigate("/mypage");
+            }, 2000);
+          }
         })
         .catch((error) => {
           console.log(error);
         });
     }
-    if (
-      editedUser.nickName === null &&
-      editedUser?.nickName === userInfo.nickName
-    ) {
+    if (editedNickName && editedNickName !== userInfo.nickName) {
       axiosInstance
         .post("/myPage/userInfoModify", {
-          userName: editedUser.userName,
-          nickName: editedUser.nickName,
-          id: editedUser.id,
-          pw: editedUser.pw,
-          email: editedUser.email,
-          adminAt: editedUser.adminAt,
-          firstAt: editedUser.firstAt,
+          ...userInfo,
+          nickName: editedNickName,
         })
         .then((res) => {
           console.log(res.data);
-          setCompleteMessage("");
+          if (res.data === "success") {
+            setCompleteMessage("변경 사항이 저장되었습니다.");
+            fetchUserInfo();
+            setTimeout(() => {
+              navigate("/mypage");
+            }, 2000);
+          }
         })
         .catch((err) => console.log(err));
     }
@@ -153,8 +165,11 @@ const ProfileManage = () => {
           </div>
 
           <button
-            className="profile-manage__edit_trash"
+            className={`profile-manage__edit_trash ${
+              isDefaultImage ? "disabled" : ""
+            }`}
             onClick={handleDeleteProfileImg}
+            disabled={isDefaultImage}
           ></button>
         </div>
 
@@ -165,7 +180,7 @@ const ProfileManage = () => {
             className="profile-manage__input"
             placeholder={userInfo.nickName}
             required
-            value={editedUser.nickName}
+            value={editedNickName}
             onChange={handleIdChange}
           />
           <label htmlFor="nickname" className="profile-manage__label">
@@ -190,12 +205,17 @@ const ProfileManage = () => {
       </div>
 
       {isProfileDeletePopup && (
-        <MypageImgDeletePopup onClose={() => setIsProfileDeletePopup(false)} />
+        <MypageImgDeletePopup
+          onClose={() => setIsProfileDeletePopup(false)}
+          setCompleteMessage={setCompleteMessage}
+          fetchUserInfo={fetchUserInfo}
+          isDefaultImage={userInfo.fileName === "default"}
+        />
       )}
 
       {completeMessage && (
         <SuccessPopup
-          message="변경 사항이 저장되었습니다."
+          message={completeMessage}
           onFinish={() => setCompleteMessage(null)}
         />
       )}

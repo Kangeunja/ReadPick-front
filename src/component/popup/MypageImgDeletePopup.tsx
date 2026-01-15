@@ -1,5 +1,31 @@
-const MypageImgDeletePopup = ({ onClose }: any) => {
-  const handleProfileDelete = () => {};
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../api/axiosInstance";
+
+const MypageImgDeletePopup = ({
+  onClose,
+  fetchUserInfo,
+  setCompleteMessage,
+}: any) => {
+  const navigate = useNavigate();
+
+  const handleProfileDelete = () => {
+    axiosInstance
+      .post("/userImageDelete")
+      .then((res) => {
+        console.log(res.data);
+        if (res.data) {
+          onClose();
+          setCompleteMessage("변경 사항이 저장되었습니다.");
+          fetchUserInfo();
+          setTimeout(() => {
+            navigate("/mypage");
+          }, 2000);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <div className="review-popup__del">

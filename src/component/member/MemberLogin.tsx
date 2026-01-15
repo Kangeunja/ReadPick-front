@@ -2,6 +2,8 @@ import { useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const MemberLogin = () => {
   const navigate = useNavigate();
@@ -189,11 +191,11 @@ const MemberLogin = () => {
 
           {!isPasswordVisible ? (
             <div className="toggle-visibility">
-              <AiFillEyeInvisible onClick={togglePasswordVisibility} />
+              <VisibilityIcon onClick={togglePasswordVisibility} />
             </div>
           ) : (
             <div className="toggle-visibility">
-              <AiFillEye onClick={togglePasswordVisibility} />
+              <VisibilityOffIcon onClick={togglePasswordVisibility} />
             </div>
           )}
         </div>
@@ -219,11 +221,11 @@ const MemberLogin = () => {
           </div>
           {!isPasswordConfirmVisible ? (
             <div className="toggle-visibility">
-              <AiFillEyeInvisible onClick={togglePasswordCheckVisibility} />
+              <VisibilityIcon onClick={togglePasswordCheckVisibility} />
             </div>
           ) : (
             <div className="toggle-visibility">
-              <AiFillEye onClick={togglePasswordCheckVisibility} />
+              <VisibilityOffIcon onClick={togglePasswordCheckVisibility} />
             </div>
           )}
         </div>

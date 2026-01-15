@@ -99,8 +99,13 @@
   cursor: pointer;
 }
 
-.profile-manage__edit_trash:hover {
+.profile-manage__edit_trash:not(.disabled):hover {
   background-color: #1e7373;
+}
+
+.profile-manage__edit_trash.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .profile-manage__field {
@@ -157,6 +162,7 @@
   border: none;
   border-radius: 5px;
   margin-bottom: 40px;
+  cursor: not-allowed;
 }
 
 .profile-manage__save.active {
