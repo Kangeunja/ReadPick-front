@@ -12,6 +12,9 @@ import { RecoilRoot } from "recoil";
 import Admin from "../component/admin/Admin";
 import AdminMain from "../component/admin/AdminMain";
 import ScrollTop from "../layouts/scrollTop/ScrollTop";
+import MyPageHome from "../component/mypage/MyPageHome";
+import MyReviewManage from "../component/mypage/MyReviewManage";
+import ProfileManage from "../component/mypage/ProfileManage";
 
 const BrowserRouterDom = () => {
   return (
@@ -26,11 +29,15 @@ const BrowserRouterDom = () => {
             <Route path="/member/login" element={<MemberLogin />}></Route>
             <Route path="/member/keyword" element={<MemberKeyword />}></Route>
             <Route
-              // path="/member/keyword/detail"
               path="/member/keyword/detail/:bookIdx"
               element={<MemberKeywordDetail />}
             ></Route>
-            <Route path="/mypage" element={<MyPage />}></Route>
+
+            <Route path="/mypage" element={<MyPage />}>
+              <Route index element={<MyPageHome />} />
+              <Route path="profile" element={<ProfileManage />} />
+              <Route path="reviews" element={<MyReviewManage />} />
+            </Route>
           </Route>
 
           <Route path="/login" element={<Login />}></Route>

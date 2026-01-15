@@ -1,5 +1,9 @@
-.mypage-con-wrap {
-  width: 1200px;
+.mypage {
+  width: 100%;
+}
+
+.mypage__container {
+  width: 1300px;
   margin: 0 auto;
 }
 

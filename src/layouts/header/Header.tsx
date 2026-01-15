@@ -30,13 +30,9 @@ const Header = () => {
   // url 변경할때 검색창 자동 초기화
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    console.log(params);
     const urlOption = params.get("option") || "선택";
     if (urlOption) setSelected(urlOption);
-    // setSelected(urlOption);
-    console.log(urlOption);
     const urlKeyword = params.get("keyword") || "";
-    console.log(urlKeyword);
     if (urlKeyword !== null) setKeywrod(urlKeyword);
     // setKeywrod(urlKeyword);
   }, [location.search]);

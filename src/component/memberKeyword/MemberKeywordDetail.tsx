@@ -10,7 +10,7 @@ import { userInfoState } from "../../recoil/userInfoState";
 import LoginRequiredPopup from "../popup/LoginRequiredPopup";
 import MemberKeywordDetailEditPopup from "../popup/MemberKeywordDetailEditPopup";
 import ReviewDeletePopup from "../popup/ReviewDeletePopup";
-import ReviewCompletePopup from "../popup/ReviewCompletePopup";
+import ReviewCompletePopup from "../popup/SuccessPopup";
 
 interface BookDetail {
   author: string;
@@ -106,13 +106,8 @@ const MemberKeywordDetail = () => {
   // 찜 유무
   const [isBookMark, setIsBookMark] = useState(false);
 
-  // 완료 팝업 타입
-  const [reviewAction, setReviewAction] = useState<"write" | "edit" | null>(
-    null
-  );
-
-  // 완료 팝업 표시 여부
-  const [showCompletePopup, setShowCompletePopup] = useState(false);
+  // 완료 팝업 메시지 상태
+  const [completeMessage, setCompleteMessage] = useState<string | null>(null);
 
   // 총 리뷰 개수
   const [totalReviewCount, setTotalReviewCount] = useState(0);
@@ -486,13 +481,12 @@ const MemberKeywordDetail = () => {
     setOpenMoreReviewId(null);
   };
 
-  const handleReviewSuccess = (type: "write" | "edit") => {
-    setReviewAction(type);
-    setShowCompletePopup(true);
+  const handleReviewSuccess = (message: string) => {
+    setCompleteMessage(message);
 
     // 완료 팝업 유지
     setTimeout(() => {
-      setShowCompletePopup(false);
+      setCompleteMessage(null);
 
       // 작성/수정 팝업 닫기
       setIsReviewPopup(false);
@@ -734,7 +728,7 @@ const MemberKeywordDetail = () => {
 
       {isReviewPopup && (
         <MemberKeywordDetailReviewPopup
-          onSuccess={() => handleReviewSuccess("write")}
+          onSuccess={() => handleReviewSuccess("리뷰 작성이 완료되었습니다.")}
           onClose={() => setIsReviewPopup(false)}
           bookDetail={bookDetail}
           reviewList={reviewList}
@@ -744,7 +738,7 @@ const MemberKeywordDetail = () => {
 
       {isReviewEditPopup && (
         <MemberKeywordDetailEditPopup
-          onSuccess={() => handleReviewSuccess("edit")}
+          onSuccess={() => handleReviewSuccess("리뷰 수정이 완료되었습니다.")}
           onClose={() => setIsReviewEditPopup(false)}
           selectedReview={selectedReview}
           bookDetail={bookDetail}
@@ -752,12 +746,10 @@ const MemberKeywordDetail = () => {
         />
       )}
 
-      {showCompletePopup && (
+      {completeMessage && (
         <ReviewCompletePopup
-          type={reviewAction}
-          onFinish={() => {
-            setShowCompletePopup(false);
-          }}
+          message={completeMessage}
+          onFinish={() => setCompleteMessage(null)}
         />
       )}
 
