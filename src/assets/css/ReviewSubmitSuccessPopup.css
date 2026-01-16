@@ -29,6 +29,8 @@
   opacity: 0;
   animation: popup-slide-in 0.3s ease forwards;
   animation-delay: 0.05s;
+  white-space: pre-line;
+  text-align: center;
 }
 
 @keyframes popup-fade-in {

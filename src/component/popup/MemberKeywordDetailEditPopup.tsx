@@ -10,6 +10,8 @@ const MemberKeywordDetailEditPopup = ({
   bookImg,
   onSuccess,
 }: any) => {
+  console.log(bookImg.bookImageName);
+  console.log(selectedReview);
   // 리뷰 내용
   const [editedReview, setEditedReview] = useState(selectedReview);
 
@@ -86,7 +88,12 @@ const MemberKeywordDetailEditPopup = ({
           </div>
 
           <div className="review-popup__edit-book">
-            {bookImg && (
+            {bookImg.bookImageName ? (
+              <img
+                src={bookImg.bookImageName.replace("coversum", "cover500")}
+                alt="책 이미지"
+              />
+            ) : (
               <img
                 src={bookImg.fileName.replace("coversum", "cover500")}
                 alt="책 이미지"

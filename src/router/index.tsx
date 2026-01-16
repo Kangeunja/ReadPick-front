@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-
 import Layout from "../layouts";
 import Main from "../component/main/Main";
 import Login from "../component/login/Login";
@@ -15,6 +14,8 @@ import ScrollTop from "../layouts/scrollTop/ScrollTop";
 import MyPageHome from "../component/mypage/MyPageHome";
 import MyReviewManage from "../component/mypage/MyReviewManage";
 import ProfileManage from "../component/mypage/ProfileManage";
+import MyPageInfo from "../component/mypage/MyPageInfo";
+import MyPageReview from "../component/mypage/MyPageReview";
 
 const BrowserRouterDom = () => {
   return (
@@ -36,6 +37,8 @@ const BrowserRouterDom = () => {
             <Route path="/mypage" element={<MyPage />}>
               <Route index element={<MyPageHome />} />
               <Route path="profile" element={<ProfileManage />} />
+              <Route path="myInfo" element={<MyPageInfo />}></Route>
+              <Route path="myReview" element={<MyPageReview />}></Route>
               <Route path="reviews" element={<MyReviewManage />} />
             </Route>
           </Route>

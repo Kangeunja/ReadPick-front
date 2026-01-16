@@ -7,4 +7,5 @@ export interface UserProfile {
   email: string;
   adminAt: string;
   firstAt: string;
+  userIdx: number;
 }

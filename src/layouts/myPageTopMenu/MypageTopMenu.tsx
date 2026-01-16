@@ -8,6 +8,8 @@ import "../../assets/css/myPageTopMenu.css";
 const MyPageTopMenu = () => {
   // const navigate = useNavigate();
   const isProfilePage = useMatch("/mypage/profile");
+  const isMypageInfo = useMatch("/mypage/myInfo");
+  const isMypageReview = useMatch("/mypage/myReview");
   return (
     <div className="mypage-header">
       <div className="mypage-icon"></div>
@@ -31,6 +33,29 @@ const MyPageTopMenu = () => {
         >
           <span className="mypage-header__arrow" />
           프로필 관리
+        </NavLink>
+      )}
+
+      {isMypageInfo && (
+        <NavLink
+          to="/mypage/myInfo"
+          className={({ isActive }) =>
+            `mypage-header__title ${isActive ? "active" : ""}`
+          }
+        >
+          <span className="mypage-header__arrow" />내 정보 관리
+        </NavLink>
+      )}
+
+      {isMypageReview && (
+        <NavLink
+          to="/mypage/myReview"
+          className={({ isActive }) =>
+            `mypage-header__title ${isActive ? "active" : ""}`
+          }
+        >
+          <span className="mypage-header__arrow" />
+          내리뷰
         </NavLink>
       )}
     </div>

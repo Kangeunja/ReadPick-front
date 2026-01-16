@@ -12,22 +12,27 @@ const MyPage = () => {
   });
 
   useEffect(() => {
+    fetchUserInfo();
+  }, []);
+
+  const fetchUserInfo = () => {
     axiosInstance
       .post("/myPage/userInfo", {})
       .then((res) => {
+        console.log(res.data);
         setUserInfo(res.data);
       })
       .catch((error) => {
         console.log(error.response?.status);
       });
-  }, []);
+  };
 
   return (
     <>
       <div className="mypage">
         <div className="mypage__container">
           <MyPageTopMenu />
-          <Outlet context={{ userInfo }} />
+          <Outlet context={{ userInfo, fetchUserInfo }} />
         </div>
       </div>
       {/* {isShowPopup && (

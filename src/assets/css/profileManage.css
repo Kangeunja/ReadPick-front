@@ -137,7 +137,7 @@
 
 /* 포커스 or 값 있을 때 위로 이동 */
 .profile-manage__input:focus + .profile-manage__label,
-.profile-manage__input:not(:placeholder-shown) + .profile-manage__label {
+.profile-manage__input.has-value + .profile-manage__label {
   top: 16px;
   font-size: 11px;
   color: #454545;

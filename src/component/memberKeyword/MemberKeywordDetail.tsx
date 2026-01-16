@@ -10,7 +10,7 @@ import { userInfoState } from "../../recoil/userInfoState";
 import LoginRequiredPopup from "../popup/LoginRequiredPopup";
 import MemberKeywordDetailEditPopup from "../popup/MemberKeywordDetailEditPopup";
 import ReviewDeletePopup from "../popup/ReviewDeletePopup";
-import ReviewCompletePopup from "../popup/SuccessPopup";
+import ReviewCompletePopup from "../popup/MessagePopup";
 
 interface BookDetail {
   author: string;
@@ -399,7 +399,6 @@ const MemberKeywordDetail = () => {
   // };
 
   // 더보기 버튼 클릭 시 토글
-
   const handleToggleMoreMenu = (rvIdx: number) => {
     setOpenMoreReviewId((prev) => (prev === rvIdx ? null : rvIdx));
   };

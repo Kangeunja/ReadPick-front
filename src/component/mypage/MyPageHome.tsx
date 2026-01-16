@@ -24,7 +24,6 @@ const MyPageHome = () => {
   const [favoriteBooksImg, setFavoriteBooksImg] = useState<BookImg[]>([]);
 
   useEffect(() => {
-    console.log(userInfo);
     fetchFavoriteBooks();
     fetchFavoriteBooksImg();
   }, []);
@@ -85,6 +84,15 @@ const MyPageHome = () => {
     navigate("/mypage/profile");
   };
 
+  // 마이페이지에 내 정보관리로 이동
+  const goToMyInfo = () => {
+    navigate("/mypage/myInfo");
+  };
+
+  const goToMyReview = () => {
+    navigate("/mypage/myReview");
+  };
+
   return (
     <div className="mypage-home">
       <div className="mypage-container">
@@ -118,8 +126,8 @@ const MyPageHome = () => {
               </div>
 
               <div className="mypage-home__btn-wrap">
-                <button>내리뷰</button>
-                <button>내 정보 관리</button>
+                <button onClick={goToMyReview}>내리뷰</button>
+                <button onClick={goToMyInfo}>내 정보 관리</button>
               </div>
             </div>
           </div>

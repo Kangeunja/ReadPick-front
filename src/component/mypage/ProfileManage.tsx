@@ -1,10 +1,10 @@
 import "../../assets/css/profileManage.css";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { MyPageOutletContext } from "../../types/mypage";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import MypageImgDeletePopup from "../popup/MypageImgDeletePopup";
-import SuccessPopup from "../popup/SuccessPopup";
+import SuccessPopup from "../popup/MessagePopup";
 
 const ProfileManage = () => {
   // interface 함수
@@ -56,6 +56,12 @@ const ProfileManage = () => {
   ].filter(Boolean).length;
   console.log(uploadedImage);
   console.log(userInfo.fileName);
+
+  useEffect(() => {
+    if (userInfo?.nickName) {
+      setEditedNickName(userInfo.nickName);
+    }
+  }, [userInfo]);
 
   // 프로필 사진 선택/미리보기 처리함수, 실제 서버 저장은 handleSave에서 진행
   const handleEditProfileImg = (e: any) => {
@@ -177,8 +183,10 @@ const ProfileManage = () => {
           <input
             type="text"
             id="nickname"
-            className="profile-manage__input"
-            placeholder={userInfo.nickName}
+            className={`profile-manage__input ${
+              editedNickName ? "has-value" : ""
+            }`}
+            placeholder=""
             required
             value={editedNickName}
             onChange={handleIdChange}

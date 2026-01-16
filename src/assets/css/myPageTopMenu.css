@@ -16,8 +16,6 @@
   font-size: 15px;
   color: #454545;
   margin-right: 10px;
-  /* background-color: transparent;
-  border: none; */
 }
 
 .mypage-header__title:hover {
@@ -27,7 +25,7 @@
 
 .mypage-header__title.active {
   color: #222;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .mypage-header__arrow {
